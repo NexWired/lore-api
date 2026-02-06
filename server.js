@@ -226,6 +226,63 @@ function getThemesWithSamples() {
   return results;
 }
 
+// Get top concepts across the corpus
+function getTopConcepts(limit = 50) {
+  const index = loadLoreIndex();
+  
+  // Common words to filter out
+  const stopWords = new Set([
+    'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out',
+    'has', 'have', 'been', 'were', 'they', 'this', 'that', 'with', 'from', 'what', 'when', 'where', 'which',
+    'their', 'there', 'would', 'could', 'should', 'about', 'into', 'more', 'some', 'them', 'then', 'than',
+    'also', 'just', 'only', 'over', 'such', 'make', 'like', 'will', 'even', 'most', 'made', 'after', 'being',
+    'well', 'back', 'much', 'very', 'these', 'those', 'through', 'because', 'each', 'before', 'between',
+    'first', 'other', 'people', 'than', 'time', 'very', 'when', 'come', 'could', 'know', 'take', 'year',
+    'your', 'good', 'give', 'most', 'only', 'over', 'think', 'also', 'back', 'after', 'use', 'two', 'how',
+    'work', 'way', 'well', 'want', 'any', 'these', 'us', 'day', 'need', 'see', 'something', 'thing', 'things',
+    'really', 'going', 'get', 'got', 'getting', 'its', 'it', 'who', 'now', 'new', 'still', 'same', 'look',
+    'own', 'many', 'part', 'point', 'here', 'both', 'does', 'did', 'being', 'made', 'find', 'long', 'down',
+    'must', 'upon', 'said', 'say', 'may', 'never', 'every', 'another', 'much', 'while', 'might', 'too', 'put'
+  ]);
+  
+  const wordCounts = {};
+  const docCounts = {}; // How many docs contain each word
+  
+  for (const file of index) {
+    const words = file.content.toLowerCase()
+      .replace(/[^a-z\s]/g, ' ')
+      .split(/\s+/)
+      .filter(w => w.length > 4 && !stopWords.has(w));
+    
+    const seenInDoc = new Set();
+    for (const word of words) {
+      wordCounts[word] = (wordCounts[word] || 0) + 1;
+      if (!seenInDoc.has(word)) {
+        docCounts[word] = (docCounts[word] || 0) + 1;
+        seenInDoc.add(word);
+      }
+    }
+  }
+  
+  // Score by frequency weighted by document spread
+  const scored = Object.entries(wordCounts)
+    .filter(([_, count]) => count > 10) // Minimum frequency
+    .map(([word, count]) => ({
+      concept: word,
+      occurrences: count,
+      documents: docCounts[word],
+      score: count * Math.log(docCounts[word] + 1) // Favor terms in many docs
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+  
+  return scored.map(({ concept, occurrences, documents }) => ({
+    concept,
+    occurrences,
+    documents
+  }));
+}
+
 // Get random quote (any theme)
 function getRandomQuote() {
   const index = loadLoreIndex();
@@ -429,10 +486,11 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '1.3.0',
+        version: '1.4.0',
         endpoints: [
           'GET /stats - Corpus statistics',
           'GET /themes - All themes with sample quotes',
+          'GET /concepts - Top concepts across corpus',
           'GET /sources - List all documents',
           'GET /doc/<path> - Get full document',
           'GET /related/<path> - Find related documents',
@@ -462,6 +520,13 @@ const server = http.createServer((req, res) => {
     if (pathname === '/themes') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ themes: getThemesWithSamples() }));
+      return;
+    }
+    
+    if (pathname === '/concepts') {
+      const limit = Math.min(parseInt(url.searchParams.get('limit') || '50', 10), 100);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ concepts: getTopConcepts(limit) }));
       return;
     }
     
