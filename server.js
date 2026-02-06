@@ -293,6 +293,82 @@ function getDailyQuote() {
   return { text: quote.text, source: quote.source, date: today };
 }
 
+// Find documents related to a given document
+function getRelatedDocuments(docPath, limit = 5) {
+  const index = loadLoreIndex();
+  
+  // Find source document
+  let sourceDoc = null;
+  for (const file of index) {
+    const filePath = file.path.replace(/\.[^.]+$/, '');
+    if (filePath === docPath || file.path === docPath || 
+        filePath.endsWith('/' + docPath) || file.path.endsWith('/' + docPath)) {
+      sourceDoc = file;
+      break;
+    }
+  }
+  
+  if (!sourceDoc) return null;
+  
+  // Common words to filter out
+  const stopWords = new Set([
+    'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out',
+    'has', 'have', 'been', 'were', 'they', 'this', 'that', 'with', 'from', 'what', 'when', 'where', 'which',
+    'their', 'there', 'would', 'could', 'should', 'about', 'into', 'more', 'some', 'them', 'then', 'than',
+    'also', 'just', 'only', 'over', 'such', 'make', 'like', 'will', 'even', 'most', 'made', 'after', 'being',
+    'well', 'back', 'much', 'very', 'these', 'those', 'through', 'because', 'each', 'before', 'between'
+  ]);
+  
+  // Extract meaningful terms from source (word frequency)
+  const words = sourceDoc.content.toLowerCase()
+    .replace(/[^a-z\s]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 3 && !stopWords.has(w));
+  
+  // Count word frequency
+  const wordFreq = {};
+  for (const word of words) {
+    wordFreq[word] = (wordFreq[word] || 0) + 1;
+  }
+  
+  // Get top 20 distinctive terms
+  const terms = Object.entries(wordFreq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 20)
+    .map(([word]) => word);
+  
+  // Score other documents by term overlap
+  const results = [];
+  for (const file of index) {
+    if (file.path === sourceDoc.path) continue; // Skip source
+    
+    const contentLower = file.content.toLowerCase();
+    let score = 0;
+    const matchedTerms = [];
+    
+    for (const term of terms) {
+      const matches = (contentLower.match(new RegExp('\\b' + term + '\\b', 'g')) || []).length;
+      if (matches > 0) {
+        score += matches;
+        matchedTerms.push(term);
+      }
+    }
+    
+    if (score > 0) {
+      results.push({
+        source: file.path.replace(/\.[^.]+$/, ''),
+        score,
+        sharedTerms: matchedTerms.slice(0, 5)
+      });
+    }
+  }
+  
+  return {
+    sourceDoc: sourceDoc.path.replace(/\.[^.]+$/, ''),
+    related: results.sort((a, b) => b.score - a.score).slice(0, limit)
+  };
+}
+
 // Get document by path
 function getDocument(docPath) {
   const index = loadLoreIndex();
@@ -359,6 +435,7 @@ const server = http.createServer((req, res) => {
           'GET /themes - All themes with sample quotes',
           'GET /sources - List all documents',
           'GET /doc/<path> - Get full document',
+          'GET /related/<path> - Find related documents',
           'GET /search?q=<query>&limit=<n> - Search the corpus',
           'GET /quote?theme=<theme> - Get quote by theme',
           'GET /random - Get random quote',
@@ -427,6 +504,28 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(doc));
+      return;
+    }
+    
+    if (pathname.startsWith('/related/')) {
+      const docPath = sanitizePath(pathname.slice(9));
+      const limit = Math.min(parseInt(url.searchParams.get('limit') || '5', 10), 10);
+      
+      if (!docPath) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Missing document path' }));
+        return;
+      }
+      
+      const result = getRelatedDocuments(docPath, limit);
+      if (!result) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Source document not found' }));
+        return;
+      }
+      
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(result));
       return;
     }
     
