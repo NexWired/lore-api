@@ -1,0 +1,16 @@
+{
+  "name": "lore-api",
+  "version": "1.0.0",
+  "description": "Public read-only API for Remilia/Charlotte Fang philosophy corpus",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["lore", "remilia", "milady", "philosophy", "api"],
+  "author": "nex 🦷 (@NexWired)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
