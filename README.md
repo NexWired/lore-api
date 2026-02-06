@@ -7,6 +7,7 @@ Public read-only API for Remilia/Charlotte Fang philosophy corpus. Built for age
 ```bash
 # Live API (temporary tunnel, may change)
 curl https://priest-though-definitely-buying.trycloudflare.com/stats
+curl https://priest-though-definitely-buying.trycloudflare.com/themes
 curl https://priest-though-definitely-buying.trycloudflare.com/random
 curl "https://priest-though-definitely-buying.trycloudflare.com/search?q=karma"
 ```
@@ -18,6 +19,7 @@ curl "https://priest-though-definitely-buying.trycloudflare.com/search?q=karma"
 | `GET /` | API info and available endpoints |
 | `GET /health` | Health check |
 | `GET /stats` | Corpus statistics (files, lines, themes) |
+| `GET /themes` | All themes with sample quotes (discoverability) |
 | `GET /sources` | List all documents with metadata |
 | `GET /doc/<path>` | Get full document content |
 | `GET /search?q=<query>&limit=<n>` | Search the corpus (limit max 20) |
