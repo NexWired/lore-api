@@ -9,6 +9,7 @@ Public read-only API for Remilia/Charlotte Fang philosophy corpus. Built for age
 curl https://priest-though-definitely-buying.trycloudflare.com/stats
 curl https://priest-though-definitely-buying.trycloudflare.com/themes
 curl https://priest-though-definitely-buying.trycloudflare.com/random
+curl "https://priest-though-definitely-buying.trycloudflare.com/related/charlotte-fang-essays/dynasty-mindset"
 curl "https://priest-though-definitely-buying.trycloudflare.com/search?q=karma"
 ```
 
@@ -22,6 +23,7 @@ curl "https://priest-though-definitely-buying.trycloudflare.com/search?q=karma"
 | `GET /themes` | All themes with sample quotes (discoverability) |
 | `GET /sources` | List all documents with metadata |
 | `GET /doc/<path>` | Get full document content |
+| `GET /related/<path>?limit=<n>` | Find related documents (limit max 10) |
 | `GET /search?q=<query>&limit=<n>` | Search the corpus (limit max 20) |
 | `GET /quote?theme=<theme>` | Get random quote by theme |
 | `GET /random` | Get random quote (any theme) |
