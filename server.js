@@ -14,9 +14,14 @@ const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
 
-// Config
+// Config - OPSEC: no hardcoded paths, require env var
 const PORT = process.env.PORT || 3457;
-const LORE_DIR = process.env.LORE_DIR || '/home/fishy/projects/milady-chat/lore';
+const LORE_DIR = process.env.LORE_DIR;
+
+if (!LORE_DIR) {
+  console.error('FATAL: LORE_DIR environment variable is required');
+  process.exit(1);
+}
 const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
 const RATE_LIMIT_MAX = 100; // requests per window
 
@@ -291,7 +296,10 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Lore API running on port ${PORT}`);
-  console.log(`Serving corpus from: ${LORE_DIR}`);
+  // OPSEC: don't log full path in production
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`Serving corpus from: ${LORE_DIR}`);
+  }
   // Pre-load index
   loadLoreIndex();
 });

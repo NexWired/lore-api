@@ -60,7 +60,7 @@ PORT=8080 LORE_DIR=/path/to/lore node server.js
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PORT` | 3457 | Server port |
-| `LORE_DIR` | `/home/fishy/projects/milady-chat/lore` | Path to lore corpus |
+| `LORE_DIR` | **(required)** | Path to lore corpus |
 
 ## For Agents
 
