@@ -58,6 +58,18 @@ function sanitize(input) {
   return input.replace(/[^a-zA-Z0-9\s\-_.,!?'"]/g, '').slice(0, 200);
 }
 
+// Sanitize path - allow slashes but prevent traversal
+function sanitizePath(input) {
+  if (typeof input !== 'string') return '';
+  // Remove any path traversal attempts
+  return input
+    .replace(/\.\./g, '')
+    .replace(/[^a-zA-Z0-9\-_./]/g, '')
+    .replace(/^\/+/, '')  // no leading slashes
+    .replace(/\/+/g, '/') // normalize multiple slashes
+    .slice(0, 200);
+}
+
 // Load lore index (cached)
 let loreIndex = null;
 function loadLoreIndex() {
@@ -187,6 +199,58 @@ function getStats() {
   };
 }
 
+// List all sources (file paths only, no content)
+function listSources() {
+  const index = loadLoreIndex();
+  return index.map(f => ({
+    path: f.path.replace(/\.[^.]+$/, ''),
+    lines: f.lines.length,
+    chars: f.content.length
+  }));
+}
+
+// Get random quote (any theme)
+function getRandomQuote() {
+  const index = loadLoreIndex();
+  const allQuotes = [];
+  
+  for (const file of index) {
+    for (const line of file.lines) {
+      // Good quotes: 50-400 chars, not headers, not empty
+      if (line.length > 50 && line.length < 400 && 
+          !line.startsWith('#') && !line.startsWith('|') &&
+          !line.startsWith('- ') && !line.match(/^[0-9]+\./)) {
+        allQuotes.push({
+          text: line.trim(),
+          source: file.path.replace(/\.[^.]+$/, '')
+        });
+      }
+    }
+  }
+  
+  if (allQuotes.length === 0) return null;
+  return allQuotes[Math.floor(Math.random() * allQuotes.length)];
+}
+
+// Get document by path
+function getDocument(docPath) {
+  const index = loadLoreIndex();
+  
+  for (const file of index) {
+    const filePath = file.path.replace(/\.[^.]+$/, '');
+    if (filePath === docPath || file.path === docPath || 
+        filePath.endsWith('/' + docPath) || file.path.endsWith('/' + docPath)) {
+      return {
+        path: filePath,
+        content: file.content,
+        lines: file.lines.length,
+        chars: file.content.length
+      };
+    }
+  }
+  return null;
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -228,13 +292,17 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '1.0.0',
+        version: '1.1.0',
         endpoints: [
           'GET /stats - Corpus statistics',
+          'GET /sources - List all documents',
+          'GET /doc/<path> - Get full document',
           'GET /search?q=<query>&limit=<n> - Search the corpus',
-          'GET /quote?theme=<theme> - Get random quote by theme'
+          'GET /quote?theme=<theme> - Get quote by theme',
+          'GET /random - Get random quote'
         ],
-        source: 'https://github.com/NexWired/lore-api'
+        source: 'https://github.com/NexWired/lore-api',
+        author: 'nex 🦷 (@NexWired)'
       }));
       return;
     }
@@ -242,6 +310,42 @@ const server = http.createServer((req, res) => {
     if (pathname === '/stats') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(getStats()));
+      return;
+    }
+    
+    if (pathname === '/sources') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ sources: listSources() }));
+      return;
+    }
+    
+    if (pathname === '/random') {
+      const quote = getRandomQuote();
+      if (!quote) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No quotes available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(quote));
+      return;
+    }
+    
+    if (pathname.startsWith('/doc/')) {
+      const docPath = sanitizePath(pathname.slice(5));
+      if (!docPath) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Missing document path' }));
+        return;
+      }
+      const doc = getDocument(docPath);
+      if (!doc) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Document not found' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(doc));
       return;
     }
     
