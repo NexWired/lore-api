@@ -254,14 +254,25 @@ function getDailyQuote() {
   const index = loadLoreIndex();
   const allQuotes = [];
   
+  // Prefer philosophical sources
+  const preferredSources = ['charlotte-fang-essays', 'remilia-blog', 'remilia-quarterly'];
+  
   for (const file of index) {
+    const isPreferred = preferredSources.some(s => file.path.includes(s));
     for (const line of file.lines) {
-      if (line.length > 80 && line.length < 350 && 
+      // Filter for quality philosophical content
+      if (line.length > 100 && line.length < 400 && 
           !line.startsWith('#') && !line.startsWith('|') &&
-          !line.startsWith('- ') && !line.match(/^[0-9]+\./)) {
+          !line.startsWith('- ') && !line.match(/^[0-9]+\./) &&
+          !line.includes('http') && !line.includes('$') &&
+          !line.match(/\d{4}/) && // no years
+          !line.toLowerCase().includes('presale') &&
+          !line.toLowerCase().includes('token') &&
+          !line.toLowerCase().includes('nft collection')) {
         allQuotes.push({
           text: line.trim(),
-          source: file.path.replace(/\.[^.]+$/, '')
+          source: file.path.replace(/\.[^.]+$/, ''),
+          priority: isPreferred ? 1 : 0
         });
       }
     }
@@ -269,12 +280,17 @@ function getDailyQuote() {
   
   if (allQuotes.length === 0) return null;
   
-  // Use date as seed for deterministic selection
+  // Sort preferred sources first
+  allQuotes.sort((a, b) => b.priority - a.priority);
+  
+  // Use date as seed for deterministic selection (from top 500)
   const today = new Date().toISOString().split('T')[0];
   const seed = today.split('-').reduce((a, b) => a + parseInt(b), 0);
-  const idx = seed % allQuotes.length;
+  const pool = allQuotes.slice(0, 500);
+  const idx = seed % pool.length;
   
-  return { ...allQuotes[idx], date: today };
+  const quote = pool[idx];
+  return { text: quote.text, source: quote.source, date: today };
 }
 
 // Get document by path
