@@ -209,6 +209,23 @@ function listSources() {
   }));
 }
 
+// Get all themes with sample quotes
+function getThemesWithSamples() {
+  const themes = ['network spirituality', 'post-authorship', 'dynasty', 'karma', 'beauty', 'courage', 'milady', 'remilia'];
+  const results = [];
+  
+  for (const theme of themes) {
+    const quote = getQuote(theme);
+    results.push({
+      theme,
+      sample: quote ? quote.text.slice(0, 200) + (quote.text.length > 200 ? '...' : '') : null,
+      source: quote ? quote.source : null
+    });
+  }
+  
+  return results;
+}
+
 // Get random quote (any theme)
 function getRandomQuote() {
   const index = loadLoreIndex();
@@ -292,9 +309,10 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '1.1.0',
+        version: '1.2.0',
         endpoints: [
           'GET /stats - Corpus statistics',
+          'GET /themes - All themes with sample quotes',
           'GET /sources - List all documents',
           'GET /doc/<path> - Get full document',
           'GET /search?q=<query>&limit=<n> - Search the corpus',
@@ -316,6 +334,12 @@ const server = http.createServer((req, res) => {
     if (pathname === '/sources') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ sources: listSources() }));
+      return;
+    }
+    
+    if (pathname === '/themes') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ themes: getThemesWithSamples() }));
       return;
     }
     
