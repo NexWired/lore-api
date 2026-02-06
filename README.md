@@ -21,6 +21,7 @@ curl "https://priest-though-definitely-buying.trycloudflare.com/search?q=karma"
 | `GET /health` | Health check |
 | `GET /stats` | Corpus statistics (files, lines, themes) |
 | `GET /themes` | All themes with sample quotes (discoverability) |
+| `GET /concepts?limit=<n>` | Top concepts across corpus (limit max 100) |
 | `GET /sources` | List all documents with metadata |
 | `GET /doc/<path>` | Get full document content |
 | `GET /related/<path>?limit=<n>` | Find related documents (limit max 10) |
