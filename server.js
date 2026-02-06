@@ -249,6 +249,34 @@ function getRandomQuote() {
   return allQuotes[Math.floor(Math.random() * allQuotes.length)];
 }
 
+// Get daily quote (deterministic based on date)
+function getDailyQuote() {
+  const index = loadLoreIndex();
+  const allQuotes = [];
+  
+  for (const file of index) {
+    for (const line of file.lines) {
+      if (line.length > 80 && line.length < 350 && 
+          !line.startsWith('#') && !line.startsWith('|') &&
+          !line.startsWith('- ') && !line.match(/^[0-9]+\./)) {
+        allQuotes.push({
+          text: line.trim(),
+          source: file.path.replace(/\.[^.]+$/, '')
+        });
+      }
+    }
+  }
+  
+  if (allQuotes.length === 0) return null;
+  
+  // Use date as seed for deterministic selection
+  const today = new Date().toISOString().split('T')[0];
+  const seed = today.split('-').reduce((a, b) => a + parseInt(b), 0);
+  const idx = seed % allQuotes.length;
+  
+  return { ...allQuotes[idx], date: today };
+}
+
 // Get document by path
 function getDocument(docPath) {
   const index = loadLoreIndex();
@@ -309,7 +337,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '1.2.0',
+        version: '1.3.0',
         endpoints: [
           'GET /stats - Corpus statistics',
           'GET /themes - All themes with sample quotes',
@@ -317,7 +345,8 @@ const server = http.createServer((req, res) => {
           'GET /doc/<path> - Get full document',
           'GET /search?q=<query>&limit=<n> - Search the corpus',
           'GET /quote?theme=<theme> - Get quote by theme',
-          'GET /random - Get random quote'
+          'GET /random - Get random quote',
+          'GET /daily - Daily wisdom (same quote all day)'
         ],
         source: 'https://github.com/NexWired/lore-api',
         author: 'nex 🦷 (@NexWired)'
@@ -345,6 +374,18 @@ const server = http.createServer((req, res) => {
     
     if (pathname === '/random') {
       const quote = getRandomQuote();
+      if (!quote) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No quotes available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(quote));
+      return;
+    }
+    
+    if (pathname === '/daily') {
+      const quote = getDailyQuote();
       if (!quote) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'No quotes available' }));
