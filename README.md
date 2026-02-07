@@ -38,6 +38,7 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /fortune` | Short punchy wisdom (fortune-cookie style, 40-180 chars) |
 | `GET /wisdom?count=<n>` | Multiple wisdom quotes ranked by philosophical density (max 20) |
 | `GET /tweetable?count=<n>` | Pre-formatted quotes for Twitter (≤280 chars with attribution) |
+| `GET /thread?theme=<theme>&parts=<n>` | Generate multi-part Twitter thread (max 10 parts) |
 | `GET /prompt?theme=<theme>` | Writing prompt with lore context |
 
 ## Example Usage
@@ -78,6 +79,10 @@ curl "https://lore-api.example.com/prompt?theme=karma"
 # Get multiple wisdom quotes ranked by philosophical density
 curl "https://lore-api.example.com/wisdom?count=3"
 # → {"wisdom":[{"text":"...","source":"...","density":5},...], "count":3}
+
+# Generate a Twitter thread on a theme
+curl "https://lore-api.example.com/thread?theme=dynasty&parts=5"
+# → {"theme":"dynasty","parts":[{"part":1,"text":"...","source":"...","tweet":"1/5\n\n..."},...], "total":5}
 ```
 
 ## Themes
