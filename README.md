@@ -27,6 +27,8 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /themes` | All themes with sample quotes (discoverability) |
 | `GET /concepts?limit=<n>` | Top concepts across corpus (limit max 100) |
 | `GET /sources` | List all documents with metadata |
+| `GET /authors` | List authors with document counts |
+| `GET /author/<name>?limit=<n>` | Get documents by author (limit max 50) |
 | `GET /doc/<path>` | Get full document content |
 | `GET /related/<path>?limit=<n>` | Find related documents (limit max 10) |
 | `GET /search?q=<query>&limit=<n>` | Search the corpus (limit max 20) |
