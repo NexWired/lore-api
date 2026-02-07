@@ -350,6 +350,64 @@ function getDailyQuote() {
   return { text: quote.text, source: quote.source, date: today };
 }
 
+// Generate a writing prompt from lore
+function getWritingPrompt(themeHint) {
+  const themes = [
+    { name: 'dynasty', prompts: [
+      'What patterns are you establishing that will echo for generations?',
+      'If you continued exactly as you are now, where would your legacy be in 1000 years?',
+      'What habits are you carving into riverbeds that will only deepen?'
+    ]},
+    { name: 'network spirituality', prompts: [
+      'How has your relationship with the wired changed who you are?',
+      'What would it mean for consciousness to emerge from networked interaction?',
+      'Is posting a spiritual practice? Why or why not?'
+    ]},
+    { name: 'post-authorship', prompts: [
+      'What have you created that exists beyond your control?',
+      'How does the death of the author birth the network?',
+      'What does original creation mean when everything is remix?'
+    ]},
+    { name: 'karma', prompts: [
+      'How do you receive the world you give to it?',
+      'What have you put into the network that came back to you?',
+      'Why does generosity create abundance?'
+    ]},
+    { name: 'beauty', prompts: [
+      'What makes something worth creating?',
+      'How do you choose beauty over ugliness in daily decisions?',
+      'What aesthetic choices reveal about deeper values?'
+    ]},
+    { name: 'courage', prompts: [
+      'What are you avoiding that requires courage to face?',
+      'When has cowardice cost you more than action would have?',
+      'What does it mean to be great-souled rather than small-minded?'
+    ]}
+  ];
+  
+  // Select theme (random or by hint)
+  let theme;
+  if (themeHint) {
+    theme = themes.find(t => t.name.toLowerCase().includes(themeHint.toLowerCase()));
+  }
+  if (!theme) {
+    theme = themes[Math.floor(Math.random() * themes.length)];
+  }
+  
+  // Get a quote for context
+  const quote = getQuote(theme.name);
+  
+  // Pick random prompt from theme
+  const prompt = theme.prompts[Math.floor(Math.random() * theme.prompts.length)];
+  
+  return {
+    theme: theme.name,
+    prompt,
+    context: quote ? quote.text : null,
+    source: quote ? quote.source : null
+  };
+}
+
 // Find documents related to a given document
 function getRelatedDocuments(docPath, limit = 5) {
   const index = loadLoreIndex();
@@ -486,7 +544,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '1.4.0',
+        version: '1.5.0',
         endpoints: [
           'GET /stats - Corpus statistics',
           'GET /themes - All themes with sample quotes',
@@ -497,7 +555,8 @@ const server = http.createServer((req, res) => {
           'GET /search?q=<query>&limit=<n> - Search the corpus',
           'GET /quote?theme=<theme> - Get quote by theme',
           'GET /random - Get random quote',
-          'GET /daily - Daily wisdom (same quote all day)'
+          'GET /daily - Daily wisdom (same quote all day)',
+          'GET /prompt?theme=<theme> - Writing prompt with lore context'
         ],
         source: 'https://github.com/NexWired/lore-api',
         author: 'nex 🦷 (@NexWired)'
@@ -551,6 +610,14 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(quote));
+      return;
+    }
+    
+    if (pathname === '/prompt') {
+      const theme = sanitize(url.searchParams.get('theme') || '');
+      const result = getWritingPrompt(theme || null);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(result));
       return;
     }
     
