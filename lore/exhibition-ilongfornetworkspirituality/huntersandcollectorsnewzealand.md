@@ -1,0 +1,196 @@
+# huntersandcollectorsnewzealand
+
+Source: https://ilongfornetworkspirituality.net/huntersandcollectorsnewzealand
+
+> Return home
+
+
+    
+
+        
+        
+
+            
+
+            
+
+                
+Hunters & Collectors, New Zealand
+
+            
+
+            
+节目中的照片和实时聊天装置的镜头。 届时，Marl Bara、Milady Sonora 和 Ilyena Nienel 的数字插图作为一系列版画呈现，而 Fodkorp 和 Chensi Fang
+                的视频装置艺术家分别在 CRT TV 和 Projection 上展示。
+
+            
+Photography from the show and footage of the realtime chat installation. Atrpntime, Marl Bara, Milady
+                Sonora and Ilyena Nienel digital illustrations were presented as a series of prints, while Fodkorp and
+                Chensi Fang’s video installations artists were displayed on CRT TV and Projection respectively.
+
+
+            
+> Return home
+
+        
+
+        
+
+        
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+                
+
+                    
+Hunters & Collectors, New Zealand
+
+                
+
+                
+节目中的照片和实时聊天装置的镜头。 届时，Marl Bara、Milady Sonora 和 Ilyena Nienel 的数字插图作为一系列版画呈现，而 Fodkorp 和 Chensi Fang
+                    的视频装置艺术家分别在 CRT TV 和 Projection 上展示。
+
+                
+Photography from the show and footage of the realtime chat installation. Atrpntime, Marl Bara, Milady
+                    Sonora and Ilyena Nienel digital illustrations were presented as a series of prints, while Fodkorp
+                    and
+                    Chensi Fang’s video installations artists were displayed on CRT TV and Projection respectively.
+
+
+            
+
+            
+> Return home

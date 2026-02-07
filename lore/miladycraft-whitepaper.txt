@@ -1,0 +1,1954 @@
+Milady World Minecraft Server White Paper
+Michael Dragovic • Onno Morrison • Charlie Fang
+November 18, 2021
+
+Abstract
+Milady World is an experimental project into the nature of online socialization and emer­
+gent virtual spaces of immersion and embodiment therein, engendered as an online multi­
+player server in Minecraft. This Minecraft world and its content is curated according to our
+opinionated view on the aforementioned, which we thoroughly present, tending to freeform
+and unrestricted gameplay through exploration, socially and spontaneously realized acts of
+beauty and aesthetics, and cohesion through progressive challenges in a microcosm of dis­
+covered information and experience. Both manual and algorithmic methods are used for
+Milady World, the process and usage of which, culminating into its first playable island, we
+express from start to finish . We show how the vision of Remilia and the Milady project is
+transfigured into the extensive capabilities of Minecraft and can serve to be exemplary for
+contemporary aspirations of web3 & crypto­related spheres to create so­called ‘Metaverses’
+for digital communities.
+
+WARNING: The following information was written before the launch of the Milady World
+Minecraft Server. It contains planning and speculation which may be much different than
+its realization and progression into the server at the time of reading.
+
+Contents
+1 Editor’s Introduction
+
+3
+
+2 Background: Minecraft’s Significance
+2.1 A True Open World . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.2 Infinity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.3 Accessible Specifications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+8
+9
+10
+11
+
+3 Why Web3 Minecraft Community, Why Now?
+3.1 Coming VReality . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.1.1 Movement and virtual interfacing . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.2 Minecraft is Virtual Golf . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.3 Minecraft­Discord­Urbit Daisychain . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+13
+13
+14
+14
+16
+
+4 Map Design
+4.1 World Creator & Worldpainter . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4.2 Terra . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4.3 Isle of Milady: Ingame . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+18
+19
+21
+23
+
+5 Commentary
+5.1 On Progression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5.2 On Socialized Beauty . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5.3 On Generation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5.4 On Spawn Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5.5 Milady World’s Spawn . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5.6 Milady Fishing Village, or The Archipelago . . . . . . . . . . . . . . . . . . . . . . . .
+5.7 Restricting the Nether and the End . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5.8 On the Journey . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5.9 On Casuals vs. Try­hards . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5.10 On Exploration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+26
+26
+27
+28
+30
+30
+31
+33
+34
+35
+38
+
+6 Conclusion
+
+40
+
+2
+
+1 Editor’s Introduction
+Milady World is a Minecraft server created with firm principles developed over more than a
+decade of playing the vanilla game, various modpack versions of the game, and through the
+experience of nearly every possible playstyle in both single and multiplayer1 . The developers
+of this Minecraft server saw it as an opportunity to realize everything about the game we felt
+needed improvement or innovation, to achieve the ultimate version of Minecraft. It is safe to
+say the server is highly opinionated, though we’d prefer to see it as a Manifesto, and this white
+paper serves as its pre­chronicle and user’s manual.
+As with all creations, there is a steady compromise between vision and reality. The concepts
+discussed henceforth will not all be fully realized by the time of writing. Many may be realized
+in the future, some may never fully be integrated into the server. Differing opinions exist on
+how to make a perfect Minecraft server, you are simply reading ours 2 .
+
+~
+Ever since the modern conception of immersive experiences detached from physical reality
+within an interactive mode of operation, the pre­eminent hopes and desires of humanity have
+always directed towards the total fulfilment of said immersion: an experience not only func­
+tionally indistinguishable from reality, but far more vivid and eclectic; an experience which
+in the creative and technological sphere of the 80s and 90s would be addressed as ‘virtual
+reality,’ ‘cyberspace’ and later on – taking after Neal Stephenson’s novel Snow Crash – ‘the
+metaverse,’ the latter of which is also seeing popularized usage within the sphere of crypto
+today.
+The advent of video games themselves stems from a playful willingness to display one’s
+coding skill for creative output which pushes & showcases the boundary of the machine it
+is produced on, with precedence. Before the gross commodification of the internet – before
+even the internet itself – the computer was the playground of the perspicacious hacker, the
+coder­otaku and anyone who could appreciate their efforts. Take for example, the so­called
+‘demoscene’ which flourished in the before­times, which expressed amicable competition to
+display one’s creative and technical output in the form of shared files and programs called
+demos. This scene developed as a social circle of locales, both within online spheres and as
+real­life meetups, and had no clear wall between friendships of the real and the online. An
+example of a contemporaneous demo can be seen in Fig. 1
+Looking further downstream, video games have always had a high degree of sociality when
+they were able to make players interact with each other in real­time, which could initially, in an
+online environment, be found within both text­based and graphical roleplaying games through
+MUDs 3 , engendering imaginative thought akin to the conceits and systems of Dungeons &
+Dragons; and ever since the release of Doom, a direct online socialization experience in the
+form of highly competitive play, immersion within a 3D world that draws in every participant
+and transmogrifies them into their virtual persona, in this case a playername associated with
+a perception that ranges from Nemesis to Noob.
+
+1
+It is no mere coincidence that we at Remilia Collective are so illustrious in our projects as this reflects
+the mindset we have carried throughout our personal development. In another world, Milady could have been
+redefining esports, players whose caliber would be unmatched in the gaming world, forever; a golden age ushered
+in not by the mechanical greatness and artistic splendor of the games, but by the raw, unrelenting rockstars of
+gamers that could not seem to fail at succeeding, no matter what. It would not have been a chance occurrence for
+real gunshots to have been fired at us in scathing envy during many a tournament, all of which would have been
+effortlessly intuited by any of us, ‘clutching it IRL’, as they would say. We are simply THAT good at Minecraft.
+2
+
+A cute sentiment, one which I cannot stand by: this paper presents the ultimate vision of Minecraft,
+though not one that is necessarily achievable today.
+3
+
+Multi­User Dungeon, a type of real­time online multiplayer roleplaying game defined in its wide sense,
+not to be confused with the many conceits and shackled discussion of the commonly used ‘RPG’ term slung around
+in the realm of post­text VideoGaming.
+
+3
+
+Figure 1: A screenshot taken from the Technological Death demo by Mad
+Elks (1993) made for the Amiga home computer. Demos are meant to wow
+and awe those viewing them with visual & musical prowess and mad code
+skillz, maxing out on presentation within stringent creation time and file size
+limits. Accessed from https://ada.untergrund.net/?p=demo&i=68.
+The excitement for gamelike virtual worlds continued into the early MMORPGs 4 , such as
+Ultima Online, Everquest and Phantasy Star Online, which were popular, seminal titles at the
+cusp of the 21st century that combined individual focus and progression with an encompass­
+ing community effort within an immersive, persistent fantasy world, and the inherent layer of
+socialization therein.
+This social foundation proved to be so influential that it soon developed into spheres that
+were less games than they were materialistic appropriation, stylistic assessment and socialite
+cloutgathering within a cohesive virtual reality, a social facsimile and simulation, a true stretch
+of what the term Massively Multiplayer Online could actually entail; notable examples of which
+are Second Life, IMVU, Habbo Hotel 5 and especially as precursor to wide­sense brand appro­
+priation and advertisement, Playstation Home, depicted in Fig. 2.
+In recent times, consumer availability of capable – for current graphical standards – virtual
+reality headsets and controllers have lurched virtual worlds towards a breakthrough in immer­
+sion due to the heightened mode of audiovisual and proprioceptive engagement they offer.
+Many games have thus included VR­supported modes, and VR social hangout spheres such as
+VRChat enjoy a great deal of popularity.
+4
+
+Massively Multiplayer Online Role Playing Game, that is, Massively Multiplayer Online ‘RPG’, the MMO
+part of which oft is used to address these spaces in casual conversation between gamers, which, without appending
+a G for Game or S for space, neither of which I’ve heard anyone even try, could denote any form of online network
+which offers full interaction between its users and is not to be used in a chiefly solitary setting. Ironically a pendant
+to the nebulous strictures of definition for an ‘RPG,’ the MMO could be denoting a simple public chatroom. Or, if
+a gamelike experience is required, a game of emoji connect four within that same simple public chatroom.
+5
+
+Whilst Habbo Hotel’s isometric pixelart certainly seems like a dated entry in terms of immersion even
+when compared to its contemporaries, one must understand its simplicity is a form of accessibility key to user
+retention; Habbo could be played straight from the browser & was quick to interface with; given enough comfort
+and stimulation, people can immerse themselves with even the most rudimentary setting and materials ―not to
+accuse Habbo hotel to such an extent, it had fluid mechanics. Pixelart additionally has proven itself irresistible to
+the sensibilities of the discerning gamer, ubiquitously, ever since its inception with early computer graphics. Do
+YOU own a pixelart NFT right this moment? If yes, add your name at the bottom of this document.
+
+4
+
+Figure 2: A simple, but wholly representative display of Playstation Home’s
+aesthetic and graphics: not unlike present day, present time aspiration to­
+wards a Metaverse, it adopted a reasonably photo­realistic default, which
+became incontrovertibly blended with its implemented commercial content,
+each importing its own visual style, each asserting itself in a phantasmagori­
+cally, uncanny carnival of the senses that make up its whole. A Bomberman
+mascot suit playing reversi with an indistinct woman, on Locoroco island. In­
+sane. Source: ME. I AM THE MASCOT.
+These days, many crypto projects try to integrate their vision with elements of gamification
+and possibly initiation of virtual worlds therein, be it to capitalize on coincidentally formed
+community narrative, or deliberated expansion for the purpose of grasping the luster that these
+elements seem to hold.
+
+~
+However, social virtual worlds and their development are perpetually limited by rate of engage­
+ment or arousal and the current technological paradigm: not only must the content offered by
+the virtual world be enthralling to a degree that allows the developers to carve out a niche in
+the Net, garnering a sustainable userbase, this userbase then too is indicative of the future of
+the virtual world as social platform through the culture that forms inside and surrounding it,
+wrought from the userbase’s outwardly portrayed interests and sensibilities.
+Failure to establish such an userbase spells imminent death for the virtual world, which
+is why often gamelike elements are introduced to provide users with a solitary experience
+that is obviously enhanced when engaging with others, see also Fig. 3, charting user sentiment
+towards social drives in EverQuest 6 and Fig. 4, plotting guild size over the playerbase of World
+of Warcraft as a gauge for ingroup communities 7 .
+These worlds often play into users’ sense of materialistic style, by allowing them to cus­
+tomize their virtual persona to great lengths; this can also be seen in the creation of personal
+spaces with custom landscaping, architectural and interior design; both of these elements can
+be compounded with free or curated community additions, enclosed within the virtual world’s
+overarching structure of monetization for upkeep and development, which enables currency
+substantiated value of ownership as an important side effect that must not be overlooked.
+6
+
+Yee, N. (2001). The Norrathian scrolls: A study of EverQuest. Nick Yee.
+
+7
+
+Williams, D., Ducheneaut, N., Xiong, L., Zhang, Y., Yee, N., & Nickell, E. (2006). From tree house to
+barracks: The social life of guilds in World of Warcraft. Games and culture, 1(4), 338­361.
+
+5
+
+Figure 3: Chart taken from a study by Yee (2001), in which EverQuest players
+were asked numerous questions regarding sentiment (so­called ”Question­
+naire”) concerning the game’s various in­and meta­game aspects, relating
+them to sociality both within the online environment and real­life and their
+interplay. Due to the seminal nature of EverQuest as a social virtual world
+and the concentrated, less commodified or disingenuous nature of the inter­
+net when the study was conducted, we deem it a valuable resource to observe
+social dynamics to anticipate on and enrich for digital worlds in the present
+day and future. The chart itself highlights meta­game aspects for enjoyment
+of the game. It can be seen that whilst all of these common reasons for gam­
+ing enjoyment line up with player opinion, the most prevailing for men and
+women alike constitutes immersion and social engagement, an observation
+that is concordant with the rest of the study6 .
+Eventually however, these injections of immersive materialism are often outpaced by the
+industry consensus on graphical development, which both stifles immersive experience with
+its perpetual restrictions imposed in terms of increasing development costs and processing
+power/time, as it furthers development of bigger projects through cash inflow –and with bud­
+ding competitors entering the market, fleeting as they might be, dated gamelike virtual worlds
+slowly but surely bleed to death as their userbase dwindles – or simply gets bored – and their
+cultures dissolve, whilst they wallow in obscurity or brokenness for years to come in a corpu­
+lent, oft mismanaged state that is impossible to revitalize.
+A suitable teleology for mitigating and delaying such a lot would be to make the codebase
+expendable and the curated graphical style independent of destructive trends in the never
+ending chase for photorealism8 , so that spiritual successors, transfers of assets or simply con­
+tinued, productive development become a tenable possibility.
+Avoiding fatal eventualities entirely is improbable at best, which is why the Mill for the
+Metaverse and entitling the eminence of ‘The’ is ever so cruel; tying NFTs to a gamified col­
+lectible within a metaverse­aspiring virtual world – or from an inverted perspective, tokenizing
+into NFT the game assets/items/collectibles themselves and having their value tied to the in­
+terplay of game mechanics and aesthetics – is the decentralized dream of a practice which has
+been standardized in centralized form 9 within the multiplayer videogame industry for over a
+decade.
+The difficulty lies in creating a cohesive, immersive world within the allotted timespan
+8
+
+Anonymous (2019). Against New Games, www.extortionindustry.org
+
+9
+
+Centralized as in centralized assets, the platforms addressed here which employ microtransactional
+and/or progression­based collectibles do not allow any form of permanence of ownership outside of said plat­
+form; Steam items can be traded on the Steam community market for credit and vice versa, but any other form of
+real money trading (RMT) is strictly prohibited and the permanence of one’s items goes only as far as the perma­
+nence of one’s Steam account; centralized virtual socialization and gaming platforms could be tied together with
+decentralized, thus on­chain assets regardless.
+
+6
+
+Figure 4: Plot from a study by Williams et al. (2006) exploring sociality within
+World of Warcraft guilds as primary cohesive ingroup within the game’s online
+environment7 . For elucidation on abbreviations used, please refer to Note 12.
+Observe that players are more likely to form close­knit communities by limted
+inclusion of members into guilds, most often remaining under 100 players in
+total; this is further encouraged by heightened bonding through inclusion of
+mechanics such as PvP and RP, directive for competitive and immersive play
+respectively. An interesting phenomenon is that guild sizes in PvE servers
+flourish around approximately 250 players per guild, which is probably due
+to their propensity towards mass­player curated ‘environment’ content and
+challenges in the form of raids and open world bosses.
+physical reality allows; crypto moves fast and NFTs move even faster; the successful modus
+operandi for most gamified NFT collections through metaverse allure and support appears to
+be directly in line with that metaverse’s de facto style. However, there is no inherent need for
+a virtual social space to be all­encompassing and integrative of the glut NFT sphere as is what
+seems idealistic for the metaverse vogue. Integrating NFT sensibilities and ownership with
+community­forming means of independent but capable virtual worlds is perfectly suitable for
+most projects 10 . For example, an uniquely styled VR gallery and social playground within a
+network of many, akin to the content management and community creation of VRChat could
+provide ample longevity; existing virtual worlds could also simply be appropriated for commu­
+nity enjoyment and cultivation, proven worlds which have tested against countless hours of
+enjoyment, worlds such as Minecraft.
+
+10
+
+This is not to disparage the unique exploratory position platforms and DeFi games such as Decentraland,
+Cryptovoxels and The Sandbox hold which will undoubtedly awaken the established industry to a point where
+elements of on­chain trustlessness and freedom will become the new standard.
+
+7
+
+2 Background: Minecraft’s Significance
+Minecraft is arguably the most important video game ever made, an assertion supported by it
+also being the most purchased video game in history. Minecraft is an unique, engaging and
+opened up to one’s own imagination kind of videogame which due to its full & fully optional
+multiplayer­enabled sandbox experience moulded into an organic, block­structured, fully sha­
+peable world can be enjoyed by people of all ages alike.
+Ever since being developed by Markus ‘Notch’ Persson well over a decade ago, Minecraft
+has stayed on the forefront of gaming popularity and relevance, still receiving intermittent of­
+ficial updates and having been released on nigh every modern platform available –but most
+importantly, Minecraft has garnered a wide enthusiast community who participates in mod­
+ifying and creating additional features & content for the game to suit their interests and de­
+sires; every aspect of Minecraft’s gameplay has already been explored to varying degrees for
+creative modification: handcrafted builds of buildings, monuments, abstract structures, land­
+scapes, towns, cities; any type of 3D build can be accurately represented in Minecraft, the only
+limitation being the inherent resolution of its blocks; custom worlds created for varying pur­
+poses, e.g. self­contained adventurous stories akin to RPGs 11 , PvP 12 13 14 , parkour games,
+hardcore challenges, custom scripted minigames and as aforementioned impressive organic
+landscapes to heighten one’s base playing experience; mods and plugins that change and add
+
+11
+Again, the sheer metaphysical load that any introspective rumination of the meaning and extent of this
+term bears goes far beyond the scope of this document and is only to be carefully explored by the reader under
+strict and skilled supervision. Milady owners can contact staff for further guideposts and points of caution, which
+are typically – from our experience – only conveyed properly in an interpersonal setting. All reference to this term
+within this document is made as a symbol only and does not attempt to evoke anything but the sheer shallowness
+of the intuitive thought on the level of an uninitiated reader.
+12
+
+Player versus Player; a simple, self­descriptive term for the standard­informed gamer; see also: PvE
+(Player versus Environment), WTS (Wanting To Sell), WTB (Wanting To Buy), LFG (Looking For Group; this term
+might already be well­known in crypto­related spheres), PST (Please Send Tell), RP (RolePlay), RDM (Random
+DeathMatch), gz (ConGratulationZ, also addressed as either gratz or quite mischievously as GZ; most commonly
+used after preceding ‘ding’ statement from another player, the latter of which denoting a Level Up.), PK (Player Kill),
+DPS (Damage Per Second; often erroneously referred to when describing damage over an arbitrary timeframe; in
+more loose use describes a character whose main role is to dish out copious amounts of damage), aggro (Aggression;
+chiefly MMO verbiage to denote threat level of a mob, most notably a boss within a raid, of which it is the tank’s job
+to keep the highest value and divert it from grandstanding DPSes and healers alike. Aforementioned terminology
+that is not addressed within this document is to be taken intuitively.), mana/prana/nano/mhnh (Magical resource
+oft referenced in books of fantastical nature.), GM (Game Master; God Mode; Good Morning) ABG (Asian Baby
+Girl; derogatory against female gamers of high skill), Bunnyhop/Bhop (Term for a form of movement wherein
+one continuously jumps upon hitting the ground to increase overall movement speed and angular control.), TP
+(TelePort; see also ‘Frag’13 and ‘TeleFrag’14 ), KS (KillSteal; KillStreak; KillSwitch), CTF (Capture The Flag), L2P
+(Learn To Play), P2P (Pay To Play; Peer To Peer), DBF (Death By Fatigue), KMFS (Kiss My Fucking Shotgun),
+XP (Experience Points; forgotten emoticon relegated to various web­archives and buried chatlogs, if not for the
+occasional anachronistic utterance in line with other primitives such as ‘zomg,’ ‘woot,’ and ‘ftw,’ the passion of
+which must not be put into descriptive text as it emancipates vibe from meaning.), DKP (Dragon Kill Points, a social
+token kept by manual ledger awarded within MMO guilds to players participating in difficult content or otherwise
+assisting the guild, the rate and amount decided by the respective guild leaders, whose use typically consisted of
+the ability to claim items dropped within raids over other players via ad­hoc English auction.), CP (Control Points),
+DoT (Damage over Time), AoE (Area of Effect), LoS (Line of Sight), MVP (Most Valuable Player), BM (Bad Manners;
+Be as it May), AFK (Away From Keyboard), OOM (Out Of Mana), G2H (Go To Hell), MRFU (Message Received,
+Fuck You!)
+13
+A frag – the term itself said to be originating from the act or attempt of intentional killing a fellow soldier,
+derived as an abbreviation from fragmentation grenade – is a common way to refer to a kill on or otherwise victory
+over another player, resulting in their gruesome demise. ‘Gibbing’ is corollary to fragging, referred to when the act
+results into reducing the respective target’s body to giblets, normally via explosion or sheer impact. For Telefrag14 ,
+please refer to Note 1414 .
+14
+Telefragging is a special case of fragging which occurs when the target intercepts with another player at
+a teleporter exit, teleporters themselves being commonplace in arena FPS maps. The player who appears last at
+the teleporter usually is the one involuntarily (that is, you can’t help it, but man if it doesn’t feel good, eh?) carrying
+out the telefrag on the unfortunate soul foolish enough to not vacate the premises of the exit immediately upon
+appearing.
+
+8
+
+further depth to the game’s properties to extreme lengths inasmuch that Minecraft could be
+considered the metagame, the creative framework in which their contents are enmeshed 15 .
+With Minecraft’s large voxel structure wherein all game elements are rendered as cubic
+and rectangular blocks, the initial disconnect from its unique visuals is easily accustomed to
+and, before long, stimulates the player to anticipate on and enjoy the simple but extensible
+format of its world; precisely because of this block structure, all elements within a Minecraft
+world can be individually manipulated, offering an unparalleled creative sandbox experience.
+When one experiences Minecraft for the first time, even at an out­of­the­executable expe­
+rience, they will be filled with the childlike unbound wonder of free exploration and ability to
+shape as one sees fit 17 . Minecraft is Crafted as an organic representation of virginal wilds,
+a gamut of biomes outstretching themselves interminably, simultaneously at a scale that is
+heartily comfortable for anyone to call, to make into home.
+
+2.1 A True Open World
+A video game was once seen as a finite fixture, an experience with a concrete beginning, mid­
+dle, and end. As bandwidth capabilities improved in society, the gaming industry has shifted
+towards making video games a never­ending experience, often utilizing multiplayer and various
+addiction mechanics to keep players gaming and spending indefinitely.
+To understand Minecraft and how successful it became, one must understand the state of
+video games at the time of its release in 2009: the concept of an open world was still considered
+a delightful novelty that inspired intense curiosity and addictive play. Video games themselves
+were defined by their limitations 18 .
+Before open worlds became commonplace and even trite mechanically, the sublime gam­
+ing experience was built around pushing the boundaries of worlds when they were still very
+apparent. As human beings have an innate spiritual urge to push the boundaries of their phys­
+ical reality and discover new mechanics for their own existence, a well­made video game is on
+that allows you to explore another world, experience a story, feel a climb of power, satisfy the
+sense of accruing wealth, and foster a social presence to other players.
+Every child from the 2000s era of video games can recall at least one experience of repet­
+itively ‘scratching the walls’ of a video game in search of something unique or unexpected.
+Whether this could be a deliberate ‘easter egg’ 19 or an undiscovered glitch, the process of
+
+15
+It should be noted that Minecraft’s in­game framework for creating digital systems, redstone, is Turing
+complete16 .
+16
+
+Which to not at all a pedantic extent means that functionally one can recreate Minecraft within Minecraft
+(with potentially infinite layers of recursion, but usually the in­game built RAM runs into hiccups above layer six
+or so), a feat that has long since been achieved with varying levels of success and still brings me to tears when I
+recall the time, during experimentation of my own, I lost all my diamond items in lava (typical in­game experience
+joke) within an infinitely recursive path that is beyond my perception and thus all forms of agency. Whatever I do
+next could seriously influence my L3 playthrough ―and I wouldn’t even know.
+17
+
+That is, if they have not replaced mankind’s intrinsic will to power with abject complacency, openmind­
+edness with acquiescence of drudgery; Minecraft is not a demanding game for its player, but it demands its player
+to find enjoyment within their own praxis.
+18
+
+A common misconception in the unintuitive mind is to postulate and – to a much larger affront, effect
+as a game developer – shape a narrative constrained by technological & time limitations; whereas the limitations
+are the narrative ―or they should be, in any case. Gaming narrative is not limited to story or visual experience, it
+encapsulates how the game is experienced and in turn how this experience is conveyed when one is not playing.
+A spiritually profound videogame is in tune with its limitations and is thus timelessly enjoyable in spite of them.
+19
+
+The respective term, ‘easter egg,’ was first coined in Warren Robinett’s ‘Adventure’ for the Atari 2600,
+wherein a couple of mischievous secrets inside the game’s world highlighted specific bugs in the code. These
+bugs were tied to features of the game and could not be amended, due to the way the Atari was designed. It is
+well­known that Robinett had difficulties dealing with Atari management. Just like an Easter egg hunt wherein the
+eggs are well­hidden, they soon turn rotten when not discovered within time; this was allegorized by Robinett’s
+actions.
+
+9
+
+playing a game to discover exploits and secrets was a natural and expected part of the experi­
+ence.
+This mimicks the prop nature of games children play in real life– it’s an expected saccha­
+rine lesson that children do not need toys to have fun, they merely need props to use their
+imagination, however, the more sophisticated the prop, the more fun an imaginative and cre­
+ative child has the potential to have. Minecraft, in our opinion, can be seen as the greatest prop
+for imagination ever created because its nature allows for a truly infinite ways of play beyond
+trivial technicalities.
+This experimental curiosity is what pushed ships across oceans, fueled the tinkering of
+countless inventors, and expanded nearly every facet of our 20 culture into abstract new think­
+ing. This energy too is poured into video games, which themselves are cleverly designed to
+target the preoccupations which reward us with sensations of accomplishment.
+In these respects, of meaningful, unique experiences, Minecraft was the first truly open
+world game.
+
+2.2 Infinity
+Infinity is at the heart of the Minecraft experience. The game is nigh infinitely large 21 and
+nearly every element of it is modifiable.
+The state of video games during the release of Minecraft held no comparison to such pos­
+sibilities. Open world video games had existed before Minecraft, such as Grand Theft Auto,
+various RPGs 22 , as well as games mentioned in the preamble, both single and multiplayer.
+However, their playable area or ’maps‘ were fundamentally constrained in size, with much
+of their content being functionless aesthetic setpieces or walled­off backdrops. Not only was
+Minecraft’s map infinite 23 , but the potential for altering the environment was nearly total.
+This process of environmental modification was a huge factor in Minecraft’s popularity.
+The act of modification itself is the core of humanity’s two directions of curiosity: Outward
+and Inward. Outward curiosity is what propels expansion and exploration, inward curiosity is
+what propels invention and observation.
+Before Minecraft, arguably one of the best games for satisfying inward curiosity was Garry’s
+Mod. Garry’s Mod, or ‘gmod’, was a sandbox created for the Source game engine, utilizing
+the assets of several Valve games. Gmod represented infinite possibilities for mechanical cre­
+ation in video games because it provided a vast array of tools for manipulating in­game assets
+and physics. The wide array of abilities in gmod included being able to spawn nearly every
+NPC 24 and physical structure available in any of its integrated, multiple games and to modify
+
+20
+
+Not to relinquish the prevalence of high culture and passed­on eternal truths and discoveries of credit,
+but Minecraft is obviously Western in nature. This document was written and edited by authors born and inundated
+as citizens of the Western world, mondially expressed into the information age. Please bear with us as we fall victim
+to our irrevocably constrained worldview.
+21
+
+The concept of infinity, an ur­question poised in the heart of waking humanity and widely expressed in
+theology, philosophy and both the high and low sciences, with particular attention to mathematics, is as theoretical
+as it is transcendent; it would be arrogant, or, given our good nature, foolish to postulate infinity as the informa­
+tion veritably enclosed within Minecraft. It is, however, its root sentiment and fundamental to the encompassing
+experience. The roads left untraveled in Minecraft are most likely to outlive us all.
+22
+
+See Note 11. No, really. Please.
+
+23
+
+As mentioned before, technically finite, but each individual Minecraft map is of a size no human being
+can exhaust within a single lifetime, rendering it downright foolish to engage in such debate. I have to ask, to those
+privy to such tedium, barring of course Sublime Trolls, do you think anyone has time for you? Right now I am very
+busy studying fractals, you see, and offhandedly perusing a bit of the ol’ Kantian rhetoric in the midst of it. Super
+busy, super educated; erudite; profound; cognizant, cool & close to losing it.
+24
+
+Non­Player Character, or a being who has been trapped inside the game’s fine­meshed programming
+and mechanistic structures, unable to claw through the interleaved tangle, semiotic webs that constrain them to
+solely preset behaviour at the approach of an Outside Entity, more commonly known as ‘The Player,’ hence the
+nomenclature.
+
+10
+
+these assets with every possible application of the Source physics engine, an example of such
+displayed in Fig. 5.
+
+Figure 5: Although simple in nature, this image veritably encapsulates the es­
+sential gmod experience: native Source engine game assets, in this case those
+from Counter­Strike: Source, portrayed in the desert oasis scene; custom im­
+ported or ripped assets, often frivolous given the game’s tendency to lawless
+arena of creation and manipulation, shown here as human­sized bags of Dori­
+tos corn chips; and finally gmod tooling, expanding a player’s options to the
+limits of the Source engine, symbolically bridging the two aforementioned to­
+gether as a physics­enabled rope, hanging the corpus Doritos from the radio
+tower in the scene pictured.
+Whilst there have been other games allowing liberal creative use of their assets, such as
+the Halo series’ Forge map creation, it is generally agreed that gmod allowed players to create
+more sophisticated and expansive creations than any other game at the time 25 . Its appeal
+to a young playful mind was similar to the widely beloved Lego, which stimulates the inward
+curiosity by allowing children to create nearly anything due to their universal interlocking
+mechanism.
+
+2.3 Accessible Specifications
+For several years before the alpha release of Minecraft, I had personally been gaming vicari­
+ously through Youtube videos of custom gmod creation videos and walkthroughs 26 of video
+games my family’s living room computer (a 2004 Sony VAIO VGC­V3M all­in­one media PC27
+25
+
+Note that we deliberately refer to games whose avenues and agency of creation fall within the capability of
+the game itself. If you want to be pedantic and fail to recognize our intention of this paragraph, perhaps deliberately
+so, you could argue that tools to widely modify games have been around since the age of Doom WADs. It does not
+matter. We specifically target the boundless joy of nigh infinite modes of play included into gameplay as­is. If you
+wish to add how an obscure or otherwise underrated historical game did this better, actually, feel free to invalidate
+our entire sentiment with a call to our technical support line at “1­800­REMCORP”.
+26
+
+Recordings of a game’s gameplay which typically tended to full completion and would be excruciatingly
+uploaded in bite­sized, ten­minute pieces at a time due to Youtube’s video duration limits ―truly a product of its
+time. These days, a walkthrough often is appended with either the prefix ‘full,’ or modulated into what’s known
+as a ‘longplay,’ both of which slap a game’s near full duration into a single video file. Special attention should be
+paid to written walkthroughs, which, although these days highly uncommon, serve as a full user’s guide to target
+confounding parts a player might get stuck at during gameplay of their own.
+27
+
+If I may interject... I myself have been reaping the fruits of Minecraft’s splendor for many years, having
+made first contact with the game on my father’s old G4 Powerbook, through a cracked28 OSX client, which I cannot
+
+11
+
+28 29 ) could not run (the act of watching walkthroughs of video games for entertainment was a
+
+precursor to the Let’s Play 30 Youtube Gamer trend that exploded during the 2010s). Minecraft
+was extremely appealing because it allowed for true freedom of gameplay ―and it could be run
+on poor hardware.
+Minecraft was already accessible at launch, but as Moore’s law, describing an exponential
+development into computer hardware processing power 31 , has marched on for more than a
+decade since, low minimum hardware requirements has found its range increase: Mineraft
+is now essentially ‘ported to everything’, from smart toasters to standard issue TI­89 graphic
+calculators, it’s a technical challenge attempted on any turing complete device. Minecraft is
+today a universal game.
+
+remember having downloaded, nor any notion of me learning of Minecraft’s existence. The game ran sluggishly on
+the laptop’s hardware, requiring me to set my vision range to an offensively tiny circle, causing everything in a ten
+block radius around me to be inundated with a thick fog. When I set foot into the newly generated world, my world,
+I punched a tree, got wood and crafted some tools that would allow me to dug a hole in the cliffside wall closest to
+my location29 . In that hole, I would stay for multiple months: the outside world – of Minecraft – with its vast open
+spaces I found impossibly difficult to tread, limited by my range of view, I feared my bearings would be lost upon
+setting any further than 100 blocks out into the unknown, and so I placed beacons of light around my abode and
+crafted a rudimentary minecart rail system to propel me back to safety after having stepped 100 blocks or so away
+from home. Within the hole I carved out of the wall, however, I had begun my empire: I dug out numerous tunnels
+in my expeditions to the bottom; automated harvesting of various natural resources which had I gathered during
+my doubtful trips outside inside subterranean lablike condominiums; tamed an army of wolves to sit at the front of
+my, in my childish mind, now veritable mansion inside the hollowed­out cliffside, the opposite end of which was
+lined with glass, forming a panorama against its natural edges; set up an array of traps outside and, to an even more
+devious extent, inside of my empire, which I had thought up to only be manoeuvrable by myself. The truth was that
+with how I had locked myself up in­game in prolonged symptomatic behaviour which by no means is allegorical,
+there were simply no threats for my virtual livelihood to go around, monsters would steer clear of my dwellings,
+needlessly locked down as they were, and there were no other players for me to interact with. After I felt like I had
+succeeded in my set goals, I stopped playing Minecraft ―and I would not touch it again until I rediscovered it a few
+years later (on slightly better hardware) in a fully renewed experience, playing both cooperatively and adversarially
+in a Minecraft multiplayer experience with my friends.
+28
+Every word and adherent thoughts pertaining to this paragraph are only to be read from a strictly anecdo­
+tal view; any reference within this paragraph made to illegitimate acquirement, distribution or otherwise illegitimate
+use cannot be verified and should under no circumstance be attempted by the reader.
+29
+
+The folder in which the cracked28 executable was located had a quaint custom icon shaped like a 2­and­
+a­half D render of a creeper’s (the most vile, awful, horrible, terrifying, sickening, disdainful, insulting, lugubrious
+creature one might find in the otherwise unblemished world of Minecraft) countenance and furthermore contained
+a terse readme, instructing how one could appropriate skins from a certain player by entering their existing user­
+name in the login field28 , a link pointing to the Minecraft wiki as well as handing out some tips to get started,
+which included the very keen insight that one needs to punch trees to get started; advice I would still personally
+recommend to Minecraft players to this day.
+30
+
+A gross perversion of the video walkthrough format: gameplay superimposed with middling personalities
+who – sometimes even as begrudgingly intrepid to thrust their warped likeness into a webcam lens whose output
+would be tucked away into the corner – vocally hemmed and hawed in full exclamation to the sights as they laid
+themselves out by means of equally middling gaming acumen, their screams and yelps of excitement and distraught
+spiritually akin to the laugh track, dogwhistling the viewer into submission through forced amusement signaling.
+31
+
+Moore, Gordon E. (April 19, 1965) “Cramming more components onto integrated circuits”. Electronics
+Magazine, Volume 38, Number 8.
+
+12
+
+3 Why Web3 Minecraft Community, Why Now?
+It is the general consensus of the Remilia Collective and the Milady Community that Virtual
+Reality is the future of social networks, business, politics, and culture. It represents the fusion
+of mediums which dominated the zeitgeist during the infancy of the internet.
+As society transitions towards Virtual Reality, we will experience a competition of several
+large platforms and engines, each attempting to integrate blockchain technology towards com­
+modification of ideas, conceptual property, and digital information. However, at the time of
+writing, no single VR engine or platform exists with the collective familiarity, ubiquity and free­
+dom of Minecraft. As funny as it sounds, we recognize Minecraft as the first platform for a
+Virtual Reality­integrated lifestyle.
+
+3.1 Coming VReality
+As computers and technology improves, along with the society­wide psychological implica­
+tions of digital life, it is increasingly apparent that future generations will tend towards digital
+representation. In the wake of the 2K20 pandemic, we’ve already seen the increase in remote
+work and with this trend, online video meetings. However, the video call is but a poor form
+of communication within the digital world. Webcam feeds are intrusive, uncomfortable and
+unbecoming; frankly, nobody enjoys video call meetings 32 .
+The videocall experience, with its undignified displays of the human face33 in a Lynchian
+grid of workers politely held hostage by the key speaker, has thoroughly been lambasted in
+popular culture as society transitions to digital communication 34 .
+No, the ideal form of digital communication is fully integrated Virtual Reality.
+Firstly, it allows the user to remain comfortable in their home environment without the need
+to physically posture their appearance or surroundings; this comfort is decidedly violated by
+the intrusive nature of cameras.
+Secondly, VR allows for a smoother and more intuitive experience of communication by
+placing the viewer into an avatar, which allows for movement, gesticulation, and proper local­
+ized perspective.
+Thirdly, both the avatar and the environment are modifiable in ways beyond physical pos­
+sibility in the real world. This can create useful tools for communication which humanity has
+never experienced before.
+Fourthly, the psychological and spiritual implications of filtering oneself through the sym­
+bolism of a three dimensional interactive avatar is something that nearly every member of the
+digitally competent population has experienced through playing video games, or any form of
+related media. Even those who do not play video games and have had no history doing so can­
+not escape the concept of digital representation since they have experience with social media
+35 .
+32
+
+Would it not be ironic if it were not the sequestering to one’s home comforts and resulting reevaluation
+of office­space drudgery is what would foster disillusion and refusal to further participate in conformist society, but
+that the constantly pressing discomfort from interconnected solitude in such a condition would make that leap and
+redefine the will to wageslavery?
+33
+One may be charitable to describe as ‘bulbous and grotesque’, but more ugly is the lack of public edu­
+cation that this is not a mirror on thyself, but an artifact of lens distortion from cameras with smaller focal length
+than the human eye. How much self­confidence of our budding youth have been wrecked so far by these distorted
+self­presentations? And what of the irony that ideologues will pou­pou virtual avatars as psychologically danger­
+ous for that same reason, when distinct compartmentalization over subtle modification must surely ensure the id’s
+ignorance?
+34
+Commodification and capitalization of humor itself has found its way into popular culture, which is de­
+cided by the market makers; the market makers decide on the boundaries of said ‘culture’ and plan out the modes
+of your consumption; your interests are media consumption. Feigned outrage combined with ironic if not sarcastic
+quips that tickle your disbelief are a telling sign ―and they keep playing their hand more conspicuously as time
+goes on.
+35
+
+If you’ve experienced neither, then it is both confusing and impressive that you’ve read this far into a
+
+13
+
+Fifth and finally, a VR communication space is simply more fun to interface with. The act
+of having fun is the most human and noble trait we can have. It lightens the spirit and allows
+for the flow of creativity to introduce new possibilities in the mind. Even something as simple
+as jumping around 36 in a VRchat­rendered meeting space while someone is talking provides
+a simple visual acuity movement that stimulates the imagination, allowing for new ideas to be
+conceived and shared. This is because of movement.
+3.1.1 Movement and virtual interfacing
+Movement is the key ingredient for enlightened rhetorical exchange. Sedentary behavior is
+the death of good ideas, it is why classrooms strangle the minds of the youth into unrest and
+boredom. It was said that Aristotle tutored Alexander the Great by lecturing him during long
+walks; anyone with conversationally competent friends can attest to the invigorating comfort
+of a nice walk and talk.
+Digitally created worlds allow for this possibility to be realized in, indeed, a fully digital
+environment. It is not enough to suggest movement in real life while using traditional video
+chatting ―that is both crude and disjointed. The key element of digital communication is
+recognizing that you are entering another world when you use a screen.
+This hypnotic trance is the conscious shift between real life and the digital world. It is why
+children scream when their parents disconnect them from their games abruptly37 . An older
+generation may see this as disturbing and grotesque, encouraging the younger generation to
+apply the same disdain and disregard towards the digital world that they have. This response
+is naive, a disconnection from a world which the current younger generation must deal with.
+To disregard the digital world is to ostracize oneself from society entirely, limit any possibility
+for natural work, and ignore the mechanisms which affect their physical life.
+The ugly frightening elements of digital existence are a symptom of poorly considered me­
+chanics. The people who created the computer and the cell phone were pursuing the furthest
+reaches of technical possibility without consideration for the effect their creations would have
+on spirit, health, and psychology 38 . These are elements we must iron out as we progress
+further into the world.
+
+3.2 Minecraft is Virtual Golf
+Throughout the 20th century, golf was considered to be the quintessential game played by the
+businessman and the politician. The game of golf allows for amateurs to enjoy it, while there
+is a high skill curve for the competitive and the professional to master it as desired.
+Minecraft whitepaper to begin with.
+36
+
+From a first­person perspective, nothing is as troubling as a lack of jumping! Virtual environments sprawl
+around your field of view, your body is being held down by forces that dictate your traversal. The degree of freedom
+corresponding to vertical translation has always been the silliest of movements from this perspective; it used to not
+even exist, in many games it serves no purpose. Yet, it is absolutely necessary. When everything else completely
+fails, when there is no expression, no communication, nothing to do and nowhere to be, one can always smirk
+gleefully over the irrevocable power one’s spacebar holds. When they diminish your jump or raise the surfaces,
+they fear you. When they prevent you from jumping at all, they insult you to a degree that should not go unpunished.
+Find them.
+37
+
+An interesting, tangential phenomenon is the question of the ’absence of the memory card,‘ oft encoun­
+tered in childhood trauma of the millennial and elder zoomer generation. This phenomenon entails a troubling
+digital ego death which occurs when the video game console one is interfacing, internalizing a digital persona with,
+is shut down and the persona is lost due to absence of data storage. This establishes a vicious cycle in which the
+player is tormented by having to reestablish the connection each time they play, with the only fleeting recourse
+being leaving the console running when one stops playing. This detail could prove to be particularly poignant
+concerning the preeminence of PoW crypto structures throughout the 2010s.
+38
+Consider that technology cannot ever be considered ‘good’: for every piece of teleology and construct
+entering the waking human’s worldview and life, it interminably reveals conundrums, obstructions, contingencies
+and eventually, discrepancies and faults which previously had not revealed themselves within the practice ―and
+without the practice, had not existed whatsoever. Without a doubt, technology is a social construct, but it is also an
+unstoppable force which will drive humanity toward its undoing, maybe.
+
+14
+
+The wealthy enjoy golf because it allows them to occupy their time, something which be­
+comes a real problem if you have run out of other things to do with your day. The business­
+oriented enjoy golf because it allows for lengthy periods of conversation in an environment
+that is both quiet and private.
+The act of occupying oneself with a simple thoughtless task allows for the very same stim­
+ulation of thought that movement creates. Humanity has always had props for conversations,
+mechanisms for exhausting nervous energy into. This process distracts the conscious mind
+and puts us in a trance. This trancelike state allows for the proliferation of new ideas in ways
+that directly focused conversation cannot compare to. Minecraft represents the closest ana­
+logue to golfing and its relationship to business but through the digital world. Witness the first
+Minecraft Real­Life Meetup, dubbed ‘Minecon 2010,’ in Fig. 6 and think again.
+
+Figure 6: Top: Minecon 2010 as it was carried out within Minecraft. Bottom:
+an analogue of the same event, clad in the trappings of ordinary meatspace.
+The overhead textual tagging in Minecraft juxtaposed with the posture of
+the live­meet constituents; standing stolidly, they’re idly waiting to Craft so
+that the true conversation may begin. Both images retrieved from https:
+//minecraft.fandom.com/wiki/MINECON_2010
+In fact, Minecraft has stimulated some of the greatest conversations in recent times known
+to man 39 . The low resolution bitmap typeface of Minecraft’s default chat function lends itself
+to lengthy pontification and the comforting repetitive activities of mining and building in its
+world allow for meditative, trancelike unconscious thought. The game acts as the modern
+digital businessman’s golf.
+The forefront of industry and entrepreneurialism exists in the crypto sphere. Due to the
+increasingly exponential development of tech, now every generation has its own opportunity
+to become wealthy ―and the current generation’s opportunity exists in crypto technology.
+This environment is not conducive to playing golf, it is entirely digital, remote, and fast paced.
+See also Fig. 7 for an alternative, outsider perspective. Think about it.
+A curious trend has occurred with a generation of essentially nerds, gamers and forum
+lurkers, becoming extremely wealthy and defining business for future generations. They are
+rediscovering the mechanisms which their predecessors created out of necessity.
+
+39
+
+And you probably would not have even realized if you were there, due to the offhanded flow of the
+chatbox, much like the walk­talk.
+
+15
+
+The cryptocurrency mimics the rediscovery of economical mechanics forgotten by the gen­
+eral public; the NFT rediscovers the art collector and the critic along with the artist; the DAO
+rediscovers the corporation; so too will a fully integrated VR blockchain platform go on to
+mimic nearly every portion of traditional social­business existence.
+Minecraft and its use in a business has the potential to mimic the necessity of golf. It
+represents the best activity for enterprising young minds to unwind, interact, network, and
+collaborate in.
+The Milady Server sees a future where nearly every project community develops their own
+Minecraft servers to foster their community within.
+Minecraft will receive a renaissance of older players, both fulfilling a sense of nostalgia and
+creating a culture built around mixing their business with pleasure.
+This principle is why Milady has sought to create a Minecraft server for her community. We
+all feel the underlying important meanings behind even the most innocuous activities. As the
+businessman plays golf, so too will the investor play Minecraft.
+
+Figure 7: Another element of golf’s popularity among the enterprising is its
+relative ease of play, something which is critical for those approaching elderly
+age. This precipitates Minecraft’s popularity with time. Do you see retirement
+homes more likely to be having Unreal Tournament LAN parties? Or would
+they be playing a game that’s easier on their slower reaction time?
+
+3.3 Minecraft­Discord­Urbit Daisychain
+Minecraft represents a perfect platform for the virtual lifestyle because nearly everyone rele­
+vant to such a future is familiar with playing Minecraft, the game already allows for freedom of
+movement, a wide array of available mechanics and nearly infinite potential for environmental
+creation, is universally lenient on computer hardware, with a cheap one­time cost 40 , and a
+simple interface which allows for hundreds of people in a single online server if need be.
+However, such a thing also lies at the perfect intersection of business and leisure: Minecraft
+and Discord are intertwined with each other and crypto culture as a whole. Generally speak­
+ing, nearly everyone who has enough competence and understanding to invest into blockchain
+technology on the levels of altcoins and NFT’s during the time of writing has a degree of expe­
+rience with internet culture and most likely has used both Discord and Minecraft in the past.
+40
+
+Yeah, we get it, you can play it for free too. And you’re not actually paying for it, or anything, because
+software licenses are extortion of a information that is already free. But did you also know digital credentials sold
+at a cost basis are the perfect solution to sybil resistance from bad actors attempting to corrupt precious online
+communities? Maybe you should catch up on the Urbit white paper before you read this Minecraft follow­up.
+
+16
+
+41 This makes it a logically sound decision to integrate Minecraft into the Milady Community
+
+due to the familiarity and ease of access.
+The current state of affairs for the internet as a whole is the degradation of what can only
+be described as ‘liveliness.’ This liveliness is a sensation that can only be described in vague
+feelings. As algorithms begin to automate nearly every process of creation and curation, there
+is a visible lack of soul in the results garnered from the unfeeling programs which would attempt
+to predict every bit of content you’d ever wish to consume. Even terminology such as ‘content’
+and ‘consumption’ would denigrate the sacred nature of a created work. This current feeling of
+soullessness has been described thoroughly as the Dead Internet Theory. A problem of feeling
+cannot be solved through algorithmic methodical solutions. It must be dealt with by applying
+emotional intuition towards the functions and experiences we take for granted online. In the
+opinions of everyone at the Remilia Collective, the best way to solve such an issue is through
+Fun.
+Fun is the catalyst for spirit. It enhances the mindless zen state which refreshes the stal­
+eness that sets in through rote function. Minecraft’s nature as a game implies inherent Fun
+through its use. By integrating Fun throughout the entire company, we can create an arterial
+flow of tangible emotional energy between different platforms.
+At the time of writing, one of the most promising projects for changing the cultural land­
+scape of communication is Urbit. Urbit is exploring the cutting edge of what could one day
+be defined as Web 3.0. A new foundation for networks and social media, built on a platform
+integrated with blockchain technology.
+The decentralized nature of blockchain during the time of this writing has relegated various
+projects to be separate entities. This is not disheartening when you consider that the internet
+itself is merely a series of separate technological projects being chained together by interested
+motivated individuals who wish to cooperate. It’s in the name: Interconnected Network.
+We can build our own new internet using crude methods to be polished with time. For
+example, the Milady Discord can use bots to communicate to the Minecraft chat and the Urbit
+galaxy we currently own. We can daisy chain all three platforms together using said bots. Over
+time as the technology and programming improves, this process can be made seamlessly as if
+it were all one cohesive chat. While this is merely a cute idea for now, it serves as an example
+for how we can achieve a decentralized network, economy, and society while maintaining the
+convenience and simplicity that centralization offers.
+
+41
+If you find yourself at an impasse, still ignorant of what Minecraft entails, yet through a staunch obses­
+sion of linear reading and abhorrence of interfering with the internalization process (i.e. a cursory web search in
+between) you have not yet wizened up to the concept, You Are In Luck: by reading this message, you have won
+a FREE! Milady World introductory tour. For redemption, target any Milady Community representative with the
+query “I cannot find the minceraft files.” Repeat unto success.
+
+17
+
+4 Map Design
+The first island of Milady World has been designed to provide players with an initial but ver­
+satile Minecraft experience, focusing on solidarity and lighthearted building & exploring fun
+which should suit any member of the Milady Community on a base level. In game, it is referred
+to as ‘Isle of Milady’ which adorably sounds like “I love Milady” when said out loud.
+This section will namely deal with how our creative vision and ideology outlined in the
+previous sections is embodied within an actual virtual landscape of a Minecraft environment,
+recapitulating where convenient. Explication into tools and further design ideas is given, to
+both provide a historical account of our vision at the time of writing as well as inspire readers
+who seek interpretation where none may be apparent within Minecraft ―you could even say
+that if you have thoroughly perused this document, you don’t even need to explore Milady
+World at all! 42
+
+Figure 8: Quick ideation sketches of the Isle of Milady, outlining a heart shape
+and various landmarks.
+The idea for separating the Milady World experience into uniquely designed landmasses
+came quite naturally due to our shared experiences with survival island­type custom maps.
+These maps regale the players with a set of objectives and deftly puzzled­together environ­
+ments, set customarily on an island, as the endless expanse of the open ocean is the most
+convenient and natural way of telling a player that venturing out is pointless.
+The sort of ‘tutorial zone,’ homebase area and generally amicable atmosphere we initially
+wanted to give to Milady World was envisioned into this sort of island, to give the community
+enough room to build and explore without ever needing to venture into further, assuredly
+more dangerous zones; as mentioned in an earlier section of this document, specific building
+materials and various riches are still locked and will not be available naturally on the Isle of
+Milady, requiring those that seek them to visit these challenging future zones, or trade with
+those that have done so.
+We additionally drew inspiration for the Isle of Milady from similarly secluded safe­zones
+as they’re found in e.g. World of Warcraft’s Teldrassil & Azuremyst Isle and Guild Wars’ Istan;
+hence why, in the true spirit of simple beauty Milady exudes, we decided upon a heart­shaped
+island, which can also be seen in the sketch in Fig. 8, outlining ideas for inlets, mountainous
+ranges and most importantly, an archipelago which is located at the bottom shore of the island
+and where the server spawnpoint resides.
+The archipelago is our main environmental impulse for creating a tight­knit ingame com­
+42
+
+This would be an irrationally unwise decision. Please disregard the sudden tonal shift from the introduc­
+tory paragraph lapsing from stolid description to mendacious nonchalance and visit our Minecraft server, Milady
+World. We apologize for any inconvenience.
+
+18
+
+munity joined by location: not only is it convenient to have built a home close to spawn, which
+also happens to be the only location one can readily teleport to 43 , the unique geography of
+quaint little islands connecting into waterways which span the island’s area is attractive to
+most Minecraft players’ sensibilities ―or so we hope!
+One could argue that Minecraft has a degree of environmental realism up to fantastical in­
+terpretation and given the mysterious allure of floating chunks of ““‘naturally generated””’
+scores of mountainous heights, the impossible geometry of some, typically cobblestone obelisks
+placed by personified forces unknown and the mystical exodus of practically unreachable lands
+which, besides being able to be credibly accredited to many a generative artist roaming within
+cryptoworld, once were known as The Far Lands, it is not entirely an unsupported view.
+However, in spite of these common attributes, the initial landmass design for the Isle of
+Milady was edited in a sophisticated terrain generator called World Creator 44 , in an effort to
+create a realistic outline.
+
+4.1 World Creator & Worldpainter
+
+Figure 9: World Creator render of the preliminary Isle of Milady design
+In Fig. 9, which features the design for the Isle of Milady in World Creator, it can be seen
+how most of the island’s environment is of roughly uniform height, akin to plains and small
+hills we wish to populate most of its area with, whereas the northern parts, respectively the
+atria of the heart we allegorize it as, feature mountainous and large plateaus.
+As such, we wished to effect how even within the Isle of Milady, the areas where players em­
+bark on and have to pass through are more peaceful and less rugged than the reaches opposite
+to it. As for the island’s size, we estimated that for our playerbase, a 4000 by 4000 rectangular
+area would suffice. This size was also taken for the render resolution, 4096. Additionally, the
+water level in the render is not fully representative for the final design but merely to elucidate
+on the rough shape which the island was going to assume. The archipelago is not featured in
+the World Creator render either, due to the difficulty and redundancy of representing islands
+of such a tiny scale within this program.
+43
+Milady World is solely for Vanilla Groovers. We play it Hard, cheap thrills of creepers exploding around
+you, no frills of plugins (they are there but we do not talk about them) intricating What You Call A Blocky Life for
+you, many kills of players that can’t resist bodying you for all your stuffz (no PvP yet but expect curse of vanishing
+by default) yeah that’s right it’s enough. Digital miner?? Whiner whiner loser silly sod by ye notch how would they
+install a mod they don’t know file systems i s2g.
+44
+
+https://www.world-creator.com/, BiteTheBytes GmbH
+
+19
+
+Figure 10: Initial Isle of Milady design, edited in Worldpainter
+The render was exported as a heightmap into Worldpainter 45 , a powerful custom world cre­
+ator and editor for Minecraft. Without regard for biomes, rivers and foliage, the island its shape
+was refined within this program. The design is featured in Fig 10, featuring the archipelago,
+which is added to the southeastern shoreline. We experimented with Worldpainter to see how
+immersive these large, outstretched environments would appear within Minecraft, considering
+Minecraft default terrain generation intermingles itself as an eclectic patchwork of biomes of
+various heights.
+It became rapidly obvious that even though imposing, mountainous heights are of an awe­
+inspiring scale unlike aforementioned normalcy in Minecraft –without careful orchestration
+and painstaking modification, it is also terribly boring. Fig. 11 delineates this well enough:
+note the wide­spanning, toiling climbs on either edge of the image that are simply too vast to
+not invoke monotony.
+Before further experimentation into environmental heights and diversity, we observed World­
+painter’s generative capability with respect to biomes, which unfortunately have become dated–
+especially in light of Minecraft terrain generation updates added in the past two years or so–and
+would require additional manual refinement to be representative of a fully­fledged Minecraft
+experience: ever since Minecraft version 1.12, chunks can no longer be overwritten before
+they are fully generated, meaning that it is impossible to have Worldpainter invoke standard
+Minecraft terrain generation algorithms and simultaneously shape the terrain as addressed in
+the editor, which is notably irksome for underground layers, caves and structures.
+The underground must either be prefigured manually, or sorted out by Worldpainter’s own
+algorithms, which are less than satisfactory. Whilst performing a beautiful, laborious manual
+job is highly commendable, it simply does not fall in line with our design ethos of generative
+artistry, not merely within Milady but as a formative trend within the capabilities of the crypto­
+sphere as a whole. It goes without question that we extend this ethos to Minecraft, treating it
+45
+
+https://www.worldpainter.net/, Pepsoft
+
+20
+
+Figure 11: Scale of epic proportions as created in Worldpainter with facility
+as an emergent virtual world contiguous with all our other efforts; Worldpainter is not enough.
+
+4.2 Terra
+Terra 46 , a custom world generator, capable of functioning through server plugins, was thus
+chosen to generate the Isle of Milady.
+After due experimentation, we are convinced of its extensible framework and highly versa­
+tile capabilities and we intend to make use of it for future Milady World island releases as well.
+Within Terra, one can design their own biomes to be fed into the generator, based on noise for­
+mulae and weighted scaling; it additionally features a plethora of pre­existing biomes, serving
+to overwrite the range of Minecraft’s default terrain generation, together with a sophisticated
+underground; the latter of which being crucial to generation which we previously lacked with
+Worldpainter.
+It is possible to have Terra colour match the pixels of an externally supplied image to the
+closest respective biomes in its array and generate the world to this image its likeness: gener­
+ating the Isle of Milady off an image this way, by borrowing the shape created in Worldpainter,
+served as an excellent hack to not let the design go to waste. We were thus able to algorith­
+mically generate the Isle of Milady whilst also setting strict environmental boundaries, cutting
+down heavily on the manual work required and immediately creating environments very sim­
+ilar to the nuances of default Minecraft generation.
+With Terra set in place and slight modifications made to generation parameters, world cre­
+ation progressed iteratively, which can be seen in Fig. 12.
+As one might remark, these designs look awfully simplified, which is due to the colours
+therein directly representing biomes for Terra to generate without a visualization of elevation.
+Note that whilst the colours were chosen to be intuitive in perusal for both the map editor and
+reader, they are set arbitrarily and their hue does not necessarily correspond to a the texture
+pack tied to a Minecraft biome
+A by­effect of having generation be processed algorithmically is that we can no longer ex­
+actly dictate the layout and height of a specific patch of terrain, unless we create stringent cus­
+tom biome formulae and manually perform further edits, of course; which we did not, of course,
+in the spirit of generative code art. For future, gauntlet challenge­type islands and other mys­
+tical phenomena, we will intermingle this generated versatility with hardcore curated content,
+featuring custom structures, monsters and items.
+
+46
+
+https://github.com/PolyhedralDev/Terra
+
+21
+
+(a) Initial Terra map design, toying with biome se­ (b) Modified Terra design, clearing out odd biomes
+lection.
+& providing general uniformity.
+
+(c) Further modification; added various waterways.
+
+(d) Final iteration; more versatility in plains.
+
+Figure 12: Isle of Milady iterations represented as image file read by Terra for
+generation, listed in order of progression.
+
+22
+
+4.3 Isle of Milady: Ingame
+
+Figure 13: A complete ingame view of the Isle of Milady, rendered with
+Xaero’s World Map.
+A representation of the Isle of Milady as it appears ingame can be seen in Fig. 13, featuring
+a top­down view rendered with the client­side plugin Xaero’s World Map 47 .
+The Isle of Milady is comprised primarily of plains and simple forests, with snowy taiga,
+cliffs and mountain­strewn regions to the north. It is connected throughout its landmass by a
+plethora of waterways and is a peaceful 48 retreat where everyone in the Milady Community
+can reside and come back to, nudging slightly towards the archipelago on the southeastern
+shore.
+Extending from the south­eastern shore, a small patch of swamp stretches out up to the
+north­eastern part of the island, which is dotted by cliffs that guard either side of the twisting
+bay in between. Further cardinally north are two lobes of rocky and sparsely populated hills,
+enmeshed within a chaotic river delta. Their cores feature mountains which surround snowy
+taiga. The west lobe’s river delta forms into a large single river descending into the south part
+of the island, which undulates heavily before reaching the sea, surrounded by floodplains and
+small oxbow lakes at this part.
+This main river is connected with small waterways which follow throughout most of the east.
+The majority of this area is covered by plains, hillside plains, tiny patches of rocky hills, varied
+parts of oak forest, and a single large birch forest which is connected to the south­eastern shore.
+The island further features two deep lakes, a sea trench on the southern edge and a curiously
+shaped island between the two northern mountainous lobes. Whilst this description does not
+47
+
+https://chocolateminecraft.com/worldmap.php
+
+48
+
+Not referring to the respective Minecraft difficulty level; that is set to Hard.
+
+23
+
+cover the full extent of the island’s environmental details, we would like to leave the additional
+nuances to be up to the reader’s avid sense of exploration. 49
+
+~
+Besides environmental ones, a plethora of gameplay changes have been applied in an effort
+to further enhance the authentic Minecraft experience without diverging from it too strongly.
+We are convinced that these changes will help to alleviate annoyances and inconsistencies in
+gameplay and to mitigate bad faith behaviour which is unavoidable in a multiplayer experience.
+The changes are listed below, in no particular order and subject to change in the future:
+• Making use of the plugin GriefPrevention, players are able to claim their own plot of land
+50 , which grants them block protection from other players and locked chests, so long
+as they are placed within the boundaries of the plot. Players can still open doors and
+activate buttons and levers within another’s claim as to not impede on exploration. With
+this feature, we wish to reassure players that they can build as they like without fear of
+theft and/or destruction, within their own personally selected domain.
+• All block destruction from explosions, whatever their source, has been disabled; with even
+a handful of players, over the course of a few weeks the natural landscape can become
+tattered with creeper blast holes which do little other than deface incidental beauty51 .
+• Players can open iron doors and trapdoors by hand. If one prefers, they can still make
+use of a controlled redstone signal; this measure was specifically taken to be synergistic
+with our views on exploration e.g. within another player’s claim.
+• The spawn area–and perhaps various other sanctuary zones in the future–renders players
+invincible to mobs, nor do they spawn in it. Furthermore, players regenerate health within
+and do not have their hunger drained. If one wishes to lounge around without having to
+worry about Minecraft’s survival fundamentals, the spawn area is both an aesthetically
+as practically viable and enjoyable location.
+• All portal creation to the Nether and End is disabled, nor will it ever be enabled. Access to
+these dimensions will be included as the culmination of challenging dungeonlike islands
+in the future.
+• There is no PvP enabled on the Isle of Milady at the time of writing. It might be enabled
+in some parts of it in the future – and assuredly on island additions – but concordant with
+our vision, the Isle of Milady is decidedly peaceful for players amongst each other.
+• The Isle of Milady does not generate with villages, strongholds and outposts; we decided
+that the best way to implement these Minecraft features is through manual curation. Not
+only would the inclusion of strongholds create confusion and frustration amongst players
+when they discover that the End is not accessible, base implementation of villagers and
+49
+
+You didn’t think that we would spoil the full gamut, would you? You didn’t think that by gleaning the
+whitepaper you would gain a competitive edge over the multitude of other faithful Milady Community members
+eagerly competing for the top spot, whatever it might be ―would you? You want to know something, turbo? The
+images you’ve seen, they’re not even the real map. It was generated on a local test server, it’s not the same. We
+know all too well how you crave to create a drowning trap at [3502, 4211] for its favourable position adjacent to
+sea which you inferred from downloading the pic and peering at the pixels closely. It might not even be there for
+all YOU know. It’s not there. We know; we are not the same. Sorry!
+50
+While the authors technically prefer the ‘locked chest’ as a more organic and open­ended solution for
+granting a sense of owned space to the player, land plot claims felt in the spirit of NFT space by both being func­
+tionally (1) NFT­authenticated virtual land, and (2) decentralized, required no artificial mod intervention to reverse
+any potential property griefing.
+51
+
+Milady is about beauty, you know. However, this does not mean that TNT in its entirety cannot be placed
+or detonated. Oh yes.
+
+24
+
+villagers can contribute to a degenerative dynamic in Minecraft progression, especially
+in a multiplayer environment. To prevent unfair dichotomies between players, we will
+provide villages ourselves accordingly.
+• Players do not suffer from insomnia and thus phantoms will not spawn to beleaguer them
+this way. We feel like phantoms are an unnecessary addition to Minecraft in their current
+state as they are a nuisance and aesthetically incongruent with the general atmosphere of
+the overworld. An alternative source of phantoms will be added as part of future content.
+• In Milady World, enchanted items can be repaired at an anvil without having their en­
+chantments foregone. Whilst the mending enchantment is an excellent source of equip­
+ment longevity, we feel that it is too much of a burden on players wishing to create
+endgame level gear they spend hours working for, garnering experience and most of all,
+getting lucky, as mending is considered a prerequisite to many.
+
+~
+With the Isle of Milady ready, we are ecstatic to start preparing the plenitude of challenges and
+community competitions we have dreamed up and are still dreaming of for the Milady Com­
+munity. You can expect to see charming builds, intricate enchantments, challenging, perhaps
+even downright unfair hordes of monsters and bewildering dungeons located deep within in­
+hospitable lands divided by sea, whose adventure and riches will transcend all that a default
+Minecraft world has to offer.
+
+25
+
+5 Commentary
+Art is at the foundation of the Remilia Collective and the Milady Community. Milady was
+created as art long before she was created as an NFT line 52 , and every single person who
+loves Milady loves art itself. This process is fundamental towards remaining as the foundation
+of the Milady Server.
+Our custom continent was conceived to encourage three things: (1) Community, (2) Beauty,
+and (3) Wonder.
+
+5.1 On Progression
+Minecraft’s omnidirectional and infinitely potent utility is also its biggest hurdle in develop­
+ing a proper progression of rewards. Finding gold bars and diamonds inside an abandoned
+mineshaft chest are not titillating discoveries but rather pleasant little additions to an already
+packed inventory of loot gathered during a mining expedition. The various stray bread and
+cooked meats offer brief salvation to the more desperate players who had not prepared for
+their expedition properly. There is very little to get truly excited about when you open up a
+loot chest in Minecraft. The most valuable discoveries are either yet undiscovered seeds of
+new plants allowing for entirely new crops to be grown or items unattainable in­game such as
+the Heart of the Sea 53 .
+This principle was applied when creating the design for the continent. Initially the plan
+was to create a large contiguous landmass with distinct biomes, each holding a new type of
+tree and crop previously unavailable to the playerbase. This was to provide players a steady
+progression of discoveries and items to become excited about.
+Limiting access to items may seem like a step backwards in making the game fun, but
+you’ll find that many custom game modes utilize this principle towards extending the playtime
+of the game. For example, Skyblock reduces you to the bare minimum of available items. By
+acclimating the players to initial limitations, you give yourself resources to reward the players
+as you release new updates.
+Each new continent chunk was to be connected as part of a larger landmass. The format
+has changed to large islands separated from each other due to the jarring effect of adding on
+new parts of a continent over time.
+This was a nonissue however because continuous waterways were planned to cut through
+the entire full map. Rivers provide a means for players to travel long distances and explore
+the new regions we create over time 54 . They act as roads for the best vehicle Minecraft can
+provide. This also mimics the natural pattern of human history where we develop civilization
+along bodies of water.
+
+52
+Please look forward to our DKP­style12 honorable participation social token which will be seamlessly
+integrated in all further Milady­centric events, chiefly those within Minecraft. Bad karma, good shmarma, the list of
+hidden achievements spans the equator and the jury is perpetually in session. Be ready, stay frosty, on your marks
+ready set go, mere words would not suffice to describe the astonishment you effect into neophytes for how early
+you continue to be. Fight for your life within the comforts of your owned spaces, virtually ―or wherever they might
+be!
+53
+
+The Heart of the Sea is a vaunted item in Minecraft which, when combined with the shells of primordial
+sea life, creates an item called a ‘conduit,’ which when placed in water will bless underwater players in a set range
+surrounding it with the abilities of underwater breathing, underwater vision, and heightened block breaking speed
+(which is normally heavily suppressed underwater, terror analogous to that of the real­life article is imparted to the
+seasoned Minecraft player when they happen to get stuck under the ice and are nearly out of breath). Normally,
+this item is only generated inside buried treasure, which can be located through treasure maps found around the
+world or traded with villagers. Milady World however will not allow players to obtain such a powerful item through
+such simple, inviolate ways. You’re going to have to work for it.
+54
+In Minecraft, exploration at long distances is not practical by horseback, the vehicle intended for rugged
+land travel. Horses essentially shut down in any body of water and cannot be stored or transported beyond where
+they can be ridden. They also represent high risk stores of value if they have been bred for good stats. In contrast,
+the boat is a fast portable vehicle which can be broken down and carried. If lost or discarded, another one can
+easily be made from scratch by scavenging wood of any kind.
+
+26
+
+All of this is integral because we very deliberately have withheld the use of teleportation
+from the playerbase. The only teleport command available is the /spawn command. Nearly
+every RPG player that properly envelopes themselves in a game will agree that manually trav­
+eling to different locations is a much richer and more rewarding experience than quick travel
+options.
+The only people who lament the lack of quick travel are those who are burdened with
+needless back and forth travel to fulfill arbitrary tasks. That IS a very valid reason to want to
+avoid the monotony of physical traversing a game map, but it is a complaint resulting from
+poor quest design.
+The Milady Server does not have quests, nor does its map necessitate travel between loca­
+tions for any particular reason. The atmosphere of the game is open adventure. Each feature
+added into the game is an option for the player to utilize, rather than any requirement.
+Furthermore, each item which the players desire from new unlocked regions are a one time
+discovery. For example, once you discover a new crop from a freshly updated new island, it
+will inevitably be available to the entire playerbase through sharing in the community. This
+softly encourages them to participate in events planned out by the devs for introducing new
+regions and custom adventure zones within each region. It is much more exciting and alluring
+to be the among the first people to attain new unique items rather than being granted spares
+or pilfering them from the leftover loot of your predecessors. This principle is also the chief
+decision behind limiting Nether and End access initially, the two exceptions to the distant
+travel necessities which will be explained further later.
+
+5.2 On Socialized Beauty
+The most important thing every Minecraft player builds is their home. Their home is the perfect
+balance between function and form. Every good Minecrafter who fully realizes the potential of
+the game takes time to make their home beautiful. Beauty is the core tenet of good art because a
+good artist makes beautiful art and a good artist lives their art 55 . Therefore, building beautiful
+homes is the functional principle around how we structured the server.
+The act of creating art is a process of sacrifice because the act itself has no tangible benefit.
+Art does not serve a functional purpose, it is an expenditure of time and resources towards
+a goal which does not physically benefit anyone 56 . This turns all acts of art into acciden­
+tal sacrifice rituals which are rewarded by otherworldly feelings in both the creator and the
+audience.
+Building and creating beautiful works so that they may be seen by others is the basic ele­
+ment of motivating creation. Everyone who has created something generally feels good when
+others are impressed by their creation.
+This mechanism is at the heart of the Milady Server’s ethos.
+So many accomplishments in life are only truly finished because of the mechanism of want­
+ing to impress others. This is the core of why anyone does anything of value in Minecraft.
+”After having played for many years, the only thing left which truly brings me back into the
+game fuels any degree of effort I put into it is building.”
+
+55
+
+When we found out that some individuals do NOT live their art, we were as shocked as you probably
+are upon hearing it for the first time, right now ―no, in fact we were and are still more shocked than you ever
+will be, taking on the brunt of the shock for you; imagine the cartoon of a soldier taking on a hail of bullets to
+protect the terrorized family, or that of a man saying wistfully “I’m fine,” to his loved ones whilst he is, in fact, most
+definitely not fine, for he has been incised with a pincushion of knives still sticking out of his back. Milady could
+be that person for you, except there would be no pain and remorse, only the sublimation into beauty. All it takes
+is a simple right click save of the aforementioned and a quick Photoshop (okay, we’ll allow GIMP and Inkscape as
+well) using Milady’s likeness and you’re set, it’s real. You live it now.
+56
+Art, much like crypto, is not a zero­sum game: happiness and enjoyment from the creation, curation
+and adoration of art is a net gain on the positive sentiment in the world. Why should others wallow in collective
+suffering, smallish as it might be disseminated, for my personal heights of enjoyment? That would not be right.
+That would make art evil. What if I love to hate? A faulty system of belief that simply cannot sustain itself with how
+good I’m feeling right now.
+
+27
+
+The act of interaction and enjoying company alone is not enough to stimulate presence.
+There must be some goal or achievement which allows the player to fulfill an inner sense of
+accomplishment.
+The secret pool that ensures a longevity of activity: other people. Other people represent a
+fueling of energy that becomes expended on activities which may become repetitive, tiresome,
+and dull if it were not for the potential of interacting with others.
+The playerbase was to be limited to a localized moderately sized landmass initially, pre­
+venting rogue players from traveling tens of thousands of blocks to build distant homes where
+no community could be established easily. Players have been provided a dense archipelago
+of islands to build their homes and custom buildings on. This cluster of islands allows for boat
+based travel into a continent divided up by a series of rivers cutting through elaborate pathways
+along the entire continent.
+
+5.3 On Generation
+A most pertinent subject wandering in the minds of enthusiasts and builders alike in crypto­
+related spheres is the question of permanence; after all, the sheer inception of Bitcoin as digital
+currency was predicated on the notion of the blockchain as immutable historical record. With
+NFTs and the art community surrounding it, much interest and thought is shown towards that
+same question, of immutability and ways of creation that utilize the unique properties of the
+blockchain.
+Generative art interfaces with the blockchain in novel ways which solidifies the existence
+of NFTs, by means of (partial) on­chain generative algorithm storage and seeds tied to the
+transaction hash for minting the NFT token, assuring immutable provenance through exact
+replication at any time by calling the generation code with the transaction hash pointing to
+that specific NFT 57 .
+A ‘seed’ essentially is a value tied to initialization of a program, typically used for random­
+ization of such. Within Minecraft, the term is well known as the seed entirely determines how
+one’s world will generate, or more eloquently put, where within the interminably expansive
+world of nigh infinite permutations one is placed down to embark on their journey: when one
+uses an identical seed, the Minecraft world generated shall always be an exact copy pertaining
+to that seed 58 . A particular NFT project which embodies the shifting yet compartmentalized
+modes of generation is Harm van den Dorpel’s Mutant Garden Seeder, an example of which
+can be seen in Fig. 14, of which a plenitude relating its intricacies directly to Minecraft could
+be written ―yet I shall simply state that it holds a dear avenue in the back of my mind and in
+its hilarity, to the degree of slight nasal exhalation, the phrase ‘seed’ as part of its moniker; a
+most apposite choice indeed.
+Throughout Minecraft’s history, many players have taken it upon themselves to hunt down
+seeds whose worlds regale you with various fantastic beauty upon generating, places you in
+unknown, irregular environments of all sorts, or even provides you with ridiculous odds that
+would be nearly impossible to find on a dime. Seeds are just as crucial, in both symbolic and
+practical manners, to world generation in Minecraft as the parameters of generation themselves
+59 .
+57
+Technically, NFTs could be made defunct through a 51% attack, oh my! No need to discuss the specifics
+of that further within this document because it is a ludicrous assumption, you can absolutely take our word for
+it. What if JavaScript and its popular libraries for generative and/or code art were to disappear from the gamut
+of human knowledge and archive? What if the entire world shuns ‘on­chain,’ whatever that might mean, in all its
+beautiful provenance and collectively comes to a consensus that it is beneath consideration and does not exist
+―beyond intangibility? What shall we do, what can we do against such incontrovertible forces of occurrence when
+they come to pass?
+58
+
+Presuming, of course, that one is using a version of Minecraft whose generation has not changed from the
+version from which the seed was initially fetched: Minecraft’s world generation has gone through many changes
+over the years, some more subtle than others. That does not mean that the seed is unusable, however, it simply
+will cease to correspond to the previous world and instead create a new pattern.
+59
+
+Seeds in Minecraft can be represented by 64­bit numbers, although due to Java’s restriction on its Random,
+
+28
+
+Figure 14: Harm van den Dorpel’s Mutant Garden Seeder, token 485, ‘Car­
+sie,’ shown at the moment of writing in its current state, having undergone
+two mutations.
+Creating a tailored Minecraft experience can be done in unison with generation, e.g. through
+means mentioned earlier in Section 4, arbitrarily setting limits, covering them in a swathe of
+biomes, and letting Minecraft piece it together and fill in the gaps; an outline with the coloring
+never quite as same as the last. Methods which allow you to shape a rough definition with
+varying degrees of precise scrutiny, generated accordingly to an expansive set of flourishes
+complex enough to cause permutations you would have never dreamed of, exactly by virtue of
+their sublime incidence; as if nature became embodied within mechanistic determinism and
+rigid structure loses itself within frivolous expression, arranging intricate patterns with imper­
+fect asymmetry and irregularity 60 . As such, our ideal of versatile but curated content within
+Milady World follows the unpredictable nature of random generation, and while we try to gate
+certain aspects of the game and direct them into further stages, our approach is as hands­off as
+can be for generative beauty: every inch of Isle of Milady has been directed, not hand­effected.
+
+they are effectively limited to 48­bit numbers. Additionally, a string input for a seed, such as ‘hi’ or ‘milady’ will
+be converted into a hashcode of type int, reducing the amount of possible seeds with string inputs to 32 bits.
+60
+
+As the careful reader might have noticed, this paper is formatted within LATEX, further affirming our em­
+brace of generative beauty: LATEX is a typesetter after all, we were never meant to exert complete control over its
+output. Why don’t we turn THAT into an NFT, Milady World White Paper with randomly generated typesetting, the
+rare holo Figure 5, MS PGothic font trait, oh my God, it even has a watermark.
+
+29
+
+5.4 On Spawn Design
+It is universally accepted that large elaborate spawns are an annoyance which can often deter
+new players entirely. Nothing is more irritating than spawning into a new Minecraft multiplayer
+server and being greeted with a wall of colorful plugin text and over the top massive architec­
+ture with no real understanding of how to exit and where to reach the wilderness. These garish
+displays of architectural hubris create an obstacle towards playing the game and discourage
+the player in creating things on their own.
+As a rule, a player will always care more about their own dirt shack than your life size
+replication of the Taj Mahal 61 62 . It is this personal sense of ownership and achievement we
+wish to foster, so deliberate care was placed on making the wilderness accessible to the player
+as quickly as possible from spawn.
+Creative mode and tools such as world edit are useful towards creating custom architecture
+and structures, but great care must be taken towards feasibility of design. Building something
+in creative mode without restraint often leads to the natural disregard of a player when they
+witness the creation.
+The build must be held to a scale which the player can appreciate and effort must go towards
+the right level of detail. Too large a scale and the player achieves a sort of “depersonalization”
+where they see the creation as unmemorable. It carries the same glazed over effect as false
+environments give you in amusement parks.
+The impact is visually impressive but beyond that it doesn’t give a proper feeling of im­
+mersion. This must be avoided by keeping the scale of the build in perspective to a survival
+mode player. The impression is made effective when you focus on the details. This skill can
+be fostered by collecting a number of tips and tricks when doing minor design.
+For example, placing an open fence gate on a cauldron makes it look like a tiny wheelbar­
+row. Stone buttons can be used as rocks in decoration. Placed string can halt the growth of
+plants like reeds or bamboo without visual disruption. The more detailed you make your build,
+the more fulfilling it will be to explore. Details are an important measure of real life design as
+well.
+Little things like the leafy flowery flourishment on a Corinthian style pillar used in even the
+utilitarian modern light post are important because they mimic the fractal patterns of nature.
+Physical reality exists in an infinite fractal of forms and details. The more detail you add to any
+creation the more captivating it becomes to the audience.
+
+5.5 Milady World’s Spawn
+The Milady World’s Spawn location is a Japanese styled garden with a large pond. The spawn
+itself is a small contained environment with four different exits provided in each direction. The
+spawns chief structure is a pagoda with red background golden “M” banners displaying on all
+sides and corners63 . Outside the spawn building is a courtyard holding a Japanese style zen
+61
+
+Skill is overrated. Skill overlaps with artistry, but to a lesser degree than they would let you believe; skilled
+craftsmen who ultimately further nothing, have no impact on the artistic canon and leave no oeuvre deemed worthy
+of remembrance are overrepresented in scores, most particularly so in the walled gardens of PDPT (Present Day,
+Present Time) SNSes (Social Networking Service) ―and more often than not, those most irreverently belligerent,
+ferociously obtuse and bellicosely irrelevant lack the modicum of said skill62 for them to be worthy of consideration.
+From the opposite side, the boorish layperson lashes out in brutal argumentation: “This is not real art. Real art
+takes skill. This is not real art because it is so unskilled, even I could make it,” yet they never will ‘make it’ (NGMI)
+as they have just affirmed their own incompetence in skilled labour and simultaneous lack of artistic impression
+for regarding the work below a baseline level of understanding. Critique is good, critique is what we want, feel free
+to disprove hubris wherever you see it. But THIS? Ground Gear from World of Warcraft.
+62
+Conversely, contemporary artistry is plagued by a profound lack of skill as well; where students were
+once trained according to a school of art and participated in rigorous practice to attain a baseline of shaping guile
+and advanced praxis of fundamental technical principles, these days one could pass through the credentials with
+various avenues of dilettantism.
+63
+
+This is both an obvious allusion to the M in Milady but it is also an inside joke, the team which worked
+on Milady often spoke of a Jade McDonalds which grew from humorous references to McDonalds being the most
+
+30
+
+garden with a koi pond. Flowing into the pond is a waterfall sourced from a floating island,
+an aetherial flower laden monument peppered by lit candles and minimally designed quartz
+block statues mimicking Greek marble architecture.
+The island serves the purpose of holding a light beacon pointing the sky, allowing players
+to orient themselves against the spawn like the North Star. It also gives a light fantastical
+otherworldly feeling to the server.
+The garden is designed to provide a feeling of comfort and safety. Natural greenery and
+falling leaf particle effects along with the waterfall sound provide a soothing atmosphere for
+initial players to explore.
+To the south and slight east of spawn lies the Milady Village. Or rather, the Archipelago.
+
+5.6 Milady Fishing Village, or The Archipelago
+A map of the Milady Fishing Village is available from the south entrance of spawn with a little
+dispenser of brochures explaining the community zone, an in­game view of which can be seen
+in Fig. 15. Next to it, an Enderchest waystation. This station models all future stations to be
+placed near adventure zones of future continents. This mechanic provides a sort of banking
+system for players to ensure their loot reaches home safely as they venture out into the world
+discovering new regions.
+The Milady Fishing Village comes with a free campfire and mending fishing rod to provide
+players a quick and easy food source and cooking method. This provides the context for prop­
+erly referring to the home zone as a fishing village and gives the players a relaxing activity
+that keeps them out on the surface and more likely to encounter each other while they are
+exploring the islands.
+These homewarming gifts subtly steer the aesthetic and tone of the server 64
+perfect fast food experience physically possible, and in many ways the genuinely most honest straightforward
+public dining experience most Americans can enjoy; and desired to see its cross­over into the status of luxury.
+Like so many of our jokes, it exists in the half satirical half serious state of observation that essentially nearly
+all public dining experiences are generally unhealthy for you. The midrange restaurant would scam you out of
+your money to feed you food that is just as unhealthy as traditional fast food due to the copious use of seed oils,
+PUFAs, industrially cheap ingredients, and gluttonous portioning. The original intent of a restaurant was to be
+an experience delegated only to the most wealthy and affluent members of society. Restaurants were originally a
+very formal affair, ritualistically proper with a full retinue of complete service, and available only to a select few
+members of the population. The spread of common restaurants throughout the population is a 20th century luxury
+born of rampant consumerism and economic prosperity. An underlying constant in the culture and jokes told by
+the founding community here is the Horseshoe effect. The essential premise of this philosophy is that there are
+two extreme oppositions in every concept. The very ends of this horseshoe are both good because they fulfill the
+Platonic ideal of what they should be. The middle ground is death. It is the meandering indecisive mediocrity,
+a poor fence sitter between these two ideals which should be avoided at all costs. When applied to restaurants,
+these two extremes are McDonalds and exquisite fine dining. The middle ground is one of the many thousands of
+midrange restaurants and fast casual stand to order food venues which have spread throughout western society.
+McDonalds was praised because it fulfills the most basic and direct role all fast food has more effectively than any
+other is capable of. Their brand and their menu is the bar by which other fast food restaurants are measured by.
+They provide food in the cheapest and fastest manner possible, balancing quality and efficiency in the most equal
+ratio. Furthermore, McDonalds represents the most basic recognizable form of fast food which is iconic to American
+culture: the burger. The burger is the classic American symbol. It represents fast food better than any other staple
+And McDonalds represents the burger more recognizably than any other franchise. This observation was made
+more humorous when juxtaposed against jade. Jade is a sacred stone used in luxurious art in many cultures, but
+most recognizably Chinese culture. Our founding community’s specific obsession with jade was particularly the
+Jade Cabbage. The Jadeite Cabbage is a museum piece originally displayed in the Forbidden City. It is a piece
+of white and green jadeite carved into the shape of a Chinese cabbage on a small wooden platform. The carving
+has many imitations and variations. The humor of the Jade Cabbage was the juxtaposition between a luxurious
+expensive material displayed with elegant regality against the very thing it was depicting, a bland common food
+known as a staple of peasantry. This synthesis of opulence and poverty was at the core of our horseshoe extremes
+philosophy, the connecting of two oppositions. Its principle meaning applied itself quite easily to McDonalds, the
+modern culinary staple of western peasantry. And so, the Jade McDonalds was born. It is not, in fact, a reference to
+any memetic status McDonald’s may or may not hold with in the cryptocurrency community at the time of writing.
+64
+
+Not only are you gifted with non­fungible (you are not an admin) Minecraft items to favourably steer you
+in whichever direction you desire, forget not that you are also a Milady holder & appreciator. This imposition is
+ubiquitous amongst NFT­centered communities – and for good reason, for it solidifies a fundamental identity which
+can be adopted by anyone entering the fray of community participants, see also the preface – but very few of them
+
+31
+
+Figure 15: Adding maps into the game was a supremely beneficial decision
+for a multitude of aesthetic possibilities
+First, procuring food by fishing is a more peaceful and conceptually lighthearted method
+than by killing animals for meat. The latter is easily available as an option but the former is
+made much easier and feasible when the items are granted to new players in exchange for
+choosing an island as property.
+Furthermore, build protection will be limited on the server, so the security of home can­
+not be spread to dozens of various buildings in different places. Ease of access, proximity
+to community, guaranteed food source, and geographic minor shepherding are the light en­
+couragements which will steer the playerbase towards building their community within the
+Archipelago 65 .
+However, we will never restrict the player from building a home where they wish. Just like in
+real life, there will always be a contingent of people who wish to live away from society. History
+has shown that there is little profit or sense in trying to disrupt the natural urges of the free
+thinkers and hermits. Yet, just like in real life, ostracizing oneself from the community involves
+living without the conveniences provided by proximity to community. This fundamental design
+principle will be the mechanic which splits the server into mildly opposing factions between
+cooperative social groups and lone hermits, fueling the social dynamics which keep the energy
+alive.
+This expectation is the ideal split between archetypes, fostered by the slight guidance to­
+wards the intended island zone. In all reality, the playerbase will most likely be in some happy
+middle between fervent homesteading and rugged independence. I predict a great deal of
+players will build personal private homes within running distance of spawn in all separate di­
+rections, slightly private from each other. A select few may try to maintain as much distance
+from spawn as possible, relying on bed respawns upon death and achieving maximum distance
+from civilization simply to prove a point.
+The necessity of owned space is an inherent principle in every society in history. Even
+operate under hightime, unrelenting, beautifying artistic momentum like Milady does. Already is she shifting into
+higher vibe strata, clambering spirally in the oblong constrained space of the digital world, peaks jutting out of the
+valley from all those pleading to pierce the top. Heed not the firmament, you were in the know back when Milady
+mined through the Obsidian Underground. You were here and you will never be square (again). Think about it.
+65
+
+Now, this scenario is very unlikely, and considering this mention henceforth, steered in all confidence
+toward it not occurring, however: if by some chance no soul embarks upon the Archipelago and gleefully constructs
+their To­Be Judged homestead upon one of the variegated, lovely islets that comprise its area – by that, we mean
+absolutely nobody – we shall turn it into the most unforgiving hellscape one will ever witness during their lifetime,
+both in this world and Minecraft, the latter soon to be concluded by the horrors that will flow abundantly from our
+sneeringly obliterating indignation. We would weep caustic tears of furore and disdain, impinged on the area an
+odoriferous crater of nothing but excruciating pain. But that won’t happen!
+
+32
+
+nomadic societies which held no ideas of land ownership still had their tents, teepees, and
+yurts where they would rest each night. The concept of a place where your surroundings, be­
+longings, and physical space can be protected by the comforts of limitation is considered to
+be a fundamental human right. This natural desire is at the core of economics, and therefore,
+crypto­economics. NFT technology seeks to utilize this desire towards creating entire indus­
+tries around the sense of ownership digital spaces can provide. As we initially assign individual
+islands to each player, you can only imagine the possibilities these plots of land will generate
+as the server finds a stable future. The Archipelago land plots can become themselves tok­
+enized and immortalized as purchasable space for a future where the Milady Minecraft server
+grows to gargantuan participation. Beyond any restrictions, appeals, and rewards offered, the
+greatest pull towards building a home on our Fishing Village Archipelago will be the tantaliz­
+ing power of potential. There exists a potential for any and every plot of land below spawn to
+become valuable property. Some to be auctioned to the highest bidders, others to be granted
+by default to their existing active owners.
+In the creation of social systems, the one rule is that there is always an exception to the rule.
+A light touch almost always works better than stringent restrictions. The few total restrictions
+made were all in the perspective of eventually being released access to players at some point
+in the future in a manner that fits the vision for the server. These restrictions in particular
+include the Nether and the End.
+
+5.7 Restricting the Nether and the End
+The decision to initially cut off player access to the Nether and the End were made in an effort
+to reorient the game’s progression in a more exciting and rewarding manner. The biggest
+issue with the Nether is its relative ease of access. Initially, there used to be a challenge to
+mine as quickly as possible to create a Nether portal, a staple of the Minecraft speedrunning
+66 community.
+With the inclusion of randomly spawned portal ruins, a stroll into the Nether can be ac­
+complished now without even the need for a diamond pickaxe 67 . The common use of Nether
+portals in various player homes litters the environment with what should have been a mystical
+and unsettling presence.
+This reduces the impact of entering a horror dimension into some basic lawn furniture that
+everyone adds to their home like some suburban requirement. The End is only slightly better
+in that it requires the player to journey towards a singular destination to reach it.
+Both of the alternate dimensions leave much to be desired. They are initially unsettling
+to new players but it’s almost guaranteed that anyone participating in the Milady Minecraft
+Server is not a new player. An unfortunate consequence of playing a game consistently is
+that atmospheric environments are burned into routine obstacle courses for the experienced
+players to farm and harvest with robotic precision. This sort of rote mechanical playstyle is
+something we wish to avoid with the Milady Server.
+The Nether and the End will both receive a custom hellish wasteland region of specific
+deliberate design.
+My personal idea for the Nether will be a volcano temple with a bridge in classic RPG
+
+66
+
+apparently they have something called piglins in the Nether now and they love gold??? they restructured
+the entire Nether and they retconned the pigmen into piglins and theyre also no longer a zombie hivemind because
+both of em coexist now, I think??? you cant tell me thats an allegory. imagine if people could coexist next to zombies.
+wait. normies. holy shit.
+67
+
+A diamond pickaxe is the minimum tool tier required to be able to mine/break obsidian, from which a
+Nether portal is constructed; before the introduction of netherite, diamond was the strongest material for crafting
+tools, armor and weaponry in the game and still is visually the most recognizable due to its characteristic light blue
+color. Many Minecraft mods have been created with the purpose of surpassing diamond supremacy with varying,
+increasing and overbearing levels of power, featuring either similar methods of acquisition by simply tunneling into
+the earth or complex crafting structures bearing all sorts of requirements. The glean of the diamond in Minecraft
+is hard surpassed however, as the functional epitome to most of these supplemental crafting materials is simply to
+mine stone just a tad faster.
+
+33
+
+68 style.
+
+The surrounding environment will be ashen, rocky, and hostile. The terrain will be
+extreme and the distance from spawn should be ideal. Not so far it becomes an inconvenience
+to such a degree that players develop a Nether­centric community in close proximity (although
+I do expect a few players to actually do this) but not so close that it ruins the impact of what
+the Nether should be entirely.
+Further, the Nether dimension will be reoriented towards a customized continent that fea­
+tures every of its unique biomes in equal portions of similar size to spawn, if not larger. At the
+time of this writing, it is unclear the exact method used to overhaul Netherite generation, but
+such a mechanic is integral in my personal opinion.
+Netherite harvesting is a procedurally dull task which implicitly encourages the use of X­Ray
+packs 69 due to its painful monotony. This is something I have the utmost focus on preventing.
+
+5.8 On the Journey
+The Journey is the most classic element of storytelling, adventure, and RPG gameplay. Jour­
+neying long distances is also a large portion of Minecraft’s game mechanics.
+It’s disappointing when you consider Minecraft doesn’t really place a great deal of rewards
+for exploring its diverse and often fantastical biomes 70 . The most exciting things to see when
+you travel a great distance are “man made” structures such as villages, ruins, temples, dun­
+geons, and larger structures. Each update seems to understand and attempt to mitigate this
+shallowness by adding things such as underwater monuments, shipwrecks, buried treasure etc.
+However there is very little offered as a reward for discovery as far as simultaneously unique
+and useful items comes to mind.
+The entire server has been crafted around fostering a sense of adventurous journey when
+leaving the confines of home. Custom structures will be littered throughout the server as more
+regions are added. Ambient adventure is the best approach for a large custom world. Trying to
+railroad players into a specific pathway of events requires egregious use of world limitations,
+something we would initially like to keep to a minimum.
+There is going to be one larger protected zone where players cannot destroy blocks per
+each new region. These will have more hands on detailed builds added, with features that
+incentivize player travel. Smaller structures left around various parts of the world will be left
+alterable by players to allow for free modification, adaptation into personal use, or even com­
+plete destructive harvesting if the player so wishes.
+Server events will generally follow a combination of organic exploration mixed with an
+underlying choreographed journey.
+
+68
+
+Exactly what I mean. Textual waylay, irascible efflux, Feeling So Nixed right now. Unfettered, sclerotic,
+highfalutin & aggrieved, aphoristic and tortuous mantic digerati. Hey DJ, spin it around for the landing œn Phoan
+Neim!
+69
+
+Do NOT look this up! X­Ray packs are known to – as some sort of moral ultimatum, a pound of flesh if
+you will – hack all your crypto wallets, funnel out all of the funds, encrypt your files, wipe them, then encrypt them
+again, leave taunting messages all over your workspace and ultimately cause a great deal of suffering to whomever
+dares to install them. It does allow you to peer through the earth and exactly locate all ores and other valuables
+though. Oh and if you try to use a VM or a device with nothing critical stored on it it will cause a power surge.
+70
+
+When spotting a desert temple across the horizon, do your eyes gleam with wonder and does your smile
+curl with delight upon possibly unearthing a highly vaunted enchanted golden apple from its trapped basement
+below? Or would it rather be the trap itself that enthralls you, comprising a most devious stack of TNT when
+expertly dismantled? Be wary of getting the blocks you mine to not drop indiscriminately, lest they fall onto the
+pressure plates and send the thing to Kablooie! I’ve actually saved someone’s life doing that once. The fiend in
+question was looting and whilst I was trying to get an entry up above, the block dropped right onto the plate and
+Hilarity Ensued. It would have been perfect if the blast, despite favorably reducing the interloper to bits, had not
+given way to a pool of lava down below, incinerating all of his items and more importantly, the ones I had carefully
+named with it. My Blue Suede Shoes (it’s diamond, you see), my Ceremonial Leather Harness (also diamond, it
+alludes to quite a curious item with the same namesake in WoW. Go ahead, look it up, haha.) and all the other aptly
+named treasures that I cannot call to mind, gone in an instant. It sounds absolutely ridiculous and uncanny. But It
+Happened.
+
+34
+
+From personal experience, the most fun a multiplayer Minecraft server can have is the expe­
+dition. The most common vanilla expeditions revolve around several big game structures, the
+most quintessentially famous being the slaying of the End dragon. However there are dozens
+of available strongholds in the game, the initial three being available within a two thousand
+block radius from spawn.
+Longer journeys which require several day travels from home provide a much greater feel­
+ing of adventure. In vanilla, the two current overworld journeys which foster a Lord of the
+Rings­esque RPG 71 quest feeling are the search for the jungle and more notably, the hunt for
+the Forest Manor.
+The rate at which jungles are generated originally was equal to that of any other biome but
+has now become a rarity for players to reach. The jungle is an exceptionally important biome
+to players because it contains access to several plant types and mobs which cannot be found
+in other biomes.
+In a server I recently played, a depiction of said venture also visible in Fig. 16, I had to
+travel 15,000 blocks to find a single jungle. Years ago, the process of finding a forest mansion
+led me to travel 14,000 blocks 72 . Any distance beyond 2,500 blocks of travel requires the
+player to adopt a kit, which generally includes a bed, a boat, a dedicated row of tools, and a
+decent stack of food. Horses can be a useful addition to great distances of travel but inevitably
+large bodies of water will interrupt any efficient use of horse riding. The boat is your bread
+and butter when you go on long journeys. This is why we opted to create a server with lengthy
+and intercrossing rivers which act as roads for the player to use while travelling. Actual roads
+were planned as well to encourage the utility of horses, but once a fully contiguous continent
+was deemed unfeasible, the river method held precedent.
+
+5.9 On Casuals vs. Try­hards
+The entire ethos of the Milady Server is to encourage the community into light play. The tryhard
+underground tunneler is a staple of Minecraft but no player should be forced into obsessive
+autismal behavior to simply benefit from a natural feature of the game. This same reason is
+why we will be looking into tweaking the enchantment system 73 .
+Many parts of minecraft require such polishing. It is always fun to create farms 74 and
+71
+
+I cannot take this anymore. My weary, stomped on soul cries out in anhedonic anguish, terrorized by the
+uncertain timing of the swift pain’s powerful strike. I do not know what an RPG is, nor will I ever. Do you enjoy
+the idea of inscrutable phenomena encapsulated into language, abstracted from sensory impression entirely? An
+animal knows it can die and tries its utmost to survive, as does it comprehend and see death when it is carried
+out by or laid out before it. An animal does not fear death, however, as this abstraction is divorced from sensory
+impression. An animal has not the slightest clue what an RPG is either, but this lack of comprehension stems from
+that same inability to abstract, and not the unsettling awareness of the unknown. I envy them.
+72
+This phenomenon is without a doubt The Most Terrible, The Most Fucked Up Thing about Minecraft
+and by extension many open­world games which set no tangible limit to randomization: somewhere out there, in
+this world, there exists a player traversing the world of Minecraft, hopelessly searching for a jungle they may never
+find for lot ordained it not to be so. Imagine being the player who never finds a jungle, who never gazes upon its
+dense foliage and unique spoils, never obtains the gottdamn cocoa beans (cacao). Imagine being the player who
+will never amount to anything because ‘percentages’ as they describe it – most likely foaming from the mouth with
+sardonic glee – stretch unto infinity and technically allows for it to happen ―for things to NOT happen. Go ahead,
+look up ‘geometric series,’ you’re not going to believe what you see and that they were able to get away with this.
+There are ocelots in the jungle, it’s insane.
+73
+Basic Minecraft enchantments suck! We said it & we said it again. There is no reason for the mind­dulling
+grind that subsumes carefully­spent time necessary for maxxed­out armor and weapons. I could simply put down
+an ol’ bucket o’ lava to constrain your movement and fishing rod you in and even though it is unlikely to kill you
+since you run with That Protection IV on Everything what is stopping me from putting down the End crystal click
+click boom we’re on hard mode boyo that’s right nothing. Hence, an alternative approach.
+74
+Farms to farm anything that can be farmed, hence the term; to use or abuse typically in repetitive manner
+and laid out as efficient and/or efficacious as possible for the highest yield per timeframe. Within Minecraft for
+instance, creating a funnel for hostile mobs to spawn in great numbers, then plunging them down a chute to fall
+to nearly their deaths, into a cramped box whereupon the player whacks their sword to garner both item drops
+and experience pointz, the latter of which only begotten at their hands personally. This is just for all you nascent
+
+35
+
+Figure 16: This particular voyage had taken a full Minecraft week. Such treks
+have been integral to developing a good sense around the adventurous ele­
+ments Minecraft can provide.
+think about how to game the system towards maximum benefit, but in multiplayer especially,
+it becomes laborious and even exhausting to try to maintain an arms race competition with
+other players. You feel an underlying sense of pressure in collecting resources, reaching new
+benchmarks of progression, and maintaining equal status with others.
+This feeling reaches its peak in anarchy PvP servers where the entire playstyle is built
+around an insurgent level alertness. The homes are underground holes, the players are suspi­
+cious of each other, and the feeling is unsteady hostility. This is very fun if you have an intent
+to play the game to its maximum, but there is an unequal dynamic between two types of players
+which becomes trampled when you embrace the PvP atmosphere. Fig. 17 shows the typical
+sights of virtually any anarchy server as they develop 75 .
+
+Figure 17: Minecraft anarchy servers thrive on subverting serenity through
+the most primary means of expression: building and the total destruction of
+such. Both images in this figure describe fundamental states of abject lawless­
+ness which is unavoidable in any server without rules nor social cohesion, an
+eschatological pair of states between which is irrevocably bounced: on the left,
+griefed, suspended remains of what once must have been an assorted whole
+of creations; on the right, the blotting out of the atmosphere by an enormous
+lava­casted wall, a means of additive griefing in Minecraft allowing for a wide
+surface to be covered in cobblestone with relative facility75 .
+noplayerz out there. Wait, I completely forgot, yield farms are a thing ―you do understand, yeah! Yield farms which
+reap you terrific reward in a repetitive structure! You ARE earning, right?
+75
+
+This pair of provided images is courtesy of my own fastidious handywork: the landscapes pictured were
+
+36
+
+The Casual­Tryhard dynamic is a consistent dichotomy in nearly every multiplayer game
+that must be balanced carefully. Casuals make up a greater portion of revenue in traditional
+multiplayer games. Their presence allows for the greatest degree of fun to be had by all because
+they act as both cannon fodder for Tryhards and represent a caste of playstyle to enter for all
+newcomers.
+The Tryhard is a minority of the game community but they are responsible for a great de­
+gree of lore knowledge, meta development, and defining game culture. They are the ceaseless
+soldiers in the trenches of any multiplayer game 76 77 . Both of these archetypes are necessary
+to make any multiplayer game fun. They generally have a soft derision towards each other
+and an often short sighted company will cater more towards the Casual playerbase than the
+Tryhards.
+While this is technically the correct decision to make, often it is taken too far and Tryhards
+become punished for their own ingenuity. The methods they discover towards pursuing max­
+imum efficiency are often revoked through patches and updates. Tryhards are necessary for
+discovering innovations in games themselves, such as surfing and bunnyhopping.
+The efforts of a zealously obsessive minority often shift the boundaries of entire cultures, it
+is their toil which pushes the wheel of time forward. A game which strangles the Tryhard too
+much is a stale child’s playpen which offers no lasting consistent satisfaction. However, the
+Tryhard must be kept in check and great care must be dedicated towards the Casual player.
+Even the most primary action in Minecraft, that being mining, can be menially 78 gamed by
+those willing to attempt it, see also Fig. 18.
+If this is not done, a game can be completely ruined by a cabal of jobless NEETs who snuff
+out any opportunity for organic fun. There are thousands of dead multiplayer games kept
+barely alive by a contingent of obsessive super­players who thoroughly crush any opportunity
+for new players to enjoy the game unless they decide to dedicate unreasonable portions of
+their time towards mastering a highly developed meta. Melee combat games are unplayable
+for newcomers on an average approximately three months after their release.
+The Milady Community is primarily accessible only to verified holders of the Milady NFT.
+This implies that its community will be populated by young adults who have some source of
+income to allow them to make investments and large purchases. We felt that it was necessary
+to steer the server culture towards a more casual playstyle.
+griefed by none other than myself, carried out in servers whose identity will remain unmentioned for their safety and
+well­being, throughout various points during 2020. I have deliberately showcased these pictures as they provide
+excellent visual commentary to my overall artistic canon of destruction (playfully referred to as ‘the cannon’ at
+times during sporadic grief­meets), without revealing their methods in sufficient, replicable detail. This as a barrier
+of entry to sloven iconoclasts whose omnipresent entry into Minecraft servers would sully unmarred obliteration if
+accidentally initiated into a spurious simulacrum of the art.
+76
+
+To the multiplayer Tryhard, your livelihood is nothing but a shred of enjoyment in pursuit of an exponen­
+tially insurmountable high. Tryhardism is a internecine loop, as each of its adherents’ subsequent efforts reward
+them with increasingly less and has to be equaled with more distress from other players around them77 . A similar
+but psychologically less playful phenomenon can also be correlated with the history of war throughout the 20th
+century.
+77
+
+Milady says: wind down, blow off some steam, unfurl the furrows that plague your headspace, break
+down all walls and collapse upon yourself. Everyone deserves a second chance ―to die!
+78
+
+Commonly, acts of tryharding constitute ‘creative use of game mechanics’ as it is referred to in the lit­
+erature, and excessive furor toward developing ability well beyond the striving of the common gamer. However,
+beyond developed and inherent talent for intuition, menial tasks comprise a great deal in this development: fighting
+games require the player to memorize various combinations of button presses and timings to be able to compete;
+FPS players frequently practice how to track and twitch aim at targets to uphold and improve their level of accu­
+racy, beyond mere reaction times; (MMO)RPGs79 and various strategy games have players benefit greatly if they
+meticulously know the ins and outs of all forms of skills, stats and item specifications. Clearly, a lot of effort is
+expended by the Tryhard into asserting a position above all others. One would have to wonder whether this would
+translate to other skills, outside their niche continuum.
+79
+
+Huh? I’m sorry, what did you mean? I can’t see it. Can you tell me again I don’t think it’s there, it’s
+not showing up for me. Uhm yeah I think it’s not working for me I have a problem right now. Can I do something?
+Hello? Hellooooooooooooooooooooooooooooooooo
+
+37
+
+Figure 18: Underground strip mining, as shown from a top­down perspective
+through a Minecraft map viewer, committed by likely the same individual, over
+both the Overworld on the left and the Nether on the right. Curious as it might
+look, this player is exhausting the opportunities to find rare materials close to
+the bottom of the map, exposing the most amount of blocks within an area
+with the least effort required.
+Most of the playerbase will likely consist of people who only have time to play one or two
+days out of the week, most likely for hosted events. Such a person would have little motivation
+to develop an investment into the server if they felt that their efforts would be dwarfed by an
+obsessive constant Tryhard community. This is why we’re developing 80 to pan out Milady
+World with continent and island­based releases. New items and regions are available on an
+equal rate of progress for every member of our server. Each update will be designed in a
+manner that does not strangle the intrepid and does not coddle the indifferent.
+
+5.10 On Exploration
+Once you have explored nearly every feature a game has to offer, the only new things it can
+offer is what other people have created. This element of creativity and third party modification
+is what keeps games alive. Fallout 81 and The Elder Scrolls are game series famed for having
+their community­created mods become more integral to the game than the original game itself.
+
+80
+Ah ah! This is the part where one could have expected, where one could have inserted into the text the
+most villainous and deplorable of crypto verbiage: the all­too dreaded, emaciating, terror­clad and soul­shattering
+ROADMAP ―and this abject corner of the page is the only place where you will find it. Roadmap, roadmap,
+roadmap. Have I ever told you guys how I upset a Minecraft social dynamics by mapping out a single road? It was
+extremely straight and efficient, but it was not liked for exactly those properties, despite my dilettante, incidental
+penchant for creating geodesic lines (throwing out the DNR on ‘Curved Minecraft theory’) and was meticulously
+erased with all trace of it instead pointing toward an undulating “““““natural””””” road, which I thereupon flooded
+as well as the town it lead to. Numerous times.
+81
+
+For many gamerz, invocation of ‘Fallout’ evokes fond memories to those dang post­apocalyptic open
+world, FPS, ‘like Skyrim with guns’ – except curiously, for the games that bore this moniker, having released
+before Skyrim itself – game series. This is also what we are referring to in this brief mention, as clearly no soul
+gives a damn about Fallout 1 and 2, which were isometric, … some type of games. Milady Gamer Tip: in Fallout:NV,
+when inside the Sierra Madre, remember that items can be deposited into corpses, who customarily have pockets
+the size of a dimension. Those corpses can be dragged. That’ll be all!
+
+38
+
+Even the act of modding a Bethesda game 82 is in itself a fun game to play, stimulating the
+obsessive satisfaction one gets when they accrue new things. Playing mods for other games
+allow the player to explore the creations of others and experience something new.
+When you join the Milady Server, you are exploring the world within which we have created.
+By doing so, you are exploring our thoughts and discovering hints towards how we think and
+how we create. However, we are doing the same to you. We watch as you populate our humble
+server and create things of your own. The interaction is dynamic and dual. We witness the
+playerbase grab hold of and manipulate the mechanics we place before you.
+We have no doubt that the playerbase will do things with the Milady Server that I had not
+previously considered. The most unpredictable element of any system is the human element,
+see also Fig. 19. Those who feel that they can master the will of others and predict it to accuracy
+harbor an arrogance which will be punished by circumstance and time. The most important
+part of any game is other people. Human beings contain the divine spark of random chance
+buried deep within their souls that allows for games to truly become experiences. The element
+of play is deeply spiritual. It manifests itself when unburdened minds are given an environment
+to experience.
+
+(a) The Chinese nail house perfectly demonstrates
+the stubborn tenacity in human nature and personal
+ownership of property.
+
+(b) Technically, so does the Pixar movie “Up”
+
+Figure 19: Depictions of structural stubbornness as they might well be ex­
+pressed within Milady World.
+
+82
+Which players are downright expected to do, given the utility of even installing an expansive bug­fix
+mod, that in many cases resolves plenty of issues and regales the game with content that pitiful console­ONLY
+players83 would never be able to experience, while they PAID for it, too.
+83
+
+Yes we can say it, are you reading this whitepaper from your console, huh? Are you disgruntled of our
+two­word irreverent attitude toward console players regarding bugfixes especially for Bethesda games, growling
+from your cracked PS3 Fat Red Ribbon Linux distro?
+
+39
+
+6 Conclusion
+The games children play when left unsupervised mimic the natural tribalistic instincts of hu­
+man beings along our pathway of development as a civilization. In a Lord of the Flies­esque
+manner, children who find themselves aimlessly gathering in organic groups develop their own
+territories over time; a gang forms in any gathering of children in unsupervised environments.
+Eventually as these groups expand and travel, they encounter each other and dispute over
+territory or personal issues. Over time, in combination with poverty, the abuse of substances,
+and the increasing familiarity with penal consequence, these disputes escalate from fistfights.
+They begin to use weapons like chains, broken bottles, and tools. Eventually, they develop
+violent encounters with firearms and form into armed gangs.
+This natural mechanism of human existence is why many police organizations create youth
+programs. They seek to inhibit the natural consequences of people gathering together without
+aim. When you allow people to do as they wish in a social gathering without restriction or
+consequence, they develop curious habits which offer insight to how we developed as a species.
+The principles of human behavior reflect themselves in games. Countless multiplayer games
+have revealed curious and fascinating trends, sometimes even producing epic stories of organic
+adventure or tragedy. For example, the 2005 ‘Corrupted Blood Incident’ in World of Warcraft
+presented a situation where high level players could spread a contagious lethal virus through­
+out the entire game. The in­game pandemic lasted for a full month and saw abandonment of
+major in­game cities and server quarantines before the entire game was reset. The incident
+was studied heavily by epidemiologists and various government agencies as a model for how
+viruses spread and how terror cells can engage in biological warfare.
+With Milady World, we intend to harness human impulse unto inner fulfillment, the will to
+power and, as has been stated a million times over, foster creativity inside the open, highly ma­
+nipulable and immersive environment of Minecraft, which is still like none other in its plethora
+of possibilities. For numerous decades, the idea of a computerized para­world, a digital play­
+ground and immersive social space not bound by, but equally capable of replicating the laws
+of nature as we perceive them, cyberspace, virtual reality, a metaverse has permeated the
+minds of dreamers, hackers, academics ―and possibly anyone who took the time to reflect
+alike. In this day and age, the videogame industry has reached a degree of commodification
+equaling broad mass­media consumption. Yet, the spirit of gaming and human desire for play
+seems equally stifled through this trend; although market movement coupled with current­day
+processing power might finally engender those hopes for digital immersive environments that
+truly could feel more real than reality itself, we must never forget where we come from; we
+must never forget who we want to be, and stave off the suffocating sheen of modernity that
+is accompanied by all its luster. Milady World might seem simple, as it is solely a Minecraft
+server – factually that is correct – but with it we wish to explore modes of sociality within this
+exciting age of budding Web decentralization.
+Nearly everyone who plays video games has at least one memorable unique story induced
+by their own actions or the actions of others. A game on its own is not the fun of playing, it
+is simply a foundation for the actions of humanity which create true fun. By focusing on the
+behaviors of human beings, the experiences which come from interacting with others, and the
+elements of good multiplayer experiences in the past, and recognizing that socialization that
+occurs in the virtual world is real, it’s beyond ‘just a game’; we hope to create the conditions
+memorable events in the hearts and minds of the Milady Community. Everything is real.
+
+40
+
+Figure 20: Milady loves Minecraft! And Milady loves you!
+
+Figure 21: Why are YOU still here?! Get to it!
+41
+
+Your Names, Please
+
+42
+
+

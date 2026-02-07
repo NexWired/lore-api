@@ -1,0 +1,138 @@
+Introduction
+
+You are here, at the protracted cusp of socioeconomic upheaval, accelerated by a cultural shift that has succeeded in courting institutional powers. While the dreaded decline is felt in real time throughout the West and its media, we now find ourselves in a position to reflexively and triumphantly recoil against the manifold impositions whose coyed cladding was unabashedly shed in the years preceding.
+
+AI-enabled toolkits, reaching further heights to empower the unwieldy, will stamp out mediocrity and indolence from the mean—perhaps painfully—yet their demand for agency and creativity will be worth it. Make no mistake: the air is rife with opportunity.
+
+The true issue lies in the extent to which monetary gains enabled by contemporary markets have been effacing the deep-seated ideologies that birthed them. They expanded civilizational “freedoms” with money, and they will gleefully line their pockets building a global panopticon of censure and stultification in exchange for your obedience.
+
+Remilia brings you this zine, the first of many to come, striving to become the Federalist Papers for the cypherpunk era. Inside, you will find essays from curious minds within the Milady community: individuals who value decentralization and freedom of information, association, markets, and speech.
+
+If you feel inspired—whoever you are—reach out. Submit to milady@remilia.org
+. Give me something good.
+
+— Onno Whitemoor
+
+The Hardest Blockspace
+
+Tim Clancy
+
+If Ethereum’s mission can be distilled into a single phrase, it is this: to offer the highest-quality blockspace at the lowest possible price.
+
+In this mission, Ethereum succeeds. There is no second best. Ethereum shines the brightest; it is the exceptional city upon a hill.
+
+The quality of blockspace depends on hardness and neutrality. Hardness guarantees that transactions execute correctly without violating the immutable rules of the network. Neutrality guarantees that blockspace is accessible to everyone and that no transaction is censored; a node of your own cannot be prevented from letting you use Tornado Cash, as it is impervious to state sanctions.
+
+Hardness and neutrality are both functions of decentralization, and Ethereum is far more decentralized than anything else. It is the only network with meaningful client diversity—nodes run one of many consensus and execution clients rather than relying on a single implementation.
+
+Every builder and user, consciously or not, is principled enough to uphold this vitality.
+
+Remilia weathered the 2022 “Milady cancellation” hoax and emerged as a lightning rod for speaking freely within a regime of censorship. Milady is courageous.
+
+Remilia has imbued its culture with radical freedom of information and freedom of association. Simply wearing a Milady is an expression of post-authorship, embedded in the Viral Public License that shapes its aesthetic. Milady embraces the post-cancelled right to dispense with masks and be radically candid. It is both a ticket to have fun online and a sword in the crusade against censorship.
+
+Vitalik warns us—and we heed him—that the technical and social projects are inherently intertwined. If the social layer becomes centralized, the technical layer will follow. Milady culture aligns naturally with credibly neutral Ethereum and the free spread of information in a marketplace of ideas.
+
+Milady is perfect.
+
+Our culture is a prophylactic against the rot: the adoption of closed-source software, the acceptance of centralization, and the normalization of financial nihilism. These are weeds that must be ripped out if the Infinite Garden is to survive.
+
+The ends do not justify the means; the journey matters just as much as our immutable future. The network demands that you be courageous, virtuous, and principled. Be an ideologue, an Ethereum fundamentalist, a copyleft extremist, a decentralization zealot. Be here for trustless compute. Be here for the World Machine. Find renewed clarity of purpose and surround yourself with those who care just as deeply.
+
+It is okay to care. It is beautiful to care. Ethereum remembers how to dream.
+
+Lowest Possible Price?
+
+Tim Clancy
+
+Ethereum blockspace is the hardest in the world, yet it must remain accessible—capable of running a full node on consumer hardware anywhere.
+
+How do you scale Ethereum without sacrificing decentralization?
+
+For now, Ethereum embraces the rollup-centric roadmap. External L2 networks trade higher time-to-finality for cheaper transactions by settling batched activity to Ethereum. This approach has succeeded dramatically; Ethereum’s ecosystem throughput has increased over seventeen-fold.
+
+L2s provide low-cost transactions while ultimately inheriting Ethereum’s security, albeit with some delay. However, despite strategic success, execution has been a tactical failure. Corporate interests have irresponsibly onboarded billions into contracts at the mercy of “security councils” and other trust-based mechanisms.
+
+The situation is improving, and new L2s are emerging that truly honor the foundation Ethereum provides. May ten thousand L2s bloom.
+
+Ethereum has also not abandoned the effort to scale itself directly. The endgame is SNARK-based proving of Ethereum itself, enabling validators to verify succinct proofs rather than simulate entire blocks. The result: a faster, more accessible Ethereum where one could stake trivial amounts of ETH from a phone to help secure the World Machine.
+
+My Favorite Virtue? Courage.
+
+Tim Clancy
+
+It is courageous to stand by fundamental principles in the face of criticism, shortcuts, and falsehoods. It is courageous to practice restraint and avoid the path of mediocrity.
+
+Ethereum demonstrates immense restraint by refusing to sacrifice decentralization for scalability. When the SNARK-based endgame was proposed, critics attacked Ethereum for not immediately increasing hardware requirements. Yet the core developers understand that turning Ethereum into a datacenter chain, though easy, would be catastrophic.
+
+Obscene amounts of capital flow into lesser networks that compromise on decentralization. Ethereum builds for users of the soul. It will not abandon its values.
+
+Ethereum is the new internet: a perfect, unstoppable, composable platform that tears down walled gardens and reconnects people in infinite ways. A home to restore the spirit of the old internet, before sentiment was captured, sterilized, and commodified into “content.”
+
+But this grand experiment only works if we care—if we build culture. Developers and users alike must uphold Ethereum’s values.
+
+We know this instinctively. Otherwise, we would be wasting our talent on SaaS slop devoid of purpose. Instead, we choose Ethereum.
+
+The World Computer is the ground on which the future will rise.
+
+So I ask: What will the future be?
+
+For centuries, the specter of tyranny has driven people to defend free speech, free commerce, and privacy. Yet many have grown complacent beneath the hand that feeds. We must remember the stakes set out by cypherpunk forebears.
+
+How do we honor the release of Ross Ulbricht, who embodied the struggle for digital freedom? How do we defend Roman Storm, still subject to state tyranny? Tornado Cash is a defensive weapon against the state and a model for all of us.
+
+Too few builders create anything of comparable worth. Too many compromise for today’s payout. KYC must be banished. Let its presence disqualify services from consideration. Let your work be guided by decentralization.
+
+Stop taking gigs. Believe in something. Stop trading. Build the future.
+
+Censorship resistance is non-negotiable. The impossibility of preventing valid transactions from entering the chain is a feature, not a bug. Inclusion lists move us closer to that ideal.
+
+What distinguishes a cypherpunk is that the asymmetry of power is reversed: the state’s coercive capacity cannot overcome immutable cryptographic law.
+
+What does it mean to embed values into Ethereum? It means the chain's very existence affords the free exercise of those values.
+
+Milady is the face of Ethereum’s cypherpunk. Put it on.
+
+NFTs function as principle-laden Veblen goods that rally sociocultural consensus. They speak values. Why has Vitalik chosen Milady? Because Milady survived cancellation and continued with unstoppable momentum. It is a political flashbang—instantly recognizable and unafraid.
+
+The commitment to absolute freedom of expression offends the spineless, the misled, and the envious. But the day you ask for censors is the day you forfeit the future.
+
+We are here to build a brighter tomorrow. Anything less than unwavering allegiance to what is right will fail the World Computer.
+
+What face do you wear?
+
+We will build a free and open World Computer.
+
+Milady.
+
+2184
+
+Davetist
+
+I never quite woke up; it felt more like drifting into the day, my mind still awash in the pale indigo glow seeping through every window. My floating bed, wrapped in sensor-fiber, had already synced with the local node overnight, collecting fragments of my dreams in exchange for freshly minted participation tokens.
+
+Odd currency, perhaps, but that’s how life works here. Every quirk, impulse, and creative spark becomes part of a unified ledger for everyone’s benefit. It used to be called Ethereum, back in the days of the old internet. Now we call it the World Machine.
+
+Outside, the corridor glowed softly, as if starlight had seeped into the paving stones. I passed a neighbor trading seeds at a small vending alcove. She handed over orchard cuttings and received fractional tokens from her orchard’s DAO. No middlemen, no corporate logos—just the quiet hum of cryptographic direct trade woven into everyday life.
+
+It didn’t feel like a marketplace; it felt like a shared heartbeat. The World Machine had blended into our senses.
+
+In the cultural commons, I joined a group around an AR display. Someone demonstrated a prototype that used biofeedback for voting—casting your vote with your heartbeat. Odd to outsiders, but here, odd ideas get a fair chance to grow. Code isn’t about transactions; it’s about shaping hope, trust, and the future.
+
+People call it post-capitalism, but I think of it as post-scarcity. Essentials—food, shelter, power—are available to all, either automated or supported by transparent, decentralized systems. Tokens still exist, tied to everything from energy production to farmland yields, but they feel less like currency and more like tending a shared garden.
+
+In the Knowledge District—sunlit glass walkways and fractal shadows—code merges with art and spirituality. Philosophers debate zero-knowledge identity proofs in VR, painters mint their brushstrokes as ephemeral tokens, and librarians preserve memetic sanctuaries once lost to time.
+
+The place crackles with possibility.
+
+I stopped by a discussion on preserving privacy while maintaining radical transparency. Their words shimmered in the air as animated symbols—code in motion. No one commands the city; its direction emerges from voices, code, daily gestures, and minor miracles synchronized with the World Machine.
+
+Soon, I will contribute my own idea: a network to channel rooftop algae-farm energy directly into the grid.
+
+Crypto and its Discontents: Hello Web3 Entryists
+
+They will not get far, but you can expect them to add cyber-anarchism—decentralization itself—to the growing list of “problematic” targets. Expect cancellation, censure, economic isolation. Expect attempts to co-opt decentralized aesthetics and redefine values to introduce convenient vulnerabilities to state control.
+
+Yet true computer liberation is already here. Power has migrated to the people through tools born directly from cypherpunk revolutionaries. This is the only political status that matters, and resisting erosion of our freedom is the only necessary praxis.
+
+This is why they are afraid: we are building our own ark.
