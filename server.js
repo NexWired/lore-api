@@ -452,6 +452,67 @@ function getWisdomQuotes(count = 5) {
   }));
 }
 
+// Get tweetable quotes (pre-formatted for Twitter, ≤280 chars with attribution)
+function getTweetableQuotes(count = 3) {
+  const index = loadLoreIndex();
+  const quotes = [];
+  
+  // Extract author from path
+  function getAuthor(filepath) {
+    if (filepath.includes('charlotte-fang')) return 'Charlotte Fang';
+    if (filepath.includes('remilia-quarterly')) return 'Remilia Quarterly';
+    if (filepath.includes('remilia-blog')) return 'Remilia';
+    if (filepath.includes('scearpo')) return 'Scearpo';
+    if (filepath.includes('network-spirits')) return 'Network Spirits';
+    if (filepath.includes('milady-wiki')) return 'Milady Wiki';
+    return 'Remilia';
+  }
+  
+  for (const file of index) {
+    const author = getAuthor(file.path);
+    const attrLength = author.length + 5; // " — Author"
+    const maxQuoteLen = 280 - attrLength;
+    
+    for (const line of file.lines) {
+      const trimmed = line.trim();
+      
+      // Must fit in tweet with attribution
+      if (trimmed.length < 40 || trimmed.length > maxQuoteLen) continue;
+      
+      // Quality filters
+      if (!(/^[A-Z"]/.test(trimmed))) continue; // Start with capital or quote
+      if (trimmed.startsWith('#')) continue;
+      if (trimmed.startsWith('|')) continue;
+      if (trimmed.includes('http')) continue;
+      if (trimmed.match(/\d{4}/)) continue;
+      if (trimmed.toLowerCase().includes('token')) continue;
+      if (trimmed.toLowerCase().includes('nft')) continue;
+      if (trimmed.toLowerCase().includes('presale')) continue;
+      if (trimmed.toLowerCase().includes('discord')) continue;
+      if (trimmed.toLowerCase().includes('telegram')) continue;
+      
+      // Prefer complete sentences
+      if (!trimmed.match(/[.!?"]$/)) continue;
+      
+      quotes.push({
+        text: `"${trimmed}" — ${author}`,
+        raw: trimmed,
+        author: author,
+        length: trimmed.length + attrLength + 2, // +2 for outer quotes
+        source: file.path.replace(/\.[^.]+$/, '')
+      });
+    }
+  }
+  
+  // Shuffle and return
+  for (let i = quotes.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [quotes[i], quotes[j]] = [quotes[j], quotes[i]];
+  }
+  
+  return quotes.slice(0, count);
+}
+
 // Generate a writing prompt from lore
 function getWritingPrompt(themeHint) {
   const themes = [
@@ -737,7 +798,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '1.9.0',
+        version: '2.0.0',
         endpoints: [
           'GET /stats - Corpus statistics',
           'GET /themes - All themes with sample quotes',
@@ -753,6 +814,7 @@ const server = http.createServer((req, res) => {
           'GET /daily - Daily wisdom (same quote all day)',
           'GET /fortune - Fortune-cookie style wisdom',
           'GET /wisdom?count=<n> - Multiple wisdom quotes ranked by density',
+          'GET /tweetable?count=<n> - Pre-formatted quotes for Twitter (≤280 chars)',
           'GET /prompt?theme=<theme> - Writing prompt with lore context'
         ],
         source: 'https://github.com/NexWired/lore-api',
@@ -856,6 +918,23 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ wisdom: quotes, count: quotes.length }));
+      return;
+    }
+    
+    if (pathname === '/tweetable') {
+      const count = Math.min(parseInt(url.searchParams.get('count') || '3', 10), 10);
+      const quotes = getTweetableQuotes(count);
+      if (quotes.length === 0) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No tweetable quotes available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ 
+        quotes: quotes,
+        count: quotes.length,
+        note: 'Pre-formatted for Twitter. Copy text field directly.'
+      }));
       return;
     }
     
