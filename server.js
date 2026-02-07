@@ -384,6 +384,65 @@ function getFortune() {
   return fortunes[Math.floor(Math.random() * fortunes.length)];
 }
 
+// Get an oracle-style prophecy (cryptic, evocative, mystical)
+function getOracle() {
+  const index = loadLoreIndex();
+  const prophecies = [];
+  
+  // Mystical/prophetic keywords
+  const oraclePatterns = /\b(shall|must|will come|destined|fate|future|eternity|infinite|transcend|beyond|sacred|divine|spirit|soul|void|abyss|threshold|becoming|emerge|arise|prophecy|vision|truth|reveal|hidden|secret|ancient|eternal|cosmic|death|rebirth|shadow|light|darkness|awakening)\b/i;
+  
+  for (const file of index) {
+    // Skip very short files
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      // Extract sentences that feel prophetic
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 50 || s.length > 200) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          return oraclePatterns.test(s);
+        });
+      
+      for (const s of sentences) {
+        prophecies.push({
+          text: s,
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, '')
+        });
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (prophecies.length === 0) return null;
+  
+  const prophecy = prophecies[Math.floor(Math.random() * prophecies.length)];
+  
+  // Add mystical framing
+  const framings = [
+    'The oracle speaks:',
+    'From the depths of the network:',
+    'A vision emerges:',
+    'The wired whispers:',
+    'Thus it is written:'
+  ];
+  
+  return {
+    framing: framings[Math.floor(Math.random() * framings.length)],
+    prophecy: prophecy.text,
+    source: prophecy.source,
+    full: `${framings[Math.floor(Math.random() * framings.length)]}\n\n"${prophecy.text}"\n\n— ${prophecy.source}`
+  };
+}
+
 // Get multiple wisdom quotes ranked by philosophical density
 function getWisdomQuotes(count = 5) {
   const index = loadLoreIndex();
@@ -907,7 +966,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '2.2.0',
+        version: '2.3.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -924,7 +983,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '2.2.0',
+        version: '2.3.0',
         endpoints: [
           'GET /health - Service health status',
           'GET /stats - Corpus statistics',
@@ -1032,6 +1091,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(fortune));
+      return;
+    }
+    
+    if (pathname === '/oracle') {
+      const oracle = getOracle();
+      if (!oracle) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'The oracle is silent' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(oracle));
       return;
     }
     
@@ -1163,7 +1234,7 @@ const server = http.createServer((req, res) => {
     if (pathname === '/' || pathname === '/about') {
       const about = {
         name: 'Lore API',
-        version: '2.2.0',
+        version: '2.3.0',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
         corpus: {
           files: loadLoreIndex().length,
@@ -1179,6 +1250,7 @@ const server = http.createServer((req, res) => {
           '/random': 'Get a random quote',
           '/daily': 'Get the deterministic daily quote',
           '/fortune': 'Get a short, punchy wisdom quote',
+          '/oracle': 'Get a cryptic, prophetic message from the lore',
           '/wisdom?count=N': 'Get top N philosophical quotes (ranked)',
           '/tweetable?count=N': 'Get N tweet-ready quotes (<260 chars)',
           '/thread?theme=X&parts=N': 'Generate N-part Twitter thread on theme',

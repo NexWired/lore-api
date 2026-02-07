@@ -36,6 +36,7 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /random` | Get random quote (any theme) |
 | `GET /daily` | Daily wisdom (deterministic, same quote all day) |
 | `GET /fortune` | Short punchy wisdom (fortune-cookie style, 40-180 chars) |
+| `GET /oracle` | Cryptic, prophetic message from the lore |
 | `GET /wisdom?count=<n>` | Multiple wisdom quotes ranked by philosophical density (max 20) |
 | `GET /tweetable?count=<n>` | Pre-formatted quotes for Twitter (≤280 chars with attribution) |
 | `GET /thread?theme=<theme>&parts=<n>` | Generate multi-part Twitter thread (max 10 parts) |
@@ -83,6 +84,10 @@ curl "https://lore-api.example.com/wisdom?count=3"
 # Generate a Twitter thread on a theme
 curl "https://lore-api.example.com/thread?theme=dynasty&parts=5"
 # → {"theme":"dynasty","parts":[{"part":1,"text":"...","source":"...","tweet":"1/5\n\n..."},...], "total":5}
+
+# Get a cryptic oracle prophecy
+curl "https://lore-api.example.com/oracle"
+# → {"framing":"The oracle speaks:","prophecy":"...","source":"...","full":"The oracle speaks:\n\n\"...\"\n\n— source"}
 ```
 
 ## Themes
