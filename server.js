@@ -384,6 +384,74 @@ function getFortune() {
   return fortunes[Math.floor(Math.random() * fortunes.length)];
 }
 
+// Get multiple wisdom quotes ranked by philosophical density
+function getWisdomQuotes(count = 5) {
+  const index = loadLoreIndex();
+  const wisdom = [];
+  
+  // Philosophical keywords that indicate dense wisdom
+  const wisdomKeywords = [
+    'must', 'cannot', 'never', 'always', 'truth', 'beauty', 'virtue',
+    'soul', 'spirit', 'mind', 'consciousness', 'existence', 'meaning',
+    'karma', 'dynasty', 'legacy', 'eternal', 'transcend', 'authentic',
+    'courage', 'coward', 'wisdom', 'foolish', 'sacred', 'profane'
+  ];
+  
+  for (const file of index) {
+    // Prefer philosophical sources
+    const sourceScore = file.path.includes('charlotte-fang-essays') ? 3 :
+                        file.path.includes('remilia-quarterly') ? 2 :
+                        file.path.includes('remilia-blog') ? 1 : 0;
+    
+    for (const line of file.lines) {
+      const trimmed = line.trim();
+      
+      // Quality filters
+      if (trimmed.length < 60 || trimmed.length > 280) continue;
+      if (!(/^[A-Z]/.test(trimmed))) continue;
+      if (trimmed.startsWith('#')) continue;
+      if (trimmed.includes('http')) continue;
+      if (trimmed.match(/\d{4}/)) continue; // no years
+      if (trimmed.toLowerCase().includes('token')) continue;
+      if (trimmed.toLowerCase().includes('nft')) continue;
+      if (trimmed.toLowerCase().includes('presale')) continue;
+      
+      // Calculate wisdom density score
+      const lowerLine = trimmed.toLowerCase();
+      let keywordScore = 0;
+      for (const kw of wisdomKeywords) {
+        if (lowerLine.includes(kw)) keywordScore++;
+      }
+      
+      // Skip low-wisdom content
+      if (keywordScore === 0 && sourceScore < 2) continue;
+      
+      wisdom.push({
+        text: trimmed,
+        source: file.path.replace(/\.[^.]+$/, ''),
+        score: keywordScore + sourceScore
+      });
+    }
+  }
+  
+  // Sort by score descending, then shuffle top results for variety
+  wisdom.sort((a, b) => b.score - a.score);
+  
+  // Take top 50 and shuffle
+  const pool = wisdom.slice(0, 50);
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  
+  // Return requested count
+  return pool.slice(0, count).map(w => ({
+    text: w.text,
+    source: w.source,
+    density: w.score
+  }));
+}
+
 // Generate a writing prompt from lore
 function getWritingPrompt(themeHint) {
   const themes = [
@@ -589,7 +657,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '1.5.0',
+        version: '1.8.0',
         endpoints: [
           'GET /stats - Corpus statistics',
           'GET /themes - All themes with sample quotes',
@@ -601,6 +669,8 @@ const server = http.createServer((req, res) => {
           'GET /quote?theme=<theme> - Get quote by theme',
           'GET /random - Get random quote',
           'GET /daily - Daily wisdom (same quote all day)',
+          'GET /fortune - Fortune-cookie style wisdom',
+          'GET /wisdom?count=<n> - Multiple wisdom quotes ranked by density',
           'GET /prompt?theme=<theme> - Writing prompt with lore context'
         ],
         source: 'https://github.com/NexWired/lore-api',
@@ -667,6 +737,19 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(fortune));
+      return;
+    }
+    
+    if (pathname === '/wisdom') {
+      const count = Math.min(parseInt(url.searchParams.get('count') || '5', 10), 20);
+      const quotes = getWisdomQuotes(count);
+      if (quotes.length === 0) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No wisdom available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ wisdom: quotes, count: quotes.length }));
       return;
     }
     
