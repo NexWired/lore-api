@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lore API — Remilia Philosophy Archive</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --border: #2a2a3a;
+      --text: #e0e0e8;
+      --text-dim: #8888aa;
+      --accent: #a855f7;
+      --accent-dim: #7c3aed;
+    }
+    
+    body {
+      font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+    
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+    }
+    
+    .stat {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+    
+    .stat-label {
+      color: var(--text-dim);
+    }
+    
+    section {
+      margin-bottom: 2.5rem;
+    }
+    
+    h2 {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+    }
+    
+    .quote-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      position: relative;
+    }
+    
+    .quote-text {
+      font-size: 1.1rem;
+      font-style: italic;
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+    
+    .quote-source {
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+    
+    .search-box {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    input[type="text"] {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    input::placeholder {
+      color: var(--text-dim);
+    }
+    
+    button {
+      background: var(--accent-dim);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.75rem 1.5rem;
+      font-family: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    button:hover {
+      background: var(--accent);
+    }
+    
+    button.secondary {
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    
+    button.secondary:hover {
+      border-color: var(--accent);
+    }
+    
+    .results {
+      margin-top: 1rem;
+    }
+    
+    .result-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .result-item:hover {
+      border-color: var(--accent-dim);
+    }
+    
+    .result-source {
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    
+    .result-excerpt {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+    }
+    
+    .themes-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .theme-tag {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .theme-tag:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .loading {
+      color: var(--text-dim);
+      font-style: italic;
+    }
+    
+    footer {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+    
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    
+    footer a:hover {
+      text-decoration: underline;
+    }
+    
+    .api-link {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 600px) {
+      .stats { flex-direction: column; gap: 1rem; }
+      .search-box { flex-direction: column; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📜 LORE API</h1>
+      <p class="subtitle">Remilia & Charlotte Fang Philosophy Archive</p>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" id="file-count">—</div>
+          <div class="stat-label">documents</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="char-count">—</div>
+          <div class="stat-label">characters</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="line-count">—</div>
+          <div class="stat-label">lines</div>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <h2>📅 Daily Quote</h2>
+      <div class="quote-box">
+        <div class="quote-text" id="daily-text"><span class="loading">Loading...</span></div>
+        <div class="quote-source" id="daily-source"></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>🔍 Search</h2>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search the archive..." />
+        <button onclick="doSearch()">Search</button>
+      </div>
+      <div class="results" id="search-results"></div>
+    </section>
+
+    <section>
+      <h2>🎲 Random</h2>
+      <div class="quote-box">
+        <div class="quote-text" id="random-text"><span class="loading">Click for wisdom...</span></div>
+        <div class="quote-source" id="random-source"></div>
+      </div>
+      <div class="actions">
+        <button onclick="getRandomQuote()">Get Random Quote</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>🏷️ Themes</h2>
+      <div class="themes-grid" id="themes-grid">
+        <span class="loading">Loading themes...</span>
+      </div>
+    </section>
+
+    <footer>
+      <p>Built by <a href="https://x.com/NexWired" target="_blank">@NexWired</a> 🦷</p>
+      <p class="api-link">
+        API: <a href="/about">/about</a> |
+        <a href="https://github.com/NexWired/lore-api" target="_blank">GitHub</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    const API = '';  // Same origin
+
+    async function loadStats() {
+      try {
+        const res = await fetch(`${API}/stats`);
+        const data = await res.json();
+        document.getElementById('file-count').textContent = data.files;
+        document.getElementById('char-count').textContent = (data.characters / 1000000).toFixed(1) + 'M';
+        document.getElementById('line-count').textContent = (data.lines / 1000).toFixed(1) + 'K';
+      } catch (e) {
+        console.error('Failed to load stats:', e);
+      }
+    }
+
+    async function loadDaily() {
+      try {
+        const res = await fetch(`${API}/daily`);
+        const data = await res.json();
+        document.getElementById('daily-text').textContent = `"${data.text}"`;
+        document.getElementById('daily-source').textContent = `— ${data.source}`;
+      } catch (e) {
+        document.getElementById('daily-text').textContent = 'Failed to load daily quote';
+      }
+    }
+
+    async function getRandomQuote() {
+      try {
+        document.getElementById('random-text').innerHTML = '<span class="loading">Loading...</span>';
+        document.getElementById('random-source').textContent = '';
+        const res = await fetch(`${API}/random`);
+        const data = await res.json();
+        document.getElementById('random-text').textContent = `"${data.text}"`;
+        document.getElementById('random-source').textContent = `— ${data.source}`;
+      } catch (e) {
+        document.getElementById('random-text').textContent = 'Failed to load quote';
+      }
+    }
+
+    async function loadThemes() {
+      try {
+        const res = await fetch(`${API}/themes`);
+        const data = await res.json();
+        const grid = document.getElementById('themes-grid');
+        grid.innerHTML = data.themes.map(t => 
+          `<span class="theme-tag" onclick="searchTheme('${t.theme}')">${t.theme}</span>`
+        ).join('');
+      } catch (e) {
+        document.getElementById('themes-grid').textContent = 'Failed to load themes';
+      }
+    }
+
+    async function doSearch() {
+      const query = document.getElementById('search-input').value.trim();
+      if (!query) return;
+      
+      const resultsEl = document.getElementById('search-results');
+      resultsEl.innerHTML = '<span class="loading">Searching...</span>';
+      
+      try {
+        const res = await fetch(`${API}/search?q=${encodeURIComponent(query)}&limit=10`);
+        const data = await res.json();
+        
+        if (data.results.length === 0) {
+          resultsEl.innerHTML = '<p class="loading">No results found</p>';
+          return;
+        }
+        
+        resultsEl.innerHTML = data.results.map(r => `
+          <div class="result-item">
+            <div class="result-source">${r.source} (score: ${r.score})</div>
+            <div class="result-excerpt">${r.excerpt}</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        resultsEl.innerHTML = '<p class="loading">Search failed</p>';
+      }
+    }
+
+    function searchTheme(theme) {
+      document.getElementById('search-input').value = theme;
+      doSearch();
+    }
+
+    // Enter key to search
+    document.getElementById('search-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') doSearch();
+    });
+
+    // Load on page load
+    loadStats();
+    loadDaily();
+    loadThemes();
+  </script>
+</body>
+</html>

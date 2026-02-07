@@ -538,8 +538,19 @@ const server = http.createServer((req, res) => {
     const url = new URL(req.url, `http://localhost:${PORT}`);
     const pathname = url.pathname;
     
+    // Serve static files from public/
+    const publicDir = path.join(__dirname, 'public');
+    if (pathname === '/' || pathname === '/index.html') {
+      const indexPath = path.join(publicDir, 'index.html');
+      if (fs.existsSync(indexPath)) {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(fs.readFileSync(indexPath, 'utf-8'));
+        return;
+      }
+    }
+    
     // Routes
-    if (pathname === '/' || pathname === '/health') {
+    if (pathname === '/api' || pathname === '/about' || pathname === '/health') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         name: 'Lore API',
