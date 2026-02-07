@@ -28,6 +28,8 @@ curl "https://priest-though-definitely-buying.trycloudflare.com/search?q=karma"
 | `GET /search?q=<query>&limit=<n>` | Search the corpus (limit max 20) |
 | `GET /quote?theme=<theme>` | Get random quote by theme |
 | `GET /random` | Get random quote (any theme) |
+| `GET /daily` | Daily wisdom (deterministic, same quote all day) |
+| `GET /prompt?theme=<theme>` | Writing prompt with lore context |
 
 ## Example Usage
 
@@ -55,6 +57,14 @@ curl "https://lore-api.example.com/quote?theme=dynasty"
 # Get random quote
 curl https://lore-api.example.com/random
 # → {"text":"...","source":"..."}
+
+# Get writing prompt
+curl https://lore-api.example.com/prompt
+# → {"theme":"dynasty","prompt":"What patterns are you establishing...","context":"...quote...","source":"..."}
+
+# Get prompt for specific theme
+curl "https://lore-api.example.com/prompt?theme=karma"
+# → {"theme":"karma","prompt":"How do you receive the world you give to it?","context":"...","source":"..."}
 ```
 
 ## Themes
