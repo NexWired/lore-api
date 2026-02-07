@@ -33,6 +33,7 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /quote?theme=<theme>` | Get random quote by theme |
 | `GET /random` | Get random quote (any theme) |
 | `GET /daily` | Daily wisdom (deterministic, same quote all day) |
+| `GET /fortune` | Short punchy wisdom (fortune-cookie style, 40-180 chars) |
 | `GET /prompt?theme=<theme>` | Writing prompt with lore context |
 
 ## Example Usage
