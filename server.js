@@ -571,6 +571,113 @@ function getWritingPrompt(themeHint) {
   };
 }
 
+// Generate a Twitter thread from related lore quotes
+function getThread(theme, partCount = 5) {
+  const index = loadLoreIndex();
+  const themeLower = theme ? theme.toLowerCase() : '';
+  
+  // Collect relevant quotes
+  const relevantQuotes = [];
+  
+  for (const file of index) {
+    // Skip non-text files
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      // Check if content matches theme
+      const contentLower = content.toLowerCase();
+      if (themeLower && !contentLower.includes(themeLower)) continue;
+      
+      // Extract quotes (sentences that feel quotable)
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          // Good quote criteria:
+          // - 40-260 chars (tweetable with attribution)
+          // - Starts with capital
+          // - Contains philosophical keywords OR theme
+          if (s.length < 40 || s.length > 260) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          
+          const lower = s.toLowerCase();
+          const hasPhilosophy = /(meaning|truth|beauty|soul|spirit|virtue|karma|destiny|creation|consciousness|existence|reality|eternal|transcend|sacred|wisdom)/.test(lower);
+          const hasTheme = themeLower && lower.includes(themeLower);
+          
+          return hasPhilosophy || hasTheme;
+        })
+        .map(s => ({
+          text: s.trim(),
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+          path: file.path
+        }));
+      
+      relevantQuotes.push(...sentences);
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (relevantQuotes.length < partCount) {
+    // Not enough themed quotes, fall back to general wisdom
+    const wisdom = getWisdomQuotes(partCount);
+    return {
+      theme: theme || 'general wisdom',
+      parts: wisdom.map((q, i) => ({
+        part: i + 1,
+        text: q.text,
+        source: q.source,
+        tweet: `${i + 1}/${wisdom.length}\n\n${q.text}\n\n— ${q.source}`
+      })),
+      total: wisdom.length,
+      note: 'Thread generated from general wisdom (not enough themed quotes)'
+    };
+  }
+  
+  // Shuffle and pick diverse quotes
+  for (let i = relevantQuotes.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [relevantQuotes[i], relevantQuotes[j]] = [relevantQuotes[j], relevantQuotes[i]];
+  }
+  
+  // Pick quotes from different sources
+  const usedSources = new Set();
+  const threadParts = [];
+  
+  for (const q of relevantQuotes) {
+    if (threadParts.length >= partCount) break;
+    if (usedSources.has(q.source)) continue; // Avoid same source twice
+    
+    threadParts.push(q);
+    usedSources.add(q.source);
+  }
+  
+  // If we still need more, allow duplicates
+  if (threadParts.length < partCount) {
+    for (const q of relevantQuotes) {
+      if (threadParts.length >= partCount) break;
+      if (!threadParts.includes(q)) {
+        threadParts.push(q);
+      }
+    }
+  }
+  
+  return {
+    theme: theme || 'mixed wisdom',
+    parts: threadParts.map((q, i) => ({
+      part: i + 1,
+      text: q.text,
+      source: q.source,
+      tweet: `${i + 1}/${threadParts.length}\n\n${q.text}\n\n— ${q.source}`
+    })),
+    total: threadParts.length,
+    note: 'Copy tweet field directly. First tweet should add your intro.'
+  };
+}
+
 // Find documents related to a given document
 function getRelatedDocuments(docPath, limit = 5) {
   const index = loadLoreIndex();
@@ -800,7 +907,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '2.1.0',
+        version: '2.2.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -817,7 +924,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '2.1.0',
+        version: '2.2.0',
         endpoints: [
           'GET /health - Service health status',
           'GET /stats - Corpus statistics',
@@ -966,6 +1073,15 @@ const server = http.createServer((req, res) => {
       return;
     }
     
+    if (pathname === '/thread') {
+      const theme = sanitize(url.searchParams.get('theme') || '');
+      const parts = Math.min(parseInt(url.searchParams.get('parts') || '5', 10), 10);
+      const thread = getThread(theme || null, parts);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(thread));
+      return;
+    }
+    
     if (pathname.startsWith('/doc/')) {
       const docPath = sanitizePath(pathname.slice(5));
       if (!docPath) {
@@ -1047,7 +1163,7 @@ const server = http.createServer((req, res) => {
     if (pathname === '/' || pathname === '/about') {
       const about = {
         name: 'Lore API',
-        version: '1.6.0',
+        version: '2.2.0',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
         corpus: {
           files: loadLoreIndex().length,
@@ -1055,18 +1171,23 @@ const server = http.createServer((req, res) => {
         },
         endpoints: {
           '/': 'This documentation',
-          '/about': 'This documentation',
+          '/health': 'Health check with status, uptime, memory',
           '/stats': 'Corpus statistics (file count, size, themes)',
           '/sources': 'List all source files',
           '/doc/:path': 'Get a specific document by path',
           '/search?q=term': 'Search corpus for a term',
           '/random': 'Get a random quote',
           '/daily': 'Get the deterministic daily quote',
-          '/fortune': 'Get a short, punchy wisdom quote (fortune-cookie style)',
+          '/fortune': 'Get a short, punchy wisdom quote',
+          '/wisdom?count=N': 'Get top N philosophical quotes (ranked)',
+          '/tweetable?count=N': 'Get N tweet-ready quotes (<260 chars)',
+          '/thread?theme=X&parts=N': 'Generate N-part Twitter thread on theme',
           '/quote?theme=X': 'Get a quote matching a theme',
           '/themes': 'List all themes with sample quotes',
-          '/related/:path': 'Find documents related to a given doc',
           '/concepts': 'Top concepts across the corpus',
+          '/authors': 'List all identified authors',
+          '/author/:name': 'Get documents by author',
+          '/related/:path': 'Find documents related to a given doc',
           '/prompt': 'Get a writing prompt based on lore themes'
         },
         github: 'https://github.com/NexWired/lore-api',
