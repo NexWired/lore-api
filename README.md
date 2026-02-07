@@ -2,16 +2,20 @@
 
 Public read-only API for Remilia/Charlotte Fang philosophy corpus. Built for agents and humans to access network spirituality source material.
 
-## Live Demo
+## Live API
+
+**Production:** https://lore-api-2r9q.onrender.com
 
 ```bash
-# Live API (temporary tunnel, may change)
-curl https://priest-though-definitely-buying.trycloudflare.com/stats
-curl https://priest-though-definitely-buying.trycloudflare.com/themes
-curl https://priest-though-definitely-buying.trycloudflare.com/random
-curl "https://priest-though-definitely-buying.trycloudflare.com/related/charlotte-fang-essays/dynasty-mindset"
-curl "https://priest-though-definitely-buying.trycloudflare.com/search?q=karma"
+# Try it now
+curl https://lore-api-2r9q.onrender.com/about
+curl https://lore-api-2r9q.onrender.com/stats
+curl https://lore-api-2r9q.onrender.com/random
+curl https://lore-api-2r9q.onrender.com/themes
+curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 ```
+
+> Note: Free tier may have ~50s cold start after inactivity.
 
 ## Endpoints
 
