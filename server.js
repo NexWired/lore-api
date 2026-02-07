@@ -973,7 +973,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '2.3.1',
+        version: '2.3.2',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -990,8 +990,9 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '2.3.1',
+        version: '2.3.2',
         endpoints: [
+          'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
           'GET /stats - Corpus statistics',
           'GET /themes - All themes with sample quotes',
@@ -1006,8 +1007,10 @@ const server = http.createServer((req, res) => {
           'GET /random - Get random quote',
           'GET /daily - Daily wisdom (same quote all day)',
           'GET /fortune - Fortune-cookie style wisdom',
+          'GET /oracle - Cryptic prophetic message from the lore',
           'GET /wisdom?count=<n> - Multiple wisdom quotes ranked by density',
           'GET /tweetable?count=<n> - Pre-formatted quotes for Twitter (≤280 chars)',
+          'GET /thread?theme=<theme>&parts=<n> - Multi-part Twitter thread (max 10)',
           'GET /prompt?theme=<theme> - Writing prompt with lore context'
         ],
         source: 'https://github.com/NexWired/lore-api',
