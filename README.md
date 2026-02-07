@@ -37,6 +37,7 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /daily` | Daily wisdom (deterministic, same quote all day) |
 | `GET /fortune` | Short punchy wisdom (fortune-cookie style, 40-180 chars) |
 | `GET /wisdom?count=<n>` | Multiple wisdom quotes ranked by philosophical density (max 20) |
+| `GET /tweetable?count=<n>` | Pre-formatted quotes for Twitter (≤280 chars with attribution) |
 | `GET /prompt?theme=<theme>` | Writing prompt with lore context |
 
 ## Example Usage
