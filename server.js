@@ -350,6 +350,40 @@ function getDailyQuote() {
   return { text: quote.text, source: quote.source, date: today };
 }
 
+// Get a fortune-cookie style wisdom quote (short, punchy, from Charlotte Fang)
+function getFortune() {
+  const index = loadLoreIndex();
+  const fortunes = [];
+  
+  for (const file of index) {
+    // Only Charlotte Fang essays for fortune-quality wisdom
+    if (!file.path.includes('charlotte-fang-essays')) continue;
+    
+    for (const line of file.lines) {
+      const trimmed = line.trim();
+      // Fortune criteria: short (40-180 chars), starts with capital, 
+      // looks like a standalone statement
+      if (trimmed.length >= 40 && trimmed.length <= 180 && 
+          /^[A-Z]/.test(trimmed) &&
+          !trimmed.startsWith('The ') && !trimmed.startsWith('This ') &&
+          !trimmed.startsWith('In ') && !trimmed.startsWith('For ') &&
+          !trimmed.startsWith('#') && !trimmed.startsWith('-') &&
+          !trimmed.includes('http') && !trimmed.includes('Essay]') &&
+          !trimmed.match(/\d{4}/) && // no years
+          // Must contain wisdom-like patterns
+          /(is |are |must|will |cannot|never|always|you |your |ought)/.test(trimmed)) {
+        fortunes.push({
+          text: trimmed,
+          source: file.path.replace(/\.[^.]+$/, '')
+        });
+      }
+    }
+  }
+  
+  if (fortunes.length === 0) return null;
+  return fortunes[Math.floor(Math.random() * fortunes.length)];
+}
+
 // Generate a writing prompt from lore
 function getWritingPrompt(themeHint) {
   const themes = [
@@ -624,6 +658,18 @@ const server = http.createServer((req, res) => {
       return;
     }
     
+    if (pathname === '/fortune') {
+      const fortune = getFortune();
+      if (!fortune) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No fortunes available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(fortune));
+      return;
+    }
+    
     if (pathname === '/prompt') {
       const theme = sanitize(url.searchParams.get('theme') || '');
       const result = getWritingPrompt(theme || null);
@@ -728,6 +774,7 @@ const server = http.createServer((req, res) => {
           '/search?q=term': 'Search corpus for a term',
           '/random': 'Get a random quote',
           '/daily': 'Get the deterministic daily quote',
+          '/fortune': 'Get a short, punchy wisdom quote (fortune-cookie style)',
           '/quote?theme=X': 'Get a quote matching a theme',
           '/themes': 'List all themes with sample quotes',
           '/related/:path': 'Find documents related to a given doc',
