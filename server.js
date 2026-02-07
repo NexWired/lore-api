@@ -586,6 +586,86 @@ function getRelatedDocuments(docPath, limit = 5) {
   };
 }
 
+// Get list of authors/sources
+function getAuthors() {
+  const index = loadLoreIndex();
+  const authorMap = {};
+  
+  for (const file of index) {
+    // Extract author from path
+    let author = 'Unknown';
+    if (file.path.includes('charlotte-fang-essays')) {
+      author = 'Charlotte Fang';
+    } else if (file.path.includes('remilia-blog')) {
+      author = 'Remilia Blog';
+    } else if (file.path.includes('remilia-quarterly')) {
+      author = 'Remilia Quarterly';
+    } else if (file.path.includes('wiki')) {
+      author = 'Milady Wiki';
+    } else if (file.path.includes('networkspirits')) {
+      author = 'Network Spirits';
+    } else if (file.path.includes('scearpo')) {
+      author = 'Scearpo';
+    }
+    
+    if (!authorMap[author]) {
+      authorMap[author] = { count: 0, chars: 0, docs: [] };
+    }
+    authorMap[author].count++;
+    authorMap[author].chars += file.content.length;
+    if (authorMap[author].docs.length < 5) {
+      authorMap[author].docs.push(file.path.replace(/\.[^.]+$/, ''));
+    }
+  }
+  
+  return Object.entries(authorMap)
+    .map(([name, data]) => ({
+      name,
+      documentCount: data.count,
+      totalChars: data.chars,
+      sampleDocs: data.docs
+    }))
+    .sort((a, b) => b.totalChars - a.totalChars);
+}
+
+// Get documents by author
+function getDocumentsByAuthor(authorName, limit = 20) {
+  const index = loadLoreIndex();
+  const results = [];
+  const authorLower = authorName.toLowerCase();
+  
+  for (const file of index) {
+    const pathLower = file.path.toLowerCase();
+    let match = false;
+    
+    if (authorLower.includes('charlotte') && pathLower.includes('charlotte-fang')) {
+      match = true;
+    } else if (authorLower.includes('remilia') && authorLower.includes('blog') && pathLower.includes('remilia-blog')) {
+      match = true;
+    } else if (authorLower.includes('quarterly') && pathLower.includes('remilia-quarterly')) {
+      match = true;
+    } else if (authorLower.includes('wiki') && pathLower.includes('wiki')) {
+      match = true;
+    } else if (authorLower.includes('network') && pathLower.includes('networkspirits')) {
+      match = true;
+    } else if (authorLower.includes('scearpo') && pathLower.includes('scearpo')) {
+      match = true;
+    }
+    
+    if (match) {
+      results.push({
+        path: file.path.replace(/\.[^.]+$/, ''),
+        chars: file.content.length,
+        lines: file.lines.length
+      });
+    }
+    
+    if (results.length >= limit) break;
+  }
+  
+  return results;
+}
+
 // Get document by path
 function getDocument(docPath) {
   const index = loadLoreIndex();
@@ -657,12 +737,14 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '1.8.0',
+        version: '1.9.0',
         endpoints: [
           'GET /stats - Corpus statistics',
           'GET /themes - All themes with sample quotes',
           'GET /concepts - Top concepts across corpus',
           'GET /sources - List all documents',
+          'GET /authors - List authors/sources with document counts',
+          'GET /author/<name> - Get documents by author',
           'GET /doc/<path> - Get full document',
           'GET /related/<path> - Find related documents',
           'GET /search?q=<query>&limit=<n> - Search the corpus',
@@ -694,6 +776,30 @@ const server = http.createServer((req, res) => {
     if (pathname === '/themes') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ themes: getThemesWithSamples() }));
+      return;
+    }
+    
+    if (pathname === '/authors') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ authors: getAuthors() }));
+      return;
+    }
+    
+    if (pathname.startsWith('/author/')) {
+      const authorName = sanitize(decodeURIComponent(pathname.slice(8)));
+      if (!authorName) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Missing author name' }));
+        return;
+      }
+      const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10), 50);
+      const docs = getDocumentsByAuthor(authorName, limit);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ 
+        author: authorName, 
+        documents: docs,
+        count: docs.length 
+      }));
       return;
     }
     
