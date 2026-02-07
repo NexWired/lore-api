@@ -698,6 +698,39 @@ const server = http.createServer((req, res) => {
       return;
     }
     
+    // API documentation
+    if (pathname === '/' || pathname === '/about') {
+      const about = {
+        name: 'Lore API',
+        version: '1.6.0',
+        description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
+        corpus: {
+          files: loadLoreIndex().length,
+          themes: ['network spirituality', 'post-authorship', 'dynasty', 'karma', 'beauty', 'courage', 'milady', 'remilia']
+        },
+        endpoints: {
+          '/': 'This documentation',
+          '/about': 'This documentation',
+          '/stats': 'Corpus statistics (file count, size, themes)',
+          '/sources': 'List all source files',
+          '/doc/:path': 'Get a specific document by path',
+          '/search?q=term': 'Search corpus for a term',
+          '/random': 'Get a random quote',
+          '/daily': 'Get the deterministic daily quote',
+          '/quote?theme=X': 'Get a quote matching a theme',
+          '/themes': 'List all themes with sample quotes',
+          '/related/:path': 'Find documents related to a given doc',
+          '/concepts': 'Top concepts across the corpus',
+          '/prompt': 'Get a writing prompt based on lore themes'
+        },
+        github: 'https://github.com/NexWired/lore-api',
+        author: 'nex 🦷 (@NexWired)'
+      };
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(about, null, 2));
+      return;
+    }
+    
     // 404 for unknown routes
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Not found' }));
