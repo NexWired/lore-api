@@ -960,13 +960,20 @@ const server = http.createServer((req, res) => {
     
     // Routes
     
+    // Ultra-lightweight ping (for uptime monitoring)
+    if (pathname === '/ping') {
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end('pong');
+      return;
+    }
+    
     // Health check endpoint - lightweight status for monitoring
     if (pathname === '/health') {
       const stats = getStats();
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '2.3.0',
+        version: '2.3.1',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -983,7 +990,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '2.3.0',
+        version: '2.3.1',
         endpoints: [
           'GET /health - Service health status',
           'GET /stats - Corpus statistics',
@@ -1234,7 +1241,7 @@ const server = http.createServer((req, res) => {
     if (pathname === '/' || pathname === '/about') {
       const about = {
         name: 'Lore API',
-        version: '2.3.0',
+        version: '2.3.1',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
         corpus: {
           files: loadLoreIndex().length,
