@@ -34,6 +34,7 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /random` | Get random quote (any theme) |
 | `GET /daily` | Daily wisdom (deterministic, same quote all day) |
 | `GET /fortune` | Short punchy wisdom (fortune-cookie style, 40-180 chars) |
+| `GET /wisdom?count=<n>` | Multiple wisdom quotes ranked by philosophical density (max 20) |
 | `GET /prompt?theme=<theme>` | Writing prompt with lore context |
 
 ## Example Usage
@@ -70,6 +71,10 @@ curl https://lore-api.example.com/prompt
 # Get prompt for specific theme
 curl "https://lore-api.example.com/prompt?theme=karma"
 # → {"theme":"karma","prompt":"How do you receive the world you give to it?","context":"...","source":"..."}
+
+# Get multiple wisdom quotes ranked by philosophical density
+curl "https://lore-api.example.com/wisdom?count=3"
+# → {"wisdom":[{"text":"...","source":"...","density":5},...], "count":3}
 ```
 
 ## Themes
