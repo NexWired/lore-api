@@ -1400,6 +1400,96 @@ function getDocument(docPath) {
   return null;
 }
 
+// Get quotes containing internal tension or paradox
+function getParadox() {
+  const index = loadLoreIndex();
+  const paradoxes = [];
+  
+  // Patterns indicating paradoxical or self-contradictory statements
+  const tensionPatterns = [
+    /\b(but|yet|however|although|though|despite|still|nonetheless)\b/i,
+    /\b(both|neither|and yet|at once|simultaneously)\b/i,
+    /\bnot\s+\w+\s+but\b/i,
+    /\b(is|are)\s+and\s+(is|are)\s+not\b/i,
+  ];
+  
+  // Words suggesting opposition or contradiction
+  const oppositionWords = [
+    ['light', 'dark'], ['life', 'death'], ['love', 'hate'],
+    ['order', 'chaos'], ['creation', 'destruction'], ['self', 'other'],
+    ['beauty', 'ugliness'], ['strength', 'weakness'], ['rise', 'fall'],
+    ['sacred', 'profane'], ['infinite', 'finite'], ['freedom', 'constraint'],
+    ['presence', 'absence'], ['beginning', 'end'], ['truth', 'lie']
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 40 || s.length > 300) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          return true;
+        });
+      
+      for (const s of sentences) {
+        const lower = s.toLowerCase();
+        let score = 0;
+        
+        // Check for tension patterns
+        for (const p of tensionPatterns) {
+          if (p.test(s)) score += 2;
+        }
+        
+        // Check for opposition words (both present = paradox)
+        for (const [a, b] of oppositionWords) {
+          if (lower.includes(a) && lower.includes(b)) {
+            score += 3;
+          }
+        }
+        
+        if (score >= 2) {
+          paradoxes.push({
+            text: s,
+            source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+            score
+          });
+        }
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (paradoxes.length === 0) return null;
+  
+  // Sort by paradox intensity and pick randomly from top
+  paradoxes.sort((a, b) => b.score - a.score);
+  const topTier = paradoxes.slice(0, Math.min(15, paradoxes.length));
+  const paradox = topTier[Math.floor(Math.random() * topTier.length)];
+  
+  const framings = [
+    'Hold both truths:',
+    'The contradiction speaks:',
+    'Tension resolved:',
+    'Paradox unveiled:',
+    'Both/and:'
+  ];
+  
+  return {
+    framing: framings[Math.floor(Math.random() * framings.length)],
+    paradox: paradox.text,
+    source: paradox.source
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -1461,7 +1551,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '2.6.0',
+        version: '3.1.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -1478,7 +1568,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '3.0.0',
+        version: '3.1.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1497,6 +1587,7 @@ const server = http.createServer((req, res) => {
           'GET /fortune - Fortune-cookie style wisdom',
           'GET /oracle - Cryptic prophetic message from the lore',
           'GET /spark - Provocative quote to challenge assumptions',
+          'GET /paradox - Quote containing internal tension or contradiction',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -1658,6 +1749,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(spark));
+      return;
+    }
+    
+    if (pathname === '/paradox') {
+      const paradox = getParadox();
+      if (!paradox) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No paradoxes available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(paradox));
       return;
     }
     
