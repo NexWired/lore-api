@@ -666,6 +666,82 @@ function getDefinition(term) {
   };
 }
 
+// Get a curated digest of 3-5 quotes across different themes for daily reflection
+function getDigest(count = 5) {
+  // Collect quotes from different "modes" for variety
+  const digest = [];
+  
+  // 1. An oracle prophecy
+  const oracle = getOracle();
+  if (oracle) {
+    digest.push({
+      mode: 'prophecy',
+      text: oracle.prophecy,
+      source: oracle.source,
+      framing: oracle.framing
+    });
+  }
+  
+  // 2. A meditation
+  const meditation = getMeditation();
+  if (meditation) {
+    digest.push({
+      mode: 'meditation',
+      text: meditation.meditation,
+      source: meditation.source,
+      framing: meditation.prompt
+    });
+  }
+  
+  // 3. A random wisdom quote
+  const random = getRandomQuote();
+  if (random) {
+    digest.push({
+      mode: 'wisdom',
+      text: random.quote,
+      source: random.source,
+      framing: 'Consider:'
+    });
+  }
+  
+  // 4. A fortune
+  const fortune = getFortune();
+  if (fortune) {
+    digest.push({
+      mode: 'fortune',
+      text: fortune.fortune,
+      source: fortune.source,
+      framing: 'Your fortune:'
+    });
+  }
+  
+  // 5. Another random if we need more
+  if (digest.length < count) {
+    const another = getRandomQuote();
+    if (another && another.quote !== (random ? random.quote : '')) {
+      digest.push({
+        mode: 'reflection',
+        text: another.quote,
+        source: another.source,
+        framing: 'Also:'
+      });
+    }
+  }
+  
+  // Limit to requested count
+  const result = digest.slice(0, count);
+  
+  // Generate a summary for agents
+  const date = new Date().toISOString().split('T')[0];
+  
+  return {
+    date: date,
+    count: result.length,
+    digest: result,
+    summary: `Daily digest: ${result.length} reflections for ${date}`
+  };
+}
+
 // Get multiple wisdom quotes ranked by philosophical density
 function getWisdomQuotes(count = 5) {
   const index = loadLoreIndex();
@@ -1213,7 +1289,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '2.6.0',
+        version: '2.7.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1234,6 +1310,7 @@ const server = http.createServer((req, res) => {
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
           'GET /define?term=<word> - Definitional quotes about a concept',
+          'GET /digest?count=<n> - Daily digest of 3-5 varied reflections',
           'GET /wisdom?count=<n> - Multiple wisdom quotes ranked by density',
           'GET /tweetable?count=<n> - Pre-formatted quotes for Twitter (≤280 chars)',
           'GET /thread?theme=<theme>&parts=<n> - Multi-part Twitter thread (max 10)',
@@ -1377,6 +1454,14 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(definition));
+      return;
+    }
+    
+    if (pathname === '/digest') {
+      const count = Math.min(parseInt(url.searchParams.get('count') || '5', 10), 5);
+      const digest = getDigest(count);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(digest));
       return;
     }
     
