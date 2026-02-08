@@ -666,6 +666,74 @@ function getDefinition(term) {
   };
 }
 
+// Get a provocative/challenging quote to spark debate
+function getSpark() {
+  const index = loadLoreIndex();
+  const sparks = [];
+  
+  // Patterns that indicate provocative, challenging, or controversial statements
+  const sparkPatterns = /\b(wrong|foolish|coward|weak|pathetic|mediocre|lie|fraud|fake|illusion|myth|mistake|failure|refuse|reject|deny|never|impossible|absurd|ridiculous|insane|delusional)\b/i;
+  
+  // Also look for strong declaratives
+  const strongPatterns = /\b(must|always|never|cannot|every|all|none|only|truth is|reality is|fact is)\b/i;
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 40 || s.length > 280) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          // Must have provocative or strong declarative language
+          return sparkPatterns.test(s) || strongPatterns.test(s);
+        });
+      
+      for (const s of sentences) {
+        let score = 0;
+        if (sparkPatterns.test(s)) score += 2;
+        if (strongPatterns.test(s)) score += 1;
+        if (s.includes('!')) score += 1;
+        
+        sparks.push({
+          text: s,
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+          score
+        });
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (sparks.length === 0) return null;
+  
+  // Sort by provocativeness and pick randomly from top tier
+  sparks.sort((a, b) => b.score - a.score);
+  const topTier = sparks.slice(0, Math.min(20, sparks.length));
+  const spark = topTier[Math.floor(Math.random() * topTier.length)];
+  
+  const challenges = [
+    'Defend or attack:',
+    'Agree or disagree:',
+    'Consider this:',
+    'Challenge yourself:',
+    'Confront:'
+  ];
+  
+  return {
+    challenge: challenges[Math.floor(Math.random() * challenges.length)],
+    spark: spark.text,
+    source: spark.source
+  };
+}
+
 // Get short, punchy mantras (under 100 chars)
 function getMantra() {
   const index = loadLoreIndex();
@@ -1410,7 +1478,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '2.9.0',
+        version: '3.0.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1428,6 +1496,7 @@ const server = http.createServer((req, res) => {
           'GET /daily - Daily wisdom (same quote all day)',
           'GET /fortune - Fortune-cookie style wisdom',
           'GET /oracle - Cryptic prophetic message from the lore',
+          'GET /spark - Provocative quote to challenge assumptions',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -1577,6 +1646,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(definition));
+      return;
+    }
+    
+    if (pathname === '/spark') {
+      const spark = getSpark();
+      if (!spark) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No sparks available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(spark));
       return;
     }
     
