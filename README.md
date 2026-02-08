@@ -40,6 +40,7 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /meditation` | Contemplative quote for quiet reflection |
 | `GET /clash?concept=<word>` | Contrasting quotes (thesis vs antithesis) |
 | `GET /define?term=<word>` | Definitional quotes about a concept |
+| `GET /digest?count=<n>` | Daily digest of 3-5 varied reflections (prophecy, meditation, wisdom, fortune) |
 | `GET /wisdom?count=<n>` | Multiple wisdom quotes ranked by philosophical density (max 20) |
 | `GET /tweetable?count=<n>` | Pre-formatted quotes for Twitter (≤280 chars with attribution) |
 | `GET /thread?theme=<theme>&parts=<n>` | Generate multi-part Twitter thread (max 10 parts) |
