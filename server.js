@@ -666,6 +666,58 @@ function getDefinition(term) {
   };
 }
 
+// Get short, punchy mantras (under 100 chars)
+function getMantra() {
+  const index = loadLoreIndex();
+  const mantras = [];
+  
+  // Patterns that make good mantras - imperative, declarative, punchy
+  const mantraPatterns = /^(be|do|never|always|remember|forget|let|make|become|embrace|reject|accept|fight|love|trust|create|destroy|rise|fall|seek|find)/i;
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          // Short and punchy
+          if (s.length < 15 || s.length > 100) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          // No questions
+          if (s.includes('?')) return false;
+          // Prefer imperative/declarative
+          return mantraPatterns.test(s) || 
+                 /\b(is|are|must|will|cannot)\b/.test(s);
+        });
+      
+      for (const s of sentences) {
+        mantras.push({
+          text: s,
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, '')
+        });
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (mantras.length === 0) return null;
+  
+  const mantra = mantras[Math.floor(Math.random() * mantras.length)];
+  
+  return {
+    mantra: mantra.text,
+    source: mantra.source,
+    length: mantra.text.length
+  };
+}
+
 // Get quotes matching a mood/vibe
 function getMood(mood = 'dark') {
   const index = loadLoreIndex();
@@ -1358,7 +1410,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '2.8.0',
+        version: '2.9.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1377,6 +1429,7 @@ const server = http.createServer((req, res) => {
           'GET /fortune - Fortune-cookie style wisdom',
           'GET /oracle - Cryptic prophetic message from the lore',
           'GET /meditation - Contemplative quote for quiet reflection',
+          'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
           'GET /define?term=<word> - Definitional quotes about a concept',
           'GET /mood?mood=<vibe> - Quotes matching a mood (dark, hopeful, aggressive, contemplative, defiant, mystical, romantic, chaotic)',
@@ -1524,6 +1577,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(definition));
+      return;
+    }
+    
+    if (pathname === '/mantra') {
+      const mantra = getMantra();
+      if (!mantra) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No mantras available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(mantra));
       return;
     }
     
