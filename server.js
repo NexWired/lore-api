@@ -666,6 +666,75 @@ function getDefinition(term) {
   };
 }
 
+// Get quotes matching a mood/vibe
+function getMood(mood = 'dark') {
+  const index = loadLoreIndex();
+  const matches = [];
+  
+  // Mood keyword mappings
+  const moodKeywords = {
+    dark: ['shadow', 'darkness', 'abyss', 'void', 'night', 'death', 'decay', 'despair', 'hollow', 'empty', 'lost', 'forgotten', 'haunted', 'cursed'],
+    hopeful: ['light', 'hope', 'future', 'rise', 'begin', 'dawn', 'new', 'grow', 'bloom', 'possible', 'believe', 'dream', 'transcend', 'overcome'],
+    aggressive: ['fight', 'destroy', 'conquer', 'dominate', 'crush', 'war', 'battle', 'attack', 'strike', 'fierce', 'relentless', 'brutal', 'savage'],
+    contemplative: ['wonder', 'ponder', 'reflect', 'consider', 'observe', 'notice', 'quiet', 'still', 'pause', 'breathe', 'moment', 'presence'],
+    defiant: ['refuse', 'reject', 'resist', 'never', 'cannot', 'will not', 'stand', 'against', 'defy', 'rebel', 'challenge', 'oppose'],
+    mystical: ['sacred', 'divine', 'spirit', 'soul', 'eternal', 'cosmic', 'transcend', 'beyond', 'infinite', 'mystery', 'oracle', 'prophecy'],
+    romantic: ['love', 'beauty', 'heart', 'passion', 'desire', 'longing', 'embrace', 'tender', 'gentle', 'beloved', 'devotion'],
+    chaotic: ['chaos', 'entropy', 'random', 'wild', 'unpredictable', 'madness', 'frenzy', 'storm', 'turbulent', 'volatile']
+  };
+  
+  const keywords = moodKeywords[mood.toLowerCase()] || moodKeywords.dark;
+  const keywordPattern = new RegExp(`\\b(${keywords.join('|')})\\b`, 'i');
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 40 || s.length > 280) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http')) return false;
+          return keywordPattern.test(s);
+        });
+      
+      for (const s of sentences) {
+        // Count keyword matches for scoring
+        let score = 0;
+        for (const kw of keywords) {
+          if (s.toLowerCase().includes(kw)) score++;
+        }
+        
+        matches.push({
+          text: s,
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+          score
+        });
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (matches.length === 0) return null;
+  
+  // Sort by score and return top matches
+  matches.sort((a, b) => b.score - a.score);
+  const top = matches.slice(0, 5);
+  
+  return {
+    mood: mood,
+    availableMoods: Object.keys(moodKeywords),
+    quotes: top.map(m => ({ text: m.text, source: m.source })),
+    count: matches.length
+  };
+}
+
 // Get a curated digest of 3-5 quotes across different themes for daily reflection
 function getDigest(count = 5) {
   // Collect quotes from different "modes" for variety
@@ -1289,7 +1358,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '2.7.0',
+        version: '2.8.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1310,6 +1379,7 @@ const server = http.createServer((req, res) => {
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
           'GET /define?term=<word> - Definitional quotes about a concept',
+          'GET /mood?mood=<vibe> - Quotes matching a mood (dark, hopeful, aggressive, contemplative, defiant, mystical, romantic, chaotic)',
           'GET /digest?count=<n> - Daily digest of 3-5 varied reflections',
           'GET /wisdom?count=<n> - Multiple wisdom quotes ranked by density',
           'GET /tweetable?count=<n> - Pre-formatted quotes for Twitter (≤280 chars)',
@@ -1454,6 +1524,19 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(definition));
+      return;
+    }
+    
+    if (pathname === '/mood') {
+      const mood = sanitize(url.searchParams.get('mood') || 'dark');
+      const result = getMood(mood);
+      if (!result) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No quotes found for mood: ' + mood }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(result));
       return;
     }
     
