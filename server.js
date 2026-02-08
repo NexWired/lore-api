@@ -1490,6 +1490,74 @@ function getParadox() {
   };
 }
 
+// Get zen-like koans — short, puzzling statements that unlock deeper truth
+function getKoan() {
+  const index = loadLoreIndex();
+  const koans = [];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          // Koans are SHORT (20-80 chars) and puzzling
+          if (s.length < 20 || s.length > 80) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          // No questions (koans are statements)
+          if (s.includes('?')) return false;
+          return true;
+        });
+      
+      for (const s of sentences) {
+        let score = 0;
+        const lower = s.toLowerCase();
+        
+        // Prefer statements with koan-like qualities
+        // Abstract nouns
+        if (/\b(nothing|everything|void|self|silence|emptiness|truth|reality)\b/i.test(s)) score += 2;
+        // Negation creates puzzle
+        if (/\b(not|never|no|cannot|without)\b/i.test(s)) score += 1;
+        // "is" statements are declarative
+        if (/\b(is|are|becomes)\b/i.test(s)) score += 1;
+        // Metaphysical language
+        if (/\b(soul|spirit|essence|being|existence)\b/i.test(s)) score += 1;
+        // Short is better for koans
+        if (s.length < 50) score += 1;
+        
+        if (score >= 2) {
+          koans.push({
+            text: s,
+            source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+            score
+          });
+        }
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (koans.length === 0) return null;
+  
+  // Sort by score and pick randomly from top
+  koans.sort((a, b) => b.score - a.score);
+  const topTier = koans.slice(0, Math.min(20, koans.length));
+  const koan = topTier[Math.floor(Math.random() * topTier.length)];
+  
+  return {
+    koan: koan.text,
+    source: koan.source,
+    instruction: 'Sit with this.'
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -1551,7 +1619,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '3.1.0',
+        version: '3.2.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -1568,7 +1636,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '3.1.0',
+        version: '3.2.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1588,6 +1656,7 @@ const server = http.createServer((req, res) => {
           'GET /oracle - Cryptic prophetic message from the lore',
           'GET /spark - Provocative quote to challenge assumptions',
           'GET /paradox - Quote containing internal tension or contradiction',
+          'GET /koan - Short zen-like statement that unlocks deeper truth',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -1761,6 +1830,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(paradox));
+      return;
+    }
+    
+    if (pathname === '/koan') {
+      const koan = getKoan();
+      if (!koan) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No koans available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(koan));
       return;
     }
     
