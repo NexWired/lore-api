@@ -1625,6 +1625,69 @@ function getWarning() {
   };
 }
 
+// Get positive affirmations and empowering statements
+function getAffirmation() {
+  const index = loadLoreIndex();
+  const affirmations = [];
+  
+  // Patterns for positive, empowering statements
+  const positivePatterns = [
+    /\b(you can|you are|you will|you must|we can|we are|we will)\b/i,
+    /\b(power|strength|beauty|courage|love|light|rise|grow|become|create|build|transcend)\b/i,
+    /\b(capable|worthy|destined|chosen|blessed|gifted|powerful|beautiful|strong)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 30 || s.length > 200) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          // Exclude negative patterns
+          if (/\b(never|cannot|won't|don't|hate|destroy|fail|lose|weak|ugly|coward)\b/i.test(s)) return false;
+          return positivePatterns.some(p => p.test(s));
+        });
+      
+      for (const s of sentences) {
+        let score = 0;
+        for (const p of positivePatterns) {
+          if (p.test(s)) score++;
+        }
+        // Bonus for direct address
+        if (/\byou\b/i.test(s)) score += 1;
+        
+        affirmations.push({
+          text: s,
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+          score
+        });
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (affirmations.length === 0) return null;
+  
+  affirmations.sort((a, b) => b.score - a.score);
+  const topTier = affirmations.slice(0, Math.min(25, affirmations.length));
+  const affirmation = topTier[Math.floor(Math.random() * topTier.length)];
+  
+  return {
+    affirmation: affirmation.text,
+    source: affirmation.source,
+    energy: 'whitepill'
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -1686,7 +1749,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '3.3.0',
+        version: '3.4.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -1703,7 +1766,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '3.3.0',
+        version: '3.4.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1725,6 +1788,7 @@ const server = http.createServer((req, res) => {
           'GET /paradox - Quote containing internal tension or contradiction',
           'GET /koan - Short zen-like statement that unlocks deeper truth',
           'GET /warning - Cautionary wisdom about pitfalls and dangers',
+          'GET /affirmation - Positive empowering statement (whitepill energy)',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -1922,6 +1986,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(warning));
+      return;
+    }
+    
+    if (pathname === '/affirmation') {
+      const affirmation = getAffirmation();
+      if (!affirmation) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No affirmations available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(affirmation));
       return;
     }
     

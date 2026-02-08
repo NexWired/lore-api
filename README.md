@@ -41,6 +41,7 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /paradox` | Quote containing internal tension or contradiction |
 | `GET /koan` | Short zen-like statement that unlocks deeper truth |
 | `GET /warning` | Cautionary wisdom about pitfalls and dangers |
+| `GET /affirmation` | Positive empowering statement (whitepill energy) |
 | `GET /meditation` | Contemplative quote for quiet reflection |
 | `GET /mantra` | Short punchy phrase for repetition (<100 chars) |
 | `GET /clash?concept=<word>` | Contrasting quotes (thesis vs antithesis) |
