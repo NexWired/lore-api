@@ -1558,6 +1558,73 @@ function getKoan() {
   };
 }
 
+// Get cautionary/warning quotes about pitfalls and dangers
+function getWarning() {
+  const index = loadLoreIndex();
+  const warnings = [];
+  
+  // Patterns indicating warnings, cautions, dangers
+  const warningPatterns = [
+    /\b(beware|careful|danger|trap|pitfall|mistake|error|fail|doom|ruin|destroy|corrupt|decay|fall|lose|lost)\b/i,
+    /\b(never|don't|avoid|stop|quit|refuse|reject)\b/i,
+    /\b(fool|foolish|naive|blind|ignorant|weak|coward)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 40 || s.length > 250) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          return warningPatterns.some(p => p.test(s));
+        });
+      
+      for (const s of sentences) {
+        let score = 0;
+        for (const p of warningPatterns) {
+          if (p.test(s)) score++;
+        }
+        
+        warnings.push({
+          text: s,
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+          score
+        });
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (warnings.length === 0) return null;
+  
+  warnings.sort((a, b) => b.score - a.score);
+  const topTier = warnings.slice(0, Math.min(20, warnings.length));
+  const warning = topTier[Math.floor(Math.random() * topTier.length)];
+  
+  const framings = [
+    'Heed this:',
+    'Be warned:',
+    'Consider carefully:',
+    'A caution:',
+    'Learn from others:'
+  ];
+  
+  return {
+    framing: framings[Math.floor(Math.random() * framings.length)],
+    warning: warning.text,
+    source: warning.source
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -1619,7 +1686,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '3.2.0',
+        version: '3.3.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -1636,7 +1703,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '3.2.0',
+        version: '3.3.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1657,6 +1724,7 @@ const server = http.createServer((req, res) => {
           'GET /spark - Provocative quote to challenge assumptions',
           'GET /paradox - Quote containing internal tension or contradiction',
           'GET /koan - Short zen-like statement that unlocks deeper truth',
+          'GET /warning - Cautionary wisdom about pitfalls and dangers',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -1842,6 +1910,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(koan));
+      return;
+    }
+    
+    if (pathname === '/warning') {
+      const warning = getWarning();
+      if (!warning) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No warnings available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(warning));
       return;
     }
     
