@@ -502,6 +502,90 @@ function getMeditation() {
   };
 }
 
+// Get contrasting quotes on a concept (thesis vs antithesis)
+function getClash(concept) {
+  const index = loadLoreIndex();
+  const matches = [];
+  const searchTerm = (concept || 'truth').toLowerCase();
+  
+  // Contrasting word pairs to identify opposing viewpoints
+  const contrastPairs = [
+    ['must', 'cannot'], ['always', 'never'], ['truth', 'illusion'],
+    ['freedom', 'constraint'], ['individual', 'collective'],
+    ['create', 'destroy'], ['love', 'hate'], ['strength', 'weakness'],
+    ['sacred', 'profane'], ['light', 'dark'], ['order', 'chaos']
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 40 || s.length > 280) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http')) return false;
+          return s.toLowerCase().includes(searchTerm);
+        });
+      
+      for (const s of sentences) {
+        // Detect stance indicators
+        const lower = s.toLowerCase();
+        let stance = 'neutral';
+        
+        // Check for affirmative vs negative framing
+        if (/\b(must|should|is|are|will|always|true|real|essential)\b/.test(lower)) {
+          stance = 'affirmative';
+        }
+        if (/\b(cannot|never|not|isn't|aren't|false|illusion|myth)\b/.test(lower)) {
+          stance = stance === 'affirmative' ? 'complex' : 'negative';
+        }
+        
+        matches.push({
+          text: s,
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+          stance
+        });
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (matches.length < 2) return null;
+  
+  // Try to find contrasting quotes
+  const affirmative = matches.filter(m => m.stance === 'affirmative');
+  const negative = matches.filter(m => m.stance === 'negative');
+  const complex = matches.filter(m => m.stance === 'complex');
+  
+  let thesis, antithesis;
+  
+  if (affirmative.length > 0 && negative.length > 0) {
+    thesis = affirmative[Math.floor(Math.random() * affirmative.length)];
+    antithesis = negative[Math.floor(Math.random() * negative.length)];
+  } else if (matches.length >= 2) {
+    // Just pick two different quotes
+    const shuffled = matches.sort(() => Math.random() - 0.5);
+    thesis = shuffled[0];
+    antithesis = shuffled[1];
+  } else {
+    return null;
+  }
+  
+  return {
+    concept: concept || 'truth',
+    thesis: { text: thesis.text, source: thesis.source },
+    antithesis: { text: antithesis.text, source: antithesis.source },
+    synthesis: 'The tension between these views reveals the complexity of ' + (concept || 'truth') + '.'
+  };
+}
+
 // Get multiple wisdom quotes ranked by philosophical density
 function getWisdomQuotes(count = 5) {
   const index = loadLoreIndex();
@@ -1032,7 +1116,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '2.4.0',
+        version: '2.5.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -1049,7 +1133,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '2.4.0',
+        version: '2.5.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1068,6 +1152,7 @@ const server = http.createServer((req, res) => {
           'GET /fortune - Fortune-cookie style wisdom',
           'GET /oracle - Cryptic prophetic message from the lore',
           'GET /meditation - Contemplative quote for quiet reflection',
+          'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
           'GET /wisdom?count=<n> - Multiple wisdom quotes ranked by density',
           'GET /tweetable?count=<n> - Pre-formatted quotes for Twitter (≤280 chars)',
           'GET /thread?theme=<theme>&parts=<n> - Multi-part Twitter thread (max 10)',
@@ -1185,6 +1270,19 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(meditation));
+      return;
+    }
+    
+    if (pathname === '/clash') {
+      const concept = url.searchParams.get('concept') || 'truth';
+      const clash = getClash(concept);
+      if (!clash) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No contrasting views found for: ' + concept }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(clash));
       return;
     }
     
