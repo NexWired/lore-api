@@ -443,6 +443,65 @@ function getOracle() {
   };
 }
 
+// Get a meditation quote (contemplative, calm, introspective)
+function getMeditation() {
+  const index = loadLoreIndex();
+  const meditations = [];
+  
+  // Patterns that suggest contemplation, not action
+  const meditationPatterns = /\b(stillness|silence|quiet|peace|rest|breath|moment|presence|within|inner|contemplate|reflect|observe|accept|surrender|let go|patience|slow|gentle|soft|calm|serene|tranquil|deep|simple|return|remember|forget|nothing|everything|being|become|aware)\b/i;
+  
+  // Anti-patterns: too aggressive or action-oriented
+  const antiPatterns = /\b(must|should|fight|destroy|kill|hate|attack|dominate|crush|conquer|defeat|enemy|war|battle)\b/i;
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 40 || s.length > 250) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          if (antiPatterns.test(s)) return false;
+          return meditationPatterns.test(s);
+        });
+      
+      for (const s of sentences) {
+        meditations.push({
+          text: s,
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, '')
+        });
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (meditations.length === 0) return null;
+  
+  const meditation = meditations[Math.floor(Math.random() * meditations.length)];
+  
+  const prompts = [
+    'Take a breath.',
+    'Be still.',
+    'Consider:',
+    'In this moment:',
+    'Reflect:'
+  ];
+  
+  return {
+    prompt: prompts[Math.floor(Math.random() * prompts.length)],
+    meditation: meditation.text,
+    source: meditation.source
+  };
+}
+
 // Get multiple wisdom quotes ranked by philosophical density
 function getWisdomQuotes(count = 5) {
   const index = loadLoreIndex();
@@ -973,7 +1032,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '2.3.2',
+        version: '2.4.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -990,7 +1049,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '2.3.2',
+        version: '2.4.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1008,6 +1067,7 @@ const server = http.createServer((req, res) => {
           'GET /daily - Daily wisdom (same quote all day)',
           'GET /fortune - Fortune-cookie style wisdom',
           'GET /oracle - Cryptic prophetic message from the lore',
+          'GET /meditation - Contemplative quote for quiet reflection',
           'GET /wisdom?count=<n> - Multiple wisdom quotes ranked by density',
           'GET /tweetable?count=<n> - Pre-formatted quotes for Twitter (≤280 chars)',
           'GET /thread?theme=<theme>&parts=<n> - Multi-part Twitter thread (max 10)',
@@ -1113,6 +1173,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(oracle));
+      return;
+    }
+    
+    if (pathname === '/meditation') {
+      const meditation = getMeditation();
+      if (!meditation) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No peace available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(meditation));
       return;
     }
     
