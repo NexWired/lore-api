@@ -38,6 +38,7 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /fortune` | Short punchy wisdom (fortune-cookie style, 40-180 chars) |
 | `GET /oracle` | Cryptic, prophetic message from the lore |
 | `GET /meditation` | Contemplative quote for quiet reflection |
+| `GET /mantra` | Short punchy phrase for repetition (<100 chars) |
 | `GET /clash?concept=<word>` | Contrasting quotes (thesis vs antithesis) |
 | `GET /define?term=<word>` | Definitional quotes about a concept |
 | `GET /mood?mood=<vibe>` | Quotes matching a mood (dark, hopeful, aggressive, contemplative, defiant, mystical, romantic, chaotic) |
