@@ -1688,6 +1688,72 @@ function getAffirmation() {
   };
 }
 
+// Get two opposing quotes for a duel/debate on a topic
+function getDuel(topic = null) {
+  const index = loadLoreIndex();
+  const searchTerm = (topic || 'truth').toLowerCase();
+  const quotes = [];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 40 || s.length > 250) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          return s.toLowerCase().includes(searchTerm);
+        });
+      
+      for (const s of sentences) {
+        // Detect stance: positive/affirmative vs negative/critical
+        const positive = /\b(is|are|must|should|will|can|embrace|love|beauty|truth|good)\b/i.test(s);
+        const negative = /\b(not|never|cannot|against|reject|hate|false|wrong|bad|fail)\b/i.test(s);
+        
+        quotes.push({
+          text: s,
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+          stance: negative ? 'contra' : (positive ? 'pro' : 'neutral')
+        });
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (quotes.length < 2) return null;
+  
+  // Find one pro and one contra, or two different sources
+  const pros = quotes.filter(q => q.stance === 'pro');
+  const contras = quotes.filter(q => q.stance === 'contra');
+  
+  let fighter1, fighter2;
+  
+  if (pros.length > 0 && contras.length > 0) {
+    fighter1 = pros[Math.floor(Math.random() * pros.length)];
+    fighter2 = contras[Math.floor(Math.random() * contras.length)];
+  } else {
+    // Just pick two different quotes
+    fighter1 = quotes[Math.floor(Math.random() * quotes.length)];
+    fighter2 = quotes.filter(q => q.text !== fighter1.text)[Math.floor(Math.random() * (quotes.length - 1))];
+  }
+  
+  if (!fighter1 || !fighter2) return null;
+  
+  return {
+    topic: topic || 'truth',
+    fighter1: { text: fighter1.text, source: fighter1.source, stance: fighter1.stance },
+    fighter2: { text: fighter2.text, source: fighter2.source, stance: fighter2.stance },
+    prompt: 'Who wins?'
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -1749,7 +1815,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '3.4.0',
+        version: '3.5.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -1766,7 +1832,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '3.4.0',
+        version: '3.5.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1789,6 +1855,7 @@ const server = http.createServer((req, res) => {
           'GET /koan - Short zen-like statement that unlocks deeper truth',
           'GET /warning - Cautionary wisdom about pitfalls and dangers',
           'GET /affirmation - Positive empowering statement (whitepill energy)',
+          'GET /duel?topic=<word> - Two opposing quotes for debate',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -1998,6 +2065,19 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(affirmation));
+      return;
+    }
+    
+    if (pathname === '/duel') {
+      const topic = sanitize(url.searchParams.get('topic') || '');
+      const duel = getDuel(topic || null);
+      if (!duel) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Could not find opposing quotes', topic: topic || 'truth' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(duel));
       return;
     }
     
