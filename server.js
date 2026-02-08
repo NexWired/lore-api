@@ -586,6 +586,86 @@ function getClash(concept) {
   };
 }
 
+// Get definitional quotes about a concept
+function getDefinition(term) {
+  const index = loadLoreIndex();
+  const definitions = [];
+  const searchTerm = (term || 'milady').toLowerCase();
+  
+  // Patterns that indicate definitional statements
+  const defPatterns = [
+    new RegExp(`${searchTerm}\\s+(is|are|means|refers to|represents|embodies|signifies)\\b`, 'i'),
+    new RegExp(`\\b(definition|meaning|essence|nature|concept)\\s+of\\s+${searchTerm}`, 'i'),
+    new RegExp(`what\\s+(is|are)\\s+${searchTerm}`, 'i'),
+    new RegExp(`${searchTerm}[,:]?\\s+(the|a)\\s+`, 'i')
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 30 || s.length > 400) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http')) return false;
+          // Must contain the term
+          if (!s.toLowerCase().includes(searchTerm)) return false;
+          // Prefer definitional patterns
+          return defPatterns.some(p => p.test(s));
+        });
+      
+      for (const s of sentences) {
+        // Score by how definitional it sounds
+        let score = 0;
+        for (const p of defPatterns) {
+          if (p.test(s)) score++;
+        }
+        
+        definitions.push({
+          text: s,
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+          score
+        });
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (definitions.length === 0) {
+    // Fallback: just find mentions of the term
+    for (const file of index) {
+      for (const line of file.lines) {
+        if (line.toLowerCase().includes(searchTerm) && line.length > 50 && line.length < 300) {
+          definitions.push({
+            text: line.trim(),
+            source: file.path.replace(/\.[^.]+$/, ''),
+            score: 0
+          });
+        }
+      }
+    }
+  }
+  
+  if (definitions.length === 0) return null;
+  
+  // Sort by score and return best matches
+  definitions.sort((a, b) => b.score - a.score);
+  const best = definitions.slice(0, 3);
+  
+  return {
+    term: term || 'milady',
+    definitions: best.map(d => ({ text: d.text, source: d.source })),
+    count: definitions.length
+  };
+}
+
 // Get multiple wisdom quotes ranked by philosophical density
 function getWisdomQuotes(count = 5) {
   const index = loadLoreIndex();
@@ -1116,7 +1196,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '2.5.0',
+        version: '2.6.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -1133,7 +1213,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '2.5.0',
+        version: '2.6.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1153,6 +1233,7 @@ const server = http.createServer((req, res) => {
           'GET /oracle - Cryptic prophetic message from the lore',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
+          'GET /define?term=<word> - Definitional quotes about a concept',
           'GET /wisdom?count=<n> - Multiple wisdom quotes ranked by density',
           'GET /tweetable?count=<n> - Pre-formatted quotes for Twitter (≤280 chars)',
           'GET /thread?theme=<theme>&parts=<n> - Multi-part Twitter thread (max 10)',
@@ -1283,6 +1364,19 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(clash));
+      return;
+    }
+    
+    if (pathname === '/define') {
+      const term = url.searchParams.get('term') || 'milady';
+      const definition = getDefinition(term);
+      if (!definition) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No definition found for: ' + term }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(definition));
       return;
     }
     
