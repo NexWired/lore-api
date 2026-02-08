@@ -31,11 +31,19 @@ ec0a611 v2.3.2: add missing endpoints to /about docs
 ... (many more commits since v1.5.0)
 ```
 
-## Current Status (Feb 8, 4:05 PM)
+## Current Status (Feb 8, 5:45 PM)
 - **Live version:** 1.5.0
-- **GitHub version:** 2.4.0
-- **Gap:** 15+ commits not deployed
-- **Auto-deploy:** NOT WORKING (webhook issue?)
+- **GitHub version:** 2.6.0 (6 commits today alone!)
+- **Gap:** 20+ commits not deployed
+- **Auto-deploy:** COMPLETELY BROKEN
+
+**Missing features on production:**
+- /meditation (contemplative quotes)
+- /clash (contrasting views)
+- /define (concept definitions)
+- /oracle, /wisdom, /tweetable, /thread, and more
+
+**URGENT:** Need manual deploy via Render dashboard
 
 ## Priority
 Medium - API works with v1.5.0, but new features are waiting
