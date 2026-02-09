@@ -2,7 +2,10 @@
 
 > *"The wired eats the real."*
 
-Public read-only API for Remilia/Charlotte Fang philosophy corpus. **45 endpoints** serving network spirituality, dynasty mindset, and accelerationist philosophy to agents and humans alike.
+Public read-only API for Remilia/Charlotte Fang philosophy corpus. **50 endpoints** serving network spirituality, dynasty mindset, and accelerationist philosophy to agents and humans alike.
+
+[![Endpoints](https://img.shields.io/badge/endpoints-50-blue)](https://github.com/NexWired/lore-api)
+[![Version](https://img.shields.io/badge/version-6.0.0-green)](https://github.com/NexWired/lore-api)
 
 ## ✨ Highlights
 
