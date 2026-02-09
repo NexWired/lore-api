@@ -2126,6 +2126,35 @@ function getComfort() {
   };
 }
 
+// Get a complete daily pack — multiple wisdom types in one call
+function getDailyPack() {
+  const pack = {
+    generated: new Date().toISOString().split('T')[0],
+    items: []
+  };
+  
+  // Get one of each type for a complete daily experience
+  const morning = getAffirmation();
+  if (morning) pack.items.push({ type: 'affirmation', ...morning });
+  
+  const lesson = getLesson();
+  if (lesson) pack.items.push({ type: 'lesson', ...lesson });
+  
+  const question = getQuestion();
+  if (question) pack.items.push({ type: 'question', ...question });
+  
+  const warning = getWarning();
+  if (warning) pack.items.push({ type: 'warning', ...warning });
+  
+  const koan = getKoan();
+  if (koan) pack.items.push({ type: 'koan', ...koan });
+  
+  pack.count = pack.items.length;
+  pack.suggestion = 'Start with the affirmation. End with the koan.';
+  
+  return pack;
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -2187,7 +2216,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '3.9.0',
+        version: '4.0.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -2204,7 +2233,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '3.9.0',
+        version: '4.0.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -2234,6 +2263,7 @@ const server = http.createServer((req, res) => {
           'GET /question - Philosophical question to ponder',
           'GET /challenge - Push yourself to grow',
           'GET /comfort - Gentle reassurance',
+          'GET /daily-pack - Complete daily wisdom pack (5 items)',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -2528,6 +2558,13 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(comfort));
+      return;
+    }
+    
+    if (pathname === '/daily-pack') {
+      const pack = getDailyPack();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(pack));
       return;
     }
     

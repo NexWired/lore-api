@@ -49,6 +49,7 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /question` | Philosophical question to ponder |
 | `GET /challenge` | Push yourself to grow |
 | `GET /comfort` | Gentle reassurance |
+| `GET /daily-pack` | Complete daily wisdom pack (affirmation + lesson + question + warning + koan) |
 | `GET /meditation` | Contemplative quote for quiet reflection |
 | `GET /mantra` | Short punchy phrase for repetition (<100 chars) |
 | `GET /clash?concept=<word>` | Contrasting quotes (thesis vs antithesis) |
