@@ -1815,6 +1815,76 @@ function getRoast() {
   };
 }
 
+// Get apocalyptic/future-oriented prophecies
+function getProphecy() {
+  const index = loadLoreIndex();
+  const prophecies = [];
+  
+  // Future-oriented, apocalyptic, prophetic patterns
+  const prophecyPatterns = [
+    /\b(will|shall|coming|future|tomorrow|soon|inevitable|destined|fated)\b/i,
+    /\b(rise|fall|end|begin|emerge|awaken|collapse|transform|ascend)\b/i,
+    /\b(age|era|epoch|time|world|humanity|civilization)\b/i,
+    /\b(prophecy|prophetic|vision|foresee|predict|herald)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 40 || s.length > 280) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          return prophecyPatterns.some(p => p.test(s));
+        });
+      
+      for (const s of sentences) {
+        let score = 0;
+        for (const p of prophecyPatterns) {
+          if (p.test(s)) score++;
+        }
+        // Bonus for multiple future indicators
+        if (score >= 2) {
+          prophecies.push({
+            text: s,
+            source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+            score
+          });
+        }
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (prophecies.length === 0) return null;
+  
+  prophecies.sort((a, b) => b.score - a.score);
+  const topTier = prophecies.slice(0, Math.min(20, prophecies.length));
+  const prophecy = topTier[Math.floor(Math.random() * topTier.length)];
+  
+  const framings = [
+    'It is written:',
+    'The future speaks:',
+    'What is to come:',
+    'A vision:',
+    'The prophecy:'
+  ];
+  
+  return {
+    framing: framings[Math.floor(Math.random() * framings.length)],
+    prophecy: prophecy.text,
+    source: prophecy.source
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -1876,7 +1946,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '3.6.0',
+        version: '3.7.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -1893,7 +1963,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '3.6.0',
+        version: '3.7.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1918,6 +1988,7 @@ const server = http.createServer((req, res) => {
           'GET /affirmation - Positive empowering statement (whitepill energy)',
           'GET /duel?topic=<word> - Two opposing quotes for debate',
           'GET /roast - Harsh truth to cut through delusion',
+          'GET /prophecy - Apocalyptic/future-oriented vision',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -2152,6 +2223,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(roast));
+      return;
+    }
+    
+    if (pathname === '/prophecy') {
+      const prophecy = getProphecy();
+      if (!prophecy) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No prophecies available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(prophecy));
       return;
     }
     
