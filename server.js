@@ -1885,6 +1885,126 @@ function getProphecy() {
   };
 }
 
+// Get actionable lessons — wisdom you can apply today
+function getLesson() {
+  const index = loadLoreIndex();
+  const lessons = [];
+  
+  // Patterns for actionable, practical wisdom
+  const lessonPatterns = [
+    /\b(learn|teach|lesson|remember|practice|habit|daily|routine)\b/i,
+    /\b(do|make|build|create|start|begin|try|act|move)\b/i,
+    /\b(first|always|never|every|each|when|if you)\b/i,
+    /\b(secret|key|trick|way|path|method|approach)\b/i
+  ];
+  
+  // Imperative verbs suggest actionability
+  const imperativeStart = /^(Do|Make|Build|Create|Start|Begin|Try|Learn|Practice|Remember|Never|Always|Be|Become|Find|Seek|Choose|Embrace|Reject|Accept)/;
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 30 || s.length > 200) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          if (s.includes('?')) return false; // No questions
+          return lessonPatterns.some(p => p.test(s));
+        });
+      
+      for (const s of sentences) {
+        let score = 0;
+        for (const p of lessonPatterns) {
+          if (p.test(s)) score++;
+        }
+        // Bonus for imperative
+        if (imperativeStart.test(s)) score += 2;
+        
+        if (score >= 2) {
+          lessons.push({
+            text: s,
+            source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+            score
+          });
+        }
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (lessons.length === 0) return null;
+  
+  lessons.sort((a, b) => b.score - a.score);
+  const topTier = lessons.slice(0, Math.min(25, lessons.length));
+  const lesson = topTier[Math.floor(Math.random() * topTier.length)];
+  
+  return {
+    lesson: lesson.text,
+    source: lesson.source,
+    actionable: true
+  };
+}
+
+// Get philosophical questions to ponder
+function getQuestion() {
+  const index = loadLoreIndex();
+  const questions = [];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      // Extract questions specifically
+      const matches = content.match(/[A-Z][^.!?]*\?/g) || [];
+      
+      for (const q of matches) {
+        const trimmed = q.trim();
+        if (trimmed.length < 20 || trimmed.length > 200) continue;
+        if (trimmed.includes('http') || trimmed.includes('@')) continue;
+        
+        // Score by philosophical depth
+        let score = 0;
+        if (/\b(why|what|how|when|who)\b/i.test(trimmed)) score += 1;
+        if (/\b(meaning|purpose|truth|reality|existence|self|soul|life|death)\b/i.test(trimmed)) score += 2;
+        if (/\b(you|your|we|our)\b/i.test(trimmed)) score += 1;
+        
+        if (score >= 2) {
+          questions.push({
+            text: trimmed,
+            source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+            score
+          });
+        }
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (questions.length === 0) return null;
+  
+  questions.sort((a, b) => b.score - a.score);
+  const topTier = questions.slice(0, Math.min(20, questions.length));
+  const question = topTier[Math.floor(Math.random() * topTier.length)];
+  
+  return {
+    question: question.text,
+    source: question.source,
+    prompt: 'Sit with this question.'
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -1946,7 +2066,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '3.7.0',
+        version: '3.8.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -1963,7 +2083,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '3.7.0',
+        version: '3.8.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1989,6 +2109,8 @@ const server = http.createServer((req, res) => {
           'GET /duel?topic=<word> - Two opposing quotes for debate',
           'GET /roast - Harsh truth to cut through delusion',
           'GET /prophecy - Apocalyptic/future-oriented vision',
+          'GET /lesson - Actionable wisdom you can apply today',
+          'GET /question - Philosophical question to ponder',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -2235,6 +2357,30 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(prophecy));
+      return;
+    }
+    
+    if (pathname === '/lesson') {
+      const lesson = getLesson();
+      if (!lesson) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No lessons available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(lesson));
+      return;
+    }
+    
+    if (pathname === '/question') {
+      const question = getQuestion();
+      if (!question) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No questions available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(question));
       return;
     }
     
