@@ -2155,6 +2155,41 @@ function getDailyPack() {
   return pack;
 }
 
+// Get a mystical tarot-style reading with multiple "cards"
+function getTarot() {
+  const positions = ['past', 'present', 'future', 'obstacle', 'advice'];
+  const reading = {
+    spread: 'five-card',
+    cards: []
+  };
+  
+  // Get different types for each position
+  const sources = [
+    { pos: 'past', fn: getMeditation, label: 'What shaped you' },
+    { pos: 'present', fn: getParadox, label: 'The tension you hold' },
+    { pos: 'future', fn: getProphecy, label: 'What approaches' },
+    { pos: 'obstacle', fn: getWarning, label: 'What blocks you' },
+    { pos: 'advice', fn: getLesson, label: 'The path forward' }
+  ];
+  
+  for (const src of sources) {
+    const result = src.fn();
+    if (result) {
+      reading.cards.push({
+        position: src.pos,
+        meaning: src.label,
+        card: result[Object.keys(result)[0]] || result.text || result.prophecy || result.warning || result.lesson,
+        source: result.source
+      });
+    }
+  }
+  
+  reading.interpretation = 'The cards speak. Listen.';
+  reading.count = reading.cards.length;
+  
+  return reading;
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -2216,7 +2251,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '4.0.0',
+        version: '4.1.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -2233,7 +2268,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '4.0.0',
+        version: '4.1.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -2264,6 +2299,7 @@ const server = http.createServer((req, res) => {
           'GET /challenge - Push yourself to grow',
           'GET /comfort - Gentle reassurance',
           'GET /daily-pack - Complete daily wisdom pack (5 items)',
+          'GET /tarot - Mystical five-card reading (past/present/future/obstacle/advice)',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -2565,6 +2601,13 @@ const server = http.createServer((req, res) => {
       const pack = getDailyPack();
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(pack));
+      return;
+    }
+    
+    if (pathname === '/tarot') {
+      const reading = getTarot();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(reading));
       return;
     }
     
