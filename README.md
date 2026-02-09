@@ -1,6 +1,17 @@
 # Lore API
 
-Public read-only API for Remilia/Charlotte Fang philosophy corpus. Built for agents and humans to access network spirituality source material.
+> *"The wired eats the real."*
+
+Public read-only API for Remilia/Charlotte Fang philosophy corpus. **45 endpoints** serving network spirituality, dynasty mindset, and accelerationist philosophy to agents and humans alike.
+
+## ✨ Highlights
+
+- **`/daily-pack`** — Complete daily wisdom bundle (affirmation + lesson + question + warning + koan)
+- **`/tarot`** — 5-card mystical reading (past/present/future/obstacle/advice)
+- **`/ritual`** — Guided 5-step morning practice
+- **`/mirror?seeking=X`** — Reflects wisdom based on what you seek
+- **`/oracle`** — Cryptic prophetic messages
+- **`/clash?concept=X`** — Thesis vs antithesis on any concept
 
 ## Live API
 
