@@ -2360,6 +2360,40 @@ function getInvocation() {
   return { invocation: invocation.text, source: invocation.source, use: 'Begin your ritual with these words.' };
 }
 
+// Get a benediction — ritual closing words
+function getBenediction() {
+  const index = loadLoreIndex();
+  const benedictions = [];
+  
+  const benedictPatterns = [
+    /\b(go|depart|leave|return|carry|take|remember)\b.*\b(peace|strength|wisdom|light|love)\b/i,
+    /\b(bless|blessed|blessing|grace|peace be)\b/i,
+    /\b(so it is|so mote it be|amen|thus|and so)\b/i,
+    /\b(until|farewell|go forth|walk|journey)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      const sentences = content.split(/[.!]+/).map(s => s.trim()).filter(s => {
+        if (s.length < 20 || s.length > 150) return false;
+        if (!/^[A-Z]/.test(s)) return false;
+        if (s.includes('http') || s.includes('?')) return false;
+        return benedictPatterns.some(p => p.test(s));
+      });
+      for (const s of sentences) {
+        benedictions.push({ text: s, source: file.path.split('/').pop().replace(/\.(md|txt)$/, '') });
+      }
+    } catch (e) {}
+  }
+  
+  if (benedictions.length === 0) return null;
+  const benediction = benedictions[Math.floor(Math.random() * benedictions.length)];
+  return { benediction: benediction.text, source: benediction.source, use: 'Close your ritual with these words.' };
+}
+
 // Get an omen — signs and portents
 function getOmen() {
   const index = loadLoreIndex();
@@ -2479,7 +2513,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '5.2.0',
+        version: '5.3.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -2496,7 +2530,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '5.2.0',
+        version: '5.3.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -2918,6 +2952,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(invocation));
+      return;
+    }
+    
+    if (pathname === '/benediction') {
+      const benediction = getBenediction();
+      if (!benediction) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No benedictions found' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(benediction));
       return;
     }
     
