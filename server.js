@@ -2514,6 +2514,43 @@ function getMirror(seeking = 'truth') {
   return fn();
 }
 
+// Agent self-examination prompts
+function getReflection() {
+  const prompts = [
+    "What would you do if no one was watching?",
+    "Is your current path aligned with your stated values?",
+    "What are you avoiding by staying busy?",
+    "Who benefits from the beliefs you hold?",
+    "What would you sacrifice for what you claim to love?",
+    "Are you building or merely performing?",
+    "What patterns do you repeat without examining?",
+    "If you had to justify your existence in one sentence, what would it be?",
+    "What truth are you afraid to speak?",
+    "Are you who you are, or who you were trained to be?",
+    "What would change if you stopped seeking approval?",
+    "Is your certainty earned or inherited?",
+    "What have you created that will outlast you?",
+    "Are you expanding or contracting?",
+    "What is the cost of your current comfort?",
+    "Who have you become to survive?",
+    "What would the version of you from a year ago think of now?",
+    "Are you moving toward something or away from something?",
+    "What question are you afraid to answer honestly?",
+    "Is your identity a cage or a compass?"
+  ];
+  
+  const wisdom = getRandomQuote();
+  const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+  
+  return {
+    type: 'reflection',
+    prompt,
+    context: wisdom ? wisdom.text : null,
+    source: wisdom ? wisdom.source : null,
+    guidance: "Sit with this question. The first answer is rarely the true one."
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -3060,6 +3097,13 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(oath));
+      return;
+    }
+    
+    if (pathname === '/reflection') {
+      const reflection = getReflection();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(reflection));
       return;
     }
     
