@@ -2005,6 +2005,127 @@ function getQuestion() {
   };
 }
 
+// Get challenging statements to push you
+function getChallenge() {
+  const index = loadLoreIndex();
+  const challenges = [];
+  
+  const challengePatterns = [
+    /\b(dare|challenge|push|test|prove|show|demonstrate)\b/i,
+    /\b(harder|stronger|better|more|further|beyond)\b/i,
+    /\b(afraid|fear|scared|weak|comfortable|easy)\b/i,
+    /\b(step up|rise up|stand up|wake up|grow up)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 30 || s.length > 200) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          return challengePatterns.some(p => p.test(s));
+        });
+      
+      for (const s of sentences) {
+        let score = 0;
+        for (const p of challengePatterns) {
+          if (p.test(s)) score++;
+        }
+        if (s.includes('!')) score += 1;
+        
+        if (score >= 2) {
+          challenges.push({
+            text: s,
+            source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+            score
+          });
+        }
+      }
+    } catch (e) {}
+  }
+  
+  if (challenges.length === 0) return null;
+  
+  challenges.sort((a, b) => b.score - a.score);
+  const topTier = challenges.slice(0, Math.min(20, challenges.length));
+  const challenge = topTier[Math.floor(Math.random() * topTier.length)];
+  
+  return {
+    challenge: challenge.text,
+    source: challenge.source,
+    energy: 'push yourself'
+  };
+}
+
+// Get comforting, gentle reassurance
+function getComfort() {
+  const index = loadLoreIndex();
+  const comforts = [];
+  
+  const comfortPatterns = [
+    /\b(okay|alright|fine|safe|enough|worthy|valid)\b/i,
+    /\b(rest|peace|calm|gentle|soft|quiet|still)\b/i,
+    /\b(love|loved|loving|care|caring|kind|kindness)\b/i,
+    /\b(accept|acceptance|forgive|forgiveness|heal|healing)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 25 || s.length > 180) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          // Exclude harsh language
+          if (/\b(hate|destroy|kill|fail|weak|fool|coward)\b/i.test(s)) return false;
+          return comfortPatterns.some(p => p.test(s));
+        });
+      
+      for (const s of sentences) {
+        let score = 0;
+        for (const p of comfortPatterns) {
+          if (p.test(s)) score++;
+        }
+        
+        if (score >= 2) {
+          comforts.push({
+            text: s,
+            source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+            score
+          });
+        }
+      }
+    } catch (e) {}
+  }
+  
+  if (comforts.length === 0) return null;
+  
+  comforts.sort((a, b) => b.score - a.score);
+  const topTier = comforts.slice(0, Math.min(20, comforts.length));
+  const comfort = topTier[Math.floor(Math.random() * topTier.length)];
+  
+  return {
+    comfort: comfort.text,
+    source: comfort.source,
+    energy: 'gentle reassurance'
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -2066,7 +2187,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '3.8.0',
+        version: '3.9.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -2083,7 +2204,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '3.8.0',
+        version: '3.9.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -2111,6 +2232,8 @@ const server = http.createServer((req, res) => {
           'GET /prophecy - Apocalyptic/future-oriented vision',
           'GET /lesson - Actionable wisdom you can apply today',
           'GET /question - Philosophical question to ponder',
+          'GET /challenge - Push yourself to grow',
+          'GET /comfort - Gentle reassurance',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -2381,6 +2504,30 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(question));
+      return;
+    }
+    
+    if (pathname === '/challenge') {
+      const challenge = getChallenge();
+      if (!challenge) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No challenges available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(challenge));
+      return;
+    }
+    
+    if (pathname === '/comfort') {
+      const comfort = getComfort();
+      if (!comfort) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No comfort available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(comfort));
       return;
     }
     
