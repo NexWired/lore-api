@@ -2560,6 +2560,16 @@ const server = http.createServer((req, res) => {
       }
     }
     
+    // Tarot interactive readings page
+    if (pathname === '/tarot.html' || pathname === '/tarot-app') {
+      const tarotPath = path.join(publicDir, 'tarot.html');
+      if (fs.existsSync(tarotPath)) {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(fs.readFileSync(tarotPath, 'utf-8'));
+        return;
+      }
+    }
+    
     // Routes
     
     // Ultra-lightweight ping (for uptime monitoring)
