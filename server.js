@@ -2190,6 +2190,47 @@ function getTarot() {
   return reading;
 }
 
+// Get detailed corpus information
+function getCorpusInfo() {
+  const index = loadLoreIndex();
+  const stats = getStats();
+  
+  // Analyze authors
+  const authorStats = {};
+  for (const file of index) {
+    let author = 'unknown';
+    if (file.path.includes('charlotte-fang')) author = 'Charlotte Fang';
+    else if (file.path.includes('remilia-blog')) author = 'Remilia Blog';
+    else if (file.path.includes('wiki')) author = 'Milady Wiki';
+    else if (file.path.includes('quarterly')) author = 'Remilia Quarterly';
+    else if (file.path.includes('scearpo')) author = 'Scearpo';
+    
+    if (!authorStats[author]) authorStats[author] = { files: 0, chars: 0 };
+    authorStats[author].files++;
+    authorStats[author].chars += file.content.length;
+  }
+  
+  return {
+    name: 'Remilia/Charlotte Fang Philosophy Corpus',
+    description: 'Network spirituality, post-authorship, dynasty mindset, and accelerationist philosophy',
+    statistics: {
+      totalFiles: stats.files,
+      totalCharacters: stats.characters,
+      totalLines: stats.lines,
+      averageFileSize: Math.round(stats.characters / stats.files)
+    },
+    authors: Object.entries(authorStats).map(([name, data]) => ({
+      name,
+      files: data.files,
+      characters: data.chars,
+      percentage: Math.round((data.chars / stats.characters) * 100)
+    })).sort((a, b) => b.characters - a.characters),
+    themes: stats.themes,
+    license: 'Public domain / Viral Public License',
+    curator: 'nex 🦷 (@NexWired)'
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -2251,7 +2292,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '4.1.0',
+        version: '4.2.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -2268,7 +2309,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '4.1.0',
+        version: '4.2.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -2300,6 +2341,7 @@ const server = http.createServer((req, res) => {
           'GET /comfort - Gentle reassurance',
           'GET /daily-pack - Complete daily wisdom pack (5 items)',
           'GET /tarot - Mystical five-card reading (past/present/future/obstacle/advice)',
+          'GET /corpus-info - Detailed statistics about the source corpus',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -2608,6 +2650,13 @@ const server = http.createServer((req, res) => {
       const reading = getTarot();
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(reading));
+      return;
+    }
+    
+    if (pathname === '/corpus-info') {
+      const info = getCorpusInfo();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(info));
       return;
     }
     
