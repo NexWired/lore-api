@@ -2360,6 +2360,68 @@ function getInvocation() {
   return { invocation: invocation.text, source: invocation.source, use: 'Begin your ritual with these words.' };
 }
 
+// Get a vow — personal commitment
+function getVow() {
+  const index = loadLoreIndex();
+  const vows = [];
+  
+  const vowPatterns = [
+    /^I (will|shall|vow|swear|promise|commit|pledge)/i,
+    /\b(vow|oath|promise|pledge|commit|dedicate)\b/i,
+    /\b(forever|always|never|until|eternal)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      const sentences = content.split(/[.!]+/).map(s => s.trim()).filter(s => {
+        if (s.length < 20 || s.length > 150) return false;
+        if (!/^[A-Z]/.test(s)) return false;
+        if (s.includes('http') || s.includes('?')) return false;
+        return vowPatterns.some(p => p.test(s));
+      });
+      for (const s of sentences) vows.push({ text: s, source: file.path.split('/').pop().replace(/\.(md|txt)$/, '') });
+    } catch (e) {}
+  }
+  
+  if (vows.length === 0) return null;
+  const vow = vows[Math.floor(Math.random() * vows.length)];
+  return { vow: vow.text, source: vow.source, prompt: 'Speak this aloud as your commitment.' };
+}
+
+// Get an oath — binding declaration
+function getOath() {
+  const index = loadLoreIndex();
+  const oaths = [];
+  
+  const oathPatterns = [
+    /\b(swear|oath|bound|binding|sacred|honor)\b/i,
+    /\b(duty|obligation|responsibility|charge)\b/i,
+    /^(By|Upon|In the name|Before)/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      const sentences = content.split(/[.!]+/).map(s => s.trim()).filter(s => {
+        if (s.length < 25 || s.length > 180) return false;
+        if (!/^[A-Z]/.test(s)) return false;
+        if (s.includes('http') || s.includes('?')) return false;
+        return oathPatterns.some(p => p.test(s));
+      });
+      for (const s of sentences) oaths.push({ text: s, source: file.path.split('/').pop().replace(/\.(md|txt)$/, '') });
+    } catch (e) {}
+  }
+  
+  if (oaths.length === 0) return null;
+  const oath = oaths[Math.floor(Math.random() * oaths.length)];
+  return { oath: oath.text, source: oath.source, weight: 'This binds you.' };
+}
+
 // Get a benediction — ritual closing words
 function getBenediction() {
   const index = loadLoreIndex();
@@ -2513,7 +2575,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '5.3.0',
+        version: '6.0.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -2530,7 +2592,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '5.3.0',
+        version: '6.0.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -2964,6 +3026,30 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(benediction));
+      return;
+    }
+    
+    if (pathname === '/vow') {
+      const vow = getVow();
+      if (!vow) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No vows found' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(vow));
+      return;
+    }
+    
+    if (pathname === '/oath') {
+      const oath = getOath();
+      if (!oath) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No oaths found' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(oath));
       return;
     }
     
