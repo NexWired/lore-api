@@ -53,6 +53,9 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /tarot` | Mystical five-card reading (past/present/future/obstacle/advice) |
 | `GET /corpus-info` | Detailed statistics about the source corpus |
 | `GET /ritual` | 5-step morning practice sequence (breathe → affirm → contemplate → commit → release) |
+| `GET /blessing` | Positive invocation (light energy) |
+| `GET /curse` | Dark invocation for shadow work |
+| `GET /mirror?seeking=<word>` | Reflects wisdom based on what you seek (love, strength, peace, truth, meaning, future, wisdom) |
 | `GET /meditation` | Contemplative quote for quiet reflection |
 | `GET /mantra` | Short punchy phrase for repetition (<100 chars) |
 | `GET /clash?concept=<word>` | Contrasting quotes (thesis vs antithesis) |

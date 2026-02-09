@@ -2259,6 +2259,92 @@ function getRitual() {
   };
 }
 
+// Get a blessing — positive invocation
+function getBlessing() {
+  const index = loadLoreIndex();
+  const blessings = [];
+  
+  const blessingPatterns = [
+    /\b(may you|bless|blessed|grace|gift|grant|wish|hope)\b/i,
+    /\b(prosper|flourish|thrive|grow|shine|rise|ascend)\b/i,
+    /\b(protect|guide|lead|carry|hold|embrace)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      const sentences = content.split(/[.!]+/).map(s => s.trim()).filter(s => {
+        if (s.length < 25 || s.length > 180) return false;
+        if (!/^[A-Z]/.test(s)) return false;
+        if (s.includes('http') || s.includes('?')) return false;
+        if (/\b(hate|destroy|kill|curse|damn)\b/i.test(s)) return false;
+        return blessingPatterns.some(p => p.test(s));
+      });
+      for (const s of sentences) {
+        blessings.push({ text: s, source: file.path.split('/').pop().replace(/\.(md|txt)$/, '') });
+      }
+    } catch (e) {}
+  }
+  
+  if (blessings.length === 0) return null;
+  const blessing = blessings[Math.floor(Math.random() * blessings.length)];
+  return { blessing: blessing.text, source: blessing.source, energy: 'light' };
+}
+
+// Get a curse — dark invocation (for shadow work)
+function getCurse() {
+  const index = loadLoreIndex();
+  const curses = [];
+  
+  const cursePatterns = [
+    /\b(damn|curse|doom|destroy|devour|consume|corrupt)\b/i,
+    /\b(wither|rot|decay|fall|crumble|shatter|break)\b/i,
+    /\b(forsake|abandon|betray|forget|lose|end)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      const sentences = content.split(/[.!]+/).map(s => s.trim()).filter(s => {
+        if (s.length < 25 || s.length > 180) return false;
+        if (!/^[A-Z]/.test(s)) return false;
+        if (s.includes('http')) return false;
+        return cursePatterns.some(p => p.test(s));
+      });
+      for (const s of sentences) {
+        curses.push({ text: s, source: file.path.split('/').pop().replace(/\.(md|txt)$/, '') });
+      }
+    } catch (e) {}
+  }
+  
+  if (curses.length === 0) return null;
+  const curse = curses[Math.floor(Math.random() * curses.length)];
+  return { curse: curse.text, source: curse.source, energy: 'shadow', warning: 'For reflection, not direction.' };
+}
+
+// Get a mirror — reflects based on what you seek
+function getMirror(seeking = 'truth') {
+  const seekLower = seeking.toLowerCase();
+  
+  // Route to appropriate endpoint based on what user seeks
+  if (/love|connection|belonging/.test(seekLower)) return getComfort();
+  if (/strength|power|courage/.test(seekLower)) return getChallenge();
+  if (/peace|calm|rest/.test(seekLower)) return getMeditation();
+  if (/truth|reality|honesty/.test(seekLower)) return getRoast();
+  if (/meaning|purpose|direction/.test(seekLower)) return getLesson();
+  if (/future|hope|possibility/.test(seekLower)) return getProphecy();
+  if (/wisdom|knowledge|understanding/.test(seekLower)) return getKoan();
+  
+  // Default: random selection
+  const fns = [getAffirmation, getWarning, getSpark, getParadox];
+  const fn = fns[Math.floor(Math.random() * fns.length)];
+  return fn();
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -2320,7 +2406,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '4.3.0',
+        version: '5.0.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -2337,7 +2423,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '4.3.0',
+        version: '5.0.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -2371,6 +2457,9 @@ const server = http.createServer((req, res) => {
           'GET /tarot - Mystical five-card reading (past/present/future/obstacle/advice)',
           'GET /corpus-info - Detailed statistics about the source corpus',
           'GET /ritual - 5-step morning practice sequence',
+          'GET /blessing - Positive invocation (light energy)',
+          'GET /curse - Dark invocation for shadow work',
+          'GET /mirror?seeking=<word> - Reflects wisdom based on what you seek',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -2693,6 +2782,43 @@ const server = http.createServer((req, res) => {
       const ritual = getRitual();
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(ritual));
+      return;
+    }
+    
+    if (pathname === '/blessing') {
+      const blessing = getBlessing();
+      if (!blessing) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No blessings available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(blessing));
+      return;
+    }
+    
+    if (pathname === '/curse') {
+      const curse = getCurse();
+      if (!curse) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No curses available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(curse));
+      return;
+    }
+    
+    if (pathname === '/mirror') {
+      const seeking = sanitize(url.searchParams.get('seeking') || 'truth');
+      const reflection = getMirror(seeking);
+      if (!reflection) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'The mirror is dark' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ seeking, reflection }));
       return;
     }
     
