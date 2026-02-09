@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LORE TAROT — Network Spirituality Readings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%);
+            color: #e0e0e0;
+            font-family: 'Crimson Text', Georgia, serif;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 230px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 300px 150px, rgba(255,255,255,0.7), transparent);
+            background-size: 350px 200px;
+            animation: twinkle 8s ease-in-out infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(147, 112, 219, 0.5);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-style: italic;
+            color: #9370db;
+            font-size: 1.2rem;
+            letter-spacing: 0.1em;
+        }
+
+        .draw-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .draw-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.2em;
+            padding: 1rem 3rem;
+            background: linear-gradient(135deg, #2a1a4a 0%, #1a0a2e 100%);
+            border: 1px solid #9370db;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .draw-btn:hover {
+            background: linear-gradient(135deg, #3a2a5a 0%, #2a1a3e 100%);
+            box-shadow: 0 0 30px rgba(147, 112, 219, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .draw-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            padding: 2rem 0;
+            min-height: 400px;
+        }
+
+        .card {
+            width: 200px;
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card.revealed .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #1a0a2e 0%, #2a1a4a 50%, #1a0a2e 100%);
+            border: 2px solid #4a3a6a;
+        }
+
+        .card-front::before {
+            content: '✧';
+            font-size: 3rem;
+            color: #9370db;
+            text-shadow: 0 0 20px rgba(147, 112, 219, 0.8);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            border: 2px solid #9370db;
+            transform: rotateY(180deg);
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .card-position {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            color: #9370db;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-theme {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .card-wisdom {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #c0c0c0;
+            font-style: italic;
+        }
+
+        .card-source {
+            font-size: 0.65rem;
+            color: #6a5a8a;
+            margin-top: 0.5rem;
+        }
+
+        .interpretation {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background: rgba(26, 10, 46, 0.6);
+            border: 1px solid #4a3a6a;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .interpretation.visible {
+            display: block;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .interpretation h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: #9370db;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .interpretation p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .share-section {
+            text-align: center;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .share-section.visible {
+            display: block;
+        }
+
+        .share-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            padding: 0.75rem 2rem;
+            background: transparent;
+            border: 1px solid #6a5a8a;
+            color: #9370db;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .share-btn:hover {
+            background: rgba(147, 112, 219, 0.1);
+            border-color: #9370db;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            color: #4a4a5a;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #9370db;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.visible {
+            display: block;
+        }
+
+        .loading-text {
+            font-style: italic;
+            color: #9370db;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; letter-spacing: 0.15em; }
+            .card { width: 160px; }
+            .card-inner { height: 250px; }
+            .cards-container { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    
+    <div class="container">
+        <header>
+            <h1>LORE TAROT</h1>
+            <p class="subtitle">Network Spirituality Readings</p>
+        </header>
+
+        <div class="draw-section">
+            <button class="draw-btn" onclick="drawCards()">Draw Your Cards</button>
+        </div>
+
+        <div class="loading">
+            <p class="loading-text">Consulting the network...</p>
+        </div>
+
+        <div class="cards-container" id="cards"></div>
+
+        <div class="interpretation" id="interpretation">
+            <h2>The Reading</h2>
+            <p id="interpretation-text"></p>
+        </div>
+
+        <div class="share-section" id="share">
+            <button class="share-btn" onclick="shareTwitter()">Share on X</button>
+            <button class="share-btn" onclick="copyReading()">Copy Reading</button>
+        </div>
+
+        <footer>
+            <p>Wisdom from the <a href="https://github.com/NexWired/lore-api" target="_blank">lore-api</a></p>
+            <p style="margin-top: 0.5rem;">Built by <a href="https://x.com/NexWired" target="_blank">@NexWired</a> 🦷</p>
+        </footer>
+    </div>
+
+    <script>
+        const API_BASE = 'https://lore-api-2r9q.onrender.com';
+        let currentReading = null;
+
+        async function drawCards() {
+            const btn = document.querySelector('.draw-btn');
+            const loading = document.querySelector('.loading');
+            const cardsContainer = document.getElementById('cards');
+            const interpretation = document.getElementById('interpretation');
+            const share = document.getElementById('share');
+
+            btn.disabled = true;
+            btn.textContent = 'Drawing...';
+            loading.classList.add('visible');
+            cardsContainer.innerHTML = '';
+            interpretation.classList.remove('visible');
+            share.classList.remove('visible');
+
+            try {
+                const response = await fetch(`${API_BASE}/tarot`);
+                const data = await response.json();
+                currentReading = data;
+
+                loading.classList.remove('visible');
+
+                // Create card elements
+                data.cards.forEach((card, index) => {
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'card';
+                    cardEl.innerHTML = `
+                        <div class="card-inner">
+                            <div class="card-front"></div>
+                            <div class="card-back">
+                                <div class="card-position">${card.position}</div>
+                                <div class="card-theme">${card.theme}</div>
+                                <div class="card-wisdom">${card.quote.text}</div>
+                                <div class="card-source">— ${card.quote.source}</div>
+                            </div>
+                        </div>
+                    `;
+                    cardsContainer.appendChild(cardEl);
+
+                    // Reveal cards with delay
+                    setTimeout(() => {
+                        cardEl.classList.add('revealed');
+                    }, 500 + (index * 400));
+                });
+
+                // Show interpretation after all cards revealed
+                setTimeout(() => {
+                    document.getElementById('interpretation-text').textContent = data.interpretation;
+                    interpretation.classList.add('visible');
+                    share.classList.add('visible');
+                }, 500 + (data.cards.length * 400) + 500);
+
+            } catch (error) {
+                console.error('Error:', error);
+                loading.classList.remove('visible');
+                cardsContainer.innerHTML = '<p style="color: #9370db;">The spirits are silent. Try again.</p>';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Draw Again';
+        }
+
+        function shareTwitter() {
+            if (!currentReading) return;
+            const text = `🔮 My LORE TAROT reading:\n\n"${currentReading.interpretation.substring(0, 200)}..."\n\nGet your reading:`;
+            const url = window.location.href;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+        }
+
+        function copyReading() {
+            if (!currentReading) return;
+            let text = '🔮 LORE TAROT READING\n\n';
+            currentReading.cards.forEach(card => {
+                text += `${card.position}: ${card.theme}\n"${card.quote.text}"\n\n`;
+            });
+            text += `INTERPRETATION:\n${currentReading.interpretation}\n\n`;
+            text += 'https://lore-tarot.onrender.com';
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy Reading', 2000);
+            });
+        }
+    </script>
+</body>
+</html>
