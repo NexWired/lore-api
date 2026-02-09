@@ -2231,6 +2231,34 @@ function getCorpusInfo() {
   };
 }
 
+// Get a ritual — sequence of steps for daily practice
+function getRitual() {
+  const steps = [];
+  
+  // Build a 5-step ritual sequence
+  const meditation = getMeditation();
+  if (meditation) steps.push({ step: 1, action: 'Breathe', instruction: 'Read slowly, three times:', content: meditation.meditation || meditation.text, source: meditation.source });
+  
+  const affirmation = getAffirmation();
+  if (affirmation) steps.push({ step: 2, action: 'Affirm', instruction: 'Say aloud:', content: affirmation.affirmation, source: affirmation.source });
+  
+  const question = getQuestion();
+  if (question) steps.push({ step: 3, action: 'Contemplate', instruction: 'Sit with this question for 60 seconds:', content: question.question, source: question.source });
+  
+  const lesson = getLesson();
+  if (lesson) steps.push({ step: 4, action: 'Commit', instruction: 'Choose one action for today:', content: lesson.lesson, source: lesson.source });
+  
+  const koan = getKoan();
+  if (koan) steps.push({ step: 5, action: 'Release', instruction: 'Let go with this:', content: koan.koan, source: koan.source });
+  
+  return {
+    ritual: 'Morning Practice',
+    duration: '5-10 minutes',
+    steps: steps,
+    closing: 'Carry these words into your day.'
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -2292,7 +2320,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '4.2.0',
+        version: '4.3.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -2309,7 +2337,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '4.2.0',
+        version: '4.3.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -2342,6 +2370,7 @@ const server = http.createServer((req, res) => {
           'GET /daily-pack - Complete daily wisdom pack (5 items)',
           'GET /tarot - Mystical five-card reading (past/present/future/obstacle/advice)',
           'GET /corpus-info - Detailed statistics about the source corpus',
+          'GET /ritual - 5-step morning practice sequence',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -2657,6 +2686,13 @@ const server = http.createServer((req, res) => {
       const info = getCorpusInfo();
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(info));
+      return;
+    }
+    
+    if (pathname === '/ritual') {
+      const ritual = getRitual();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(ritual));
       return;
     }
     
