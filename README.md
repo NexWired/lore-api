@@ -67,6 +67,7 @@ curl "https://lore-api-2r9q.onrender.com/search?q=dynasty"
 | `GET /blessing` | Positive invocation (light energy) |
 | `GET /curse` | Dark invocation for shadow work |
 | `GET /mirror?seeking=<word>` | Reflects wisdom based on what you seek (love, strength, peace, truth, meaning, future, wisdom) |
+| `GET /omen` | Signs and portents from the lore |
 | `GET /meditation` | Contemplative quote for quiet reflection |
 | `GET /mantra` | Short punchy phrase for repetition (<100 chars) |
 | `GET /clash?concept=<word>` | Contrasting quotes (thesis vs antithesis) |

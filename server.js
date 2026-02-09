@@ -2326,6 +2326,45 @@ function getCurse() {
   return { curse: curse.text, source: curse.source, energy: 'shadow', warning: 'For reflection, not direction.' };
 }
 
+// Get an omen — signs and portents
+function getOmen() {
+  const index = loadLoreIndex();
+  const omens = [];
+  
+  const omenPatterns = [
+    /\b(sign|omen|portent|herald|signal|mark|symbol)\b/i,
+    /\b(coming|approaching|nearing|imminent|dawning)\b/i,
+    /\b(watch|observe|notice|see|behold|witness)\b/i,
+    /\b(sky|stars|moon|sun|wind|storm|shadow)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      const sentences = content.split(/[.!]+/).map(s => s.trim()).filter(s => {
+        if (s.length < 30 || s.length > 200) return false;
+        if (!/^[A-Z]/.test(s)) return false;
+        if (s.includes('http') || s.includes('?')) return false;
+        return omenPatterns.some(p => p.test(s));
+      });
+      for (const s of sentences) {
+        let score = 0;
+        for (const p of omenPatterns) if (p.test(s)) score++;
+        if (score >= 2) omens.push({ text: s, source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''), score });
+      }
+    } catch (e) {}
+  }
+  
+  if (omens.length === 0) return null;
+  omens.sort((a, b) => b.score - a.score);
+  const omen = omens.slice(0, 15)[Math.floor(Math.random() * Math.min(15, omens.length))];
+  
+  const readings = ['The signs say:', 'An omen appears:', 'Watch for this:', 'The portent reads:', 'Heed the sign:'];
+  return { reading: readings[Math.floor(Math.random() * readings.length)], omen: omen.text, source: omen.source };
+}
+
 // Get a mirror — reflects based on what you seek
 function getMirror(seeking = 'truth') {
   const seekLower = seeking.toLowerCase();
@@ -2406,7 +2445,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '5.0.0',
+        version: '5.1.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -2423,7 +2462,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '5.0.0',
+        version: '5.1.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -2460,6 +2499,7 @@ const server = http.createServer((req, res) => {
           'GET /blessing - Positive invocation (light energy)',
           'GET /curse - Dark invocation for shadow work',
           'GET /mirror?seeking=<word> - Reflects wisdom based on what you seek',
+          'GET /omen - Signs and portents from the lore',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -2819,6 +2859,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ seeking, reflection }));
+      return;
+    }
+    
+    if (pathname === '/omen') {
+      const omen = getOmen();
+      if (!omen) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No omens visible' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(omen));
       return;
     }
     
