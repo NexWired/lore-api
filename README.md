@@ -123,7 +123,23 @@ curl "https://lore-api.example.com/thread?theme=dynasty&parts=5"
 
 # Get a cryptic oracle prophecy
 curl "https://lore-api.example.com/oracle"
-# → {"framing":"The oracle speaks:","prophecy":"...","source":"...","full":"The oracle speaks:\n\n\"...\"\n\n— source"}
+# → {"framing":"The oracle speaks:","prophecy":"...","source":"..."}
+
+# Get a complete daily wisdom pack
+curl "https://lore-api.example.com/daily-pack"
+# → {"generated":"2026-02-08","items":[{type:"affirmation",...},{type:"lesson",...}...],"count":5}
+
+# Get a mystical tarot reading
+curl "https://lore-api.example.com/tarot"
+# → {"spread":"five-card","cards":[{position:"past",...},{position:"present",...}...],"interpretation":"..."}
+
+# Get a morning ritual sequence
+curl "https://lore-api.example.com/ritual"
+# → {"ritual":"Morning Practice","steps":[{step:1,action:"Breathe",...}...],"closing":"..."}
+
+# Get wisdom based on what you seek
+curl "https://lore-api.example.com/mirror?seeking=truth"
+# → {"seeking":"truth","reflection":{...}}
 ```
 
 ## Themes
