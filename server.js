@@ -1754,6 +1754,67 @@ function getDuel(topic = null) {
   };
 }
 
+// Get harsh truths and roasts — the opposite of affirmations
+function getRoast() {
+  const index = loadLoreIndex();
+  const roasts = [];
+  
+  // Patterns for harsh, critical, uncomfortable truths
+  const roastPatterns = [
+    /\b(you are|you're|most people|everyone|nobody|they)\b.*\b(weak|fool|coward|mediocre|pathetic|delusional|fake|lying|pretending)\b/i,
+    /\b(stop|quit|never|don't)\b.*\b(pretending|lying|fooling|deluding)\b/i,
+    /\b(truth is|reality is|fact is|hard truth)\b/i,
+    /\b(cope|copium|delusion|illusion|fantasy)\b/i,
+    /\b(weak|lazy|scared|afraid|coward)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      const sentences = content
+        .split(/[.!?]+/)
+        .map(s => s.trim())
+        .filter(s => {
+          if (s.length < 30 || s.length > 200) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http') || s.includes('@')) return false;
+          return roastPatterns.some(p => p.test(s));
+        });
+      
+      for (const s of sentences) {
+        let score = 0;
+        for (const p of roastPatterns) {
+          if (p.test(s)) score++;
+        }
+        
+        roasts.push({
+          text: s,
+          source: file.path.split('/').pop().replace(/\.(md|txt)$/, ''),
+          score
+        });
+      }
+    } catch (e) {
+      // Skip unreadable files
+    }
+  }
+  
+  if (roasts.length === 0) return null;
+  
+  roasts.sort((a, b) => b.score - a.score);
+  const topTier = roasts.slice(0, Math.min(20, roasts.length));
+  const roast = topTier[Math.floor(Math.random() * topTier.length)];
+  
+  return {
+    roast: roast.text,
+    source: roast.source,
+    energy: 'blackpill antidote'
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -1815,7 +1876,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '3.5.0',
+        version: '3.6.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -1832,7 +1893,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '3.5.0',
+        version: '3.6.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -1856,6 +1917,7 @@ const server = http.createServer((req, res) => {
           'GET /warning - Cautionary wisdom about pitfalls and dangers',
           'GET /affirmation - Positive empowering statement (whitepill energy)',
           'GET /duel?topic=<word> - Two opposing quotes for debate',
+          'GET /roast - Harsh truth to cut through delusion',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -2078,6 +2140,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(duel));
+      return;
+    }
+    
+    if (pathname === '/roast') {
+      const roast = getRoast();
+      if (!roast) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No roasts available' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(roast));
       return;
     }
     
