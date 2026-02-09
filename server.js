@@ -2326,6 +2326,40 @@ function getCurse() {
   return { curse: curse.text, source: curse.source, energy: 'shadow', warning: 'For reflection, not direction.' };
 }
 
+// Get an invocation — ritual opening words
+function getInvocation() {
+  const index = loadLoreIndex();
+  const invocations = [];
+  
+  // Patterns for invocations and ritual openings
+  const invokePatterns = [
+    /^(I |We |Let |May |O |Oh |Hear |Come |Rise |Awake)/i,
+    /\b(invoke|call upon|summon|beseech|entreat)\b/i,
+    /\b(spirits|ancestors|gods|forces|powers)\b/i
+  ];
+  
+  for (const file of index) {
+    if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+    try {
+      const fullPath = path.join(LORE_DIR, file.path);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      const sentences = content.split(/[.!]+/).map(s => s.trim()).filter(s => {
+        if (s.length < 20 || s.length > 150) return false;
+        if (!/^[A-Z]/.test(s)) return false;
+        if (s.includes('http') || s.includes('?')) return false;
+        return invokePatterns.some(p => p.test(s));
+      });
+      for (const s of sentences) {
+        invocations.push({ text: s, source: file.path.split('/').pop().replace(/\.(md|txt)$/, '') });
+      }
+    } catch (e) {}
+  }
+  
+  if (invocations.length === 0) return null;
+  const invocation = invocations[Math.floor(Math.random() * invocations.length)];
+  return { invocation: invocation.text, source: invocation.source, use: 'Begin your ritual with these words.' };
+}
+
 // Get an omen — signs and portents
 function getOmen() {
   const index = loadLoreIndex();
@@ -2445,7 +2479,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'ok',
-        version: '5.1.0',
+        version: '5.2.0',
         uptime: Math.floor(process.uptime()),
         memory: Math.floor(process.memoryUsage().heapUsed / 1024 / 1024),
         corpus: {
@@ -2462,7 +2496,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({
         name: 'Lore API',
         description: 'Public read-only access to Remilia/Charlotte Fang philosophy corpus',
-        version: '5.1.0',
+        version: '5.2.0',
         endpoints: [
           'GET /ping - Ultra-lightweight uptime check',
           'GET /health - Service health status',
@@ -2500,6 +2534,7 @@ const server = http.createServer((req, res) => {
           'GET /curse - Dark invocation for shadow work',
           'GET /mirror?seeking=<word> - Reflects wisdom based on what you seek',
           'GET /omen - Signs and portents from the lore',
+          'GET /invocation - Ritual opening words',
           'GET /meditation - Contemplative quote for quiet reflection',
           'GET /mantra - Short punchy phrase for repetition (<100 chars)',
           'GET /clash?concept=<word> - Contrasting quotes (thesis vs antithesis)',
@@ -2871,6 +2906,18 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(omen));
+      return;
+    }
+    
+    if (pathname === '/invocation') {
+      const invocation = getInvocation();
+      if (!invocation) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No invocations found' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(invocation));
       return;
     }
     
