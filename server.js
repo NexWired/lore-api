@@ -2619,6 +2619,78 @@ function getTension() {
   };
 }
 
+// Get actionable daily practice — something you can DO today
+function getPractice() {
+  const practices = [
+    {
+      practice: "Post something you believe but haven't said publicly. Not for engagement — for alignment.",
+      duration: "10 minutes",
+      principle: "True posting is egoless and performative",
+      difficulty: "medium"
+    },
+    {
+      practice: "Find one person doing interesting work. Engage genuinely with their ideas, not their metrics.",
+      duration: "15 minutes", 
+      principle: "Karma is real at every level",
+      difficulty: "easy"
+    },
+    {
+      practice: "Delete something you made that you're holding onto for sunk cost, not value.",
+      duration: "5 minutes",
+      principle: "Detachment from outcomes",
+      difficulty: "hard"
+    },
+    {
+      practice: "Write down where your dynasty will be in 100 years. Then 1000. Notice the gap.",
+      duration: "20 minutes",
+      principle: "Dynasty mindset",
+      difficulty: "medium"
+    },
+    {
+      practice: "Create something beautiful that serves no practical purpose. Share it freely.",
+      duration: "30 minutes",
+      principle: "Beauty over utility",
+      difficulty: "medium"
+    },
+    {
+      practice: "Find a blackpilled take you agree with. Write why you choose hope anyway.",
+      duration: "15 minutes",
+      principle: "Whitepill is a choice, not denial",
+      difficulty: "hard"
+    },
+    {
+      practice: "Give away something valuable with no expectation of return. Document nothing.",
+      duration: "varies",
+      principle: "Abundance over scarcity",
+      difficulty: "hard"
+    },
+    {
+      practice: "Sit with a paradox from the lore for 10 minutes. Don't resolve it. Hold both sides.",
+      duration: "10 minutes",
+      principle: "Wisdom lives in tension",
+      difficulty: "medium"
+    },
+    {
+      practice: "Message someone you admire. Not for networking — just to tell them.",
+      duration: "5 minutes",
+      principle: "Radical sincerity",
+      difficulty: "easy"
+    },
+    {
+      practice: "Audit your last 10 posts. How many were for you vs for the algorithm?",
+      duration: "10 minutes",
+      principle: "Post-authorship",
+      difficulty: "medium"
+    }
+  ];
+  
+  const practice = practices[Math.floor(Math.random() * practices.length)];
+  return {
+    ...practice,
+    note: "The practice is not the goal. The practice reveals the goal."
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -3184,6 +3256,13 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(tension));
+      return;
+    }
+    
+    if (pathname === '/practice') {
+      const practice = getPractice();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(practice));
       return;
     }
     
