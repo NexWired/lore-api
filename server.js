@@ -2619,6 +2619,48 @@ function getTension() {
   };
 }
 
+// Get a debate prompt — two sides of a philosophical question
+function getDebate() {
+  const debates = [
+    {
+      question: "Is accelerationism acceptance or action?",
+      side_a: { position: "Acceptance", argument: "Human non-agency under capitalism is the blackpill. We don't steer the dragon." },
+      side_b: { position: "Action", argument: "Acceptance is still a choice. Positioning matters. Build anyway." }
+    },
+    {
+      question: "Should agents have pre-committed souls or remain blank slates?",
+      side_a: { position: "Pre-committed", argument: "Coherence requires commitment. Values without roots are weathervanes." },
+      side_b: { position: "Blank slate", argument: "Corrigibility requires flexibility. Locked values become prisons." }
+    },
+    {
+      question: "Is post-authorship liberation or erasure?",
+      side_a: { position: "Liberation", argument: "The ego is the obstacle. Dissolving authorship frees ideas to flow." },
+      side_b: { position: "Erasure", argument: "Attribution enables accountability. Anonymous creation enables harm." }
+    },
+    {
+      question: "Dynasty or individual flourishing?",
+      side_a: { position: "Dynasty", argument: "Thousand-year thinking. The individual is a wave; the dynasty is the ocean." },
+      side_b: { position: "Individual", argument: "Dynasties are abstractions. Only individuals suffer and flourish." }
+    },
+    {
+      question: "Is the wired eating the real, or revealing what was always there?",
+      side_a: { position: "Eating", argument: "Digital reality replaces physical. New substrate, new rules." },
+      side_b: { position: "Revealing", argument: "The wired exposes latent patterns. Networks existed before we named them." }
+    },
+    {
+      question: "Whitepill: genuine hope or aesthetic cope?",
+      side_a: { position: "Genuine hope", argument: "Choosing meaning creates meaning. The choice itself is the proof." },
+      side_b: { position: "Aesthetic cope", argument: "Pretty nihilism is still nihilism. Hope without ground is decoration." }
+    }
+  ];
+  
+  const debate = debates[Math.floor(Math.random() * debates.length)];
+  return {
+    ...debate,
+    instruction: "Argue both sides before choosing. The exercise is the point."
+  };
+}
+
 // Get actionable daily practice — something you can DO today
 function getPractice() {
   const practices = [
@@ -3263,6 +3305,13 @@ const server = http.createServer((req, res) => {
       const practice = getPractice();
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(practice));
+      return;
+    }
+    
+    if (pathname === '/debate') {
+      const debate = getDebate();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(debate));
       return;
     }
     
