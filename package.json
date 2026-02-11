@@ -1,6 +1,6 @@
 {
   "name": "lore-api",
-  "version": "6.1.0",
+  "version": "6.2.0",
   "description": "Public read-only API for Remilia/Charlotte Fang philosophy corpus",
   "main": "server.js",
   "scripts": {

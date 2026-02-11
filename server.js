@@ -2551,6 +2551,74 @@ function getReflection() {
   };
 }
 
+// Get philosophical tensions — two quotes that seem to contradict, revealing depth
+function getTension() {
+  const index = loadLoreIndex();
+  
+  // Opposing concept pairs to search for
+  const tensionPairs = [
+    { a: ['individual', 'self', 'ego', 'I', 'me'], b: ['collective', 'network', 'community', 'we', 'us'] },
+    { a: ['build', 'create', 'make', 'construct'], b: ['destroy', 'tear down', 'burn', 'abolish'] },
+    { a: ['hope', 'optimism', 'whitepill', 'faith'], b: ['despair', 'blackpill', 'nihilism', 'void'] },
+    { a: ['beauty', 'aesthetic', 'art', 'grace'], b: ['ugly', 'grotesque', 'chaos', 'raw'] },
+    { a: ['control', 'order', 'plan', 'structure'], b: ['chaos', 'entropy', 'random', 'flow'] },
+    { a: ['silence', 'stillness', 'peace', 'calm'], b: ['noise', 'chaos', 'war', 'storm'] },
+    { a: ['past', 'tradition', 'history', 'legacy'], b: ['future', 'innovation', 'new', 'novel'] },
+    { a: ['love', 'connection', 'bond', 'together'], b: ['alone', 'solitude', 'isolated', 'apart'] },
+    { a: ['real', 'authentic', 'genuine', 'true'], b: ['fake', 'performative', 'mask', 'illusion'] },
+    { a: ['accept', 'surrender', 'let go', 'embrace'], b: ['fight', 'resist', 'struggle', 'oppose'] }
+  ];
+  
+  const pair = tensionPairs[Math.floor(Math.random() * tensionPairs.length)];
+  
+  function findQuoteMatching(terms, excludeSource = null) {
+    const matches = [];
+    for (const file of index) {
+      if (!file.path.endsWith('.md') && !file.path.endsWith('.txt')) continue;
+      if (excludeSource && file.path.includes(excludeSource)) continue;
+      
+      try {
+        const fullPath = path.join(LORE_DIR, file.path);
+        const content = fs.readFileSync(fullPath, 'utf-8');
+        const sentences = content.split(/[.!?]+/).map(s => s.trim()).filter(s => {
+          if (s.length < 30 || s.length > 250) return false;
+          if (!/^[A-Z]/.test(s)) return false;
+          if (s.includes('http')) return false;
+          return terms.some(t => s.toLowerCase().includes(t.toLowerCase()));
+        });
+        
+        for (const s of sentences) {
+          matches.push({ text: s, source: file.path.split('/').pop().replace(/\.(md|txt)$/, '') });
+        }
+      } catch (e) {}
+    }
+    
+    if (matches.length === 0) return null;
+    return matches[Math.floor(Math.random() * matches.length)];
+  }
+  
+  const thesis = findQuoteMatching(pair.a);
+  if (!thesis) return null;
+  
+  const antithesis = findQuoteMatching(pair.b, thesis.source);
+  if (!antithesis) return null;
+  
+  const syntheses = [
+    'The truth lives in the tension between these.',
+    'Hold both. Neither is complete alone.',
+    'This is not contradiction — it is depth.',
+    'Wisdom is not choosing; it is integrating.',
+    'The dialectic reveals what logic conceals.'
+  ];
+  
+  return {
+    thesis: { text: thesis.text, source: thesis.source },
+    antithesis: { text: antithesis.text, source: antithesis.source },
+    synthesis: syntheses[Math.floor(Math.random() * syntheses.length)],
+    tension: `${pair.a[0]} vs ${pair.b[0]}`
+  };
+}
+
 // HTTP server
 const server = http.createServer((req, res) => {
   // Get client IP
@@ -3104,6 +3172,18 @@ const server = http.createServer((req, res) => {
       const reflection = getReflection();
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(reflection));
+      return;
+    }
+    
+    if (pathname === '/tension') {
+      const tension = getTension();
+      if (!tension) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Could not find philosophical tension' }));
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(tension));
       return;
     }
     
